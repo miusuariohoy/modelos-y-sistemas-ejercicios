@@ -23,6 +23,8 @@ datos MySQL → programa Dia**.
 - Cada tema trae teoría y ejercitación en pestañas separadas.
 - MER y DER tienen **tres ejercicios por tema** (fácil, medio y difícil), con la
   solución esperada desplegable.
+- La guía completa cierra con **cuatro scripts SQL completos**: biblioteca,
+  veterinaria, escuela y gimnasio. Cada uno tiene su corrector y su solución.
 - En MER y DER hay una **paleta de símbolos** sobre cada campo: inserta la
   figura o la marca en el cursor, así no hace falta escribirla.
 - La corrección es automática y se hace en la misma página: no hay descargas
@@ -39,3 +41,6 @@ No requiere servidor: abrir `index.html` en cualquier navegador.
 
 Para publicarlo con GitHub Pages: *Settings → Pages → branch `main`,
 carpeta raíz*.
+
+Sitio publicado:
+<https://miusuariohoy.github.io/modelos-y-sistemas-ejercicios/>
