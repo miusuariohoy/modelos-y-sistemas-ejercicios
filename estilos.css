@@ -151,6 +151,8 @@
         }
         table.datos td{border-bottom:1px solid var(--border);padding:.4rem .55rem;vertical-align:top;}
         table.datos tr:nth-child(even) td{background:#f8fafc;}
+        table.tabla-simbolos td:first-child{width:130px;}
+        svg.simbolo{display:block;width:110px;height:46px;}
         .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
         /* ---------- Diagramas E-R y DER ---------- */
         .er-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:1rem 0;}
