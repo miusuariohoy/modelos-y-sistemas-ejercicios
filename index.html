@@ -73,6 +73,12 @@ h2.seccion{
 .respuesta:empty::before{
   content:attr(data-placeholder); color:#94a3b8; line-height:1.5;
 }
+textarea.respuesta{
+  display:block; width:100%; min-height:175px; line-height:1.5;
+  font-family:Consolas,"Courier New",monospace; font-size:.9rem;
+  resize:vertical;
+}
+textarea.respuesta::placeholder{color:#94a3b8}
 .forma{
   display:inline-flex; align-items:center; justify-content:center;
   min-width:92px; min-height:36px; margin:.12rem .25rem;
@@ -105,10 +111,10 @@ button.accion{
   border:0; border-radius:8px; padding:.45rem .9rem;
   cursor:pointer; font-weight:700; font-size:.9rem;
 }
-button.corregir{background:var(--verde); color:#fff}
-button.corregir:hover{background:#09551d}
-button.limpiar{background:#e2e8f0; color:#334155}
-button.limpiar:hover{background:#cbd5e1}
+button.corregir, button.corregir-quiz{background:var(--verde); color:#fff}
+button.corregir:hover, button.corregir-quiz:hover{background:#09551d}
+button.limpiar, button.limpiar-quiz{background:#e2e8f0; color:#334155}
+button.limpiar:hover, button.limpiar-quiz:hover{background:#cbd5e1}
 .resultado{margin-top:.8rem; font-size:.9rem}
 .resultado:empty{display:none}
 .resultado .resumen{
@@ -119,7 +125,14 @@ button.limpiar:hover{background:#cbd5e1}
 .resultado ul{margin:.5rem 0 0; padding-left:1.2rem}
 .resultado li{margin:.15rem 0}
 .si{color:#15803d; font-weight:700}
-.no{color:var(--rojo); font-weight:700}
+.no, .mal{color:var(--rojo); font-weight:700}
+.quiz-pregunta{
+  border:1px solid var(--borde); border-radius:10px;
+  padding:.7rem .85rem; margin:.7rem 0; background:#fff;
+}
+.quiz-pregunta p{margin:.1rem 0 .4rem; font-weight:600}
+.quiz-pregunta label{display:block; font-size:.92rem; padding:.16rem 0; cursor:pointer}
+.quiz-feedback{font-size:.86rem; margin-top:.35rem; min-height:1.1em}
 details.solucion{
   margin-top:.7rem; background:#fff; border:1px solid var(--borde);
   border-radius:8px; padding:.5rem .75rem;
@@ -140,7 +153,7 @@ footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
 
 <header class="hero">
   <h1>Ejercitación con corrección · DER · MER · BD</h1>
-  <p>Tocá un símbolo, hacé clic en el cuadro y escribí dentro del dibujo. Después presioná <strong>✅ Corregir</strong>.</p>
+  <p>En <strong>DER</strong> tocás símbolos y escribís dentro. En <strong>MER</strong> respondés un cuestionario y en <strong>BD</strong> escribís SQL. Después presionás <strong>✅ Corregir</strong>.</p>
   <p class="pista">Tres partes: <strong>1 · DER</strong>, <strong>2 · MER</strong>, <strong>3 · BD</strong>. Cada respuesta se corrige acá mismo.</p>
 </header>
 
@@ -157,12 +170,12 @@ footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
   <h2 class="seccion">1 · DER</h2>
 
   <article class="ejercicio" data-id="der1">
-    <h3>✍️ Ejercicio 1.1: del dibujo a las tablas <span class="nivel">Fácil</span></h3>
+    <h3>✍️ Ejercicio 1.1: entidad, relación y atributos <span class="nivel">Fácil</span></h3>
     <p class="consigna">
-      En una tienda, <strong>CLIENTE</strong> compra <strong>PRODUCTO</strong>. La relación es
-      <strong>N:M</strong> y de cada compra interesan la <strong>fecha</strong> y la
-      <strong>cantidad</strong>. Escribí las tres tablas, marcá la <strong>PK</strong> de cada una
-      y las dos <strong>FK</strong> de la intermedia.
+      Leé la frase <strong>«El cliente compra un producto»</strong>. Dibujá una
+      <strong>entidad</strong> con rectángulo y la <strong>relación</strong> con rombo.
+      Después marcá <code>id_cliente</code> con óvalo subrayado, <code>teléfonos</code>
+      con doble óvalo y <code>edad</code> con óvalo punteado.
     </p>
     <div class="paleta-titulo">Símbolos</div>
     <div class="paleta">
@@ -172,11 +185,8 @@ footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
       <button type="button" data-shape="clave">Óvalo subrayado</button>
       <button type="button" data-shape="doble">Doble óvalo</button>
       <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
     </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="Tablas, PK y FK…"></div>
+    <div class="respuesta" contenteditable="true" data-placeholder="Entidad, relación y atributos…"></div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -184,46 +194,28 @@ footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
     <div class="resultado"></div>
     <details class="solucion">
       <summary>Ver solución esperada</summary>
-      <pre>clientes
-  id_cliente  PK
-  nombre
-  apellido
-
-productos
-  id_producto  PK
-  nombre
-  precio
-
-compras (intermedia, N:M)
-  id_compra     PK
-  id_cliente    FK -&gt; clientes
-  id_producto   FK -&gt; productos
-  fecha
-  cantidad</pre>
+      <pre>Entidad: CLIENTE o PRODUCTO (rectángulo).
+Relación: COMPRA o COMPRAR (rombo).
+id_cliente: óvalo subrayado (clave).
+teléfonos: doble óvalo (multivaluado).
+edad: óvalo punteado (derivado).</pre>
     </details>
   </article>
 
   <article class="ejercicio" data-id="der2">
-    <h3>✍️ Ejercicio 1.2: PK, FK y AUTO_INCREMENT <span class="nivel">Medio</span></h3>
+    <h3>✍️ Ejercicio 1.2: una relación 1:N <span class="nivel">Medio</span></h3>
     <p class="consigna">
-      Para la tabla <strong>compras</strong> con columnas
-      <code>id_compra</code>, <code>id_cliente</code>, <code>id_producto</code>,
-      <code>fecha</code> y <code>cantidad</code>: indicá cuál es la <strong>PK</strong>, cuáles son
-      las <strong>FK</strong> y dónde conviene <strong>AUTO_INCREMENT</strong>.
+      Un <strong>cliente</strong> realiza muchos <strong>pedidos</strong> y cada pedido
+      pertenece a un solo cliente. Dibujá las dos entidades con rectángulos, la relación
+      con rombo y marcá la cardinalidad <strong>1:N</strong>. Acá todavía no aparece N:M.
     </p>
     <div class="paleta-titulo">Símbolos</div>
     <div class="paleta">
       <button type="button" data-shape="rect">Rectángulo</button>
       <button type="button" data-shape="rombo">Rombo</button>
-      <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
       <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
     </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="PK, FK y AUTO_INCREMENT…"></div>
+    <div class="respuesta" contenteditable="true" data-placeholder="Dos entidades y 1:N…"></div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -231,33 +223,28 @@ compras (intermedia, N:M)
     <div class="resultado"></div>
     <details class="solucion">
       <summary>Ver solución esperada</summary>
-      <pre>PK: id_compra
-FK: id_cliente -&gt; clientes, id_producto -&gt; productos
-AUTO_INCREMENT: id_compra
-fecha y cantidad son atributos propios de la compra</pre>
+      <pre>CLIENTE (rectángulo) —— REALIZA (rombo) —— PEDIDO (rectángulo)
+Cardinalidad: 1:N
+Un cliente tiene muchos pedidos; cada pedido tiene un solo cliente.</pre>
     </details>
   </article>
 
   <article class="ejercicio" data-id="der3">
-    <h3>✍️ Ejercicio 1.3: elegí el tipo de dato <span class="nivel">Medio</span></h3>
+    <h3>✍️ Ejercicio 1.3: muchos a muchos <span class="nivel">Difícil</span></h3>
     <p class="consigna">
-      Elegí el tipo correcto para cada columna: <strong>nombre</strong>, <strong>precio</strong>,
-      <strong>fecha</strong>, <strong>stock</strong> y <strong>cantidad</strong>. Usá
-      <code>INT</code>, <code>VARCHAR</code>, <code>DECIMAL</code> y <code>DATE</code>.
+      Muchos <strong>clientes</strong> compran muchos <strong>productos</strong>. Marcá la
+      cardinalidad <strong>N:M</strong> y dibujá la entidad intermedia <strong>COMPRA</strong>
+      con sus atributos <strong>fecha</strong> y <strong>cantidad</strong>. Las FK y el
+      <code>AUTO_INCREMENT</code> se ven en MER, no acá.
     </p>
     <div class="paleta-titulo">Símbolos</div>
     <div class="paleta">
       <button type="button" data-shape="rect">Rectángulo</button>
       <button type="button" data-shape="rombo">Rombo</button>
       <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
       <button type="button" data-token="N:M">N:M</button>
     </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="Tipos de dato…"></div>
+    <div class="respuesta" contenteditable="true" data-placeholder="N:M y entidad intermedia…"></div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -265,11 +252,10 @@ fecha y cantidad son atributos propios de la compra</pre>
     <div class="resultado"></div>
     <details class="solucion">
       <summary>Ver solución esperada</summary>
-      <pre>nombre   -&gt; VARCHAR(50)
-precio   -&gt; DECIMAL(10,2)
-fecha    -&gt; DATE
-stock    -&gt; INT
-cantidad -&gt; INT</pre>
+      <pre>CLIENTE —— COMPRA —— PRODUCTO
+Cardinalidad: N:M
+Entidad intermedia: COMPRA
+Atributos de COMPRA: fecha, cantidad</pre>
     </details>
   </article>
 </section>
@@ -278,104 +264,53 @@ cantidad -&gt; INT</pre>
 <section id="mer">
   <h2 class="seccion">2 · MER</h2>
 
-  <article class="ejercicio" data-id="mer1">
-    <h3>✍️ Ejercicio 2.1: reconocé las piezas <span class="nivel">Fácil</span></h3>
-    <p class="consigna">
-      Leé la frase <strong>«El cliente compra un producto»</strong> y separá las piezas:
-      ¿cuáles son las <strong>entidades</strong>?, ¿cuál es la <strong>relación</strong>?
-      ¿Qué dato podría ser un <strong>atributo del cliente</strong>?
-      Tocá un símbolo y escribí el nombre adentro.
-    </p>
-    <div class="paleta-titulo">Símbolos</div>
-    <div class="paleta">
-      <button type="button" data-shape="rect">Rectángulo</button>
-      <button type="button" data-shape="rombo">Rombo</button>
-      <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
-    </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="Entidades, relación y atributo…"></div>
-    <div class="acciones">
-      <button type="button" class="accion corregir">✅ Corregir</button>
-      <button type="button" class="accion limpiar">Limpiar</button>
-    </div>
-    <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>Entidades: CLIENTE y PRODUCTO (rectángulos).
-Relación: COMPRA o COMPRAR (rombo).
-Atributo del cliente: nombre, apellido o teléfono (óvalo).</pre>
-    </details>
-  </article>
+  <article class="ejercicio">
+    <h3>✍️ Cuestionario evaluativo: tipos, claves y relaciones</h3>
+    <p class="consigna">Elegí una opción en cada pregunta y presioná <strong>✅ Corregir</strong>.</p>
 
-  <article class="ejercicio" data-id="mer2">
-    <h3>✍️ Ejercicio 2.2: las variantes del óvalo <span class="nivel">Medio</span></h3>
-    <p class="consigna">
-      Marcá con el símbolo que corresponda y escribí adentro qué representa cada caso:
-      <strong>id_cliente</strong> (clave), <strong>teléfonos</strong> (varios valores) y
-      <strong>edad</strong> (se calcula desde la fecha de nacimiento).
-    </p>
-    <div class="paleta-titulo">Símbolos</div>
-    <div class="paleta">
-      <button type="button" data-shape="rect">Rectángulo</button>
-      <button type="button" data-shape="rombo">Rombo</button>
-      <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
-    </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="Tipos de atributo…"></div>
-    <div class="acciones">
-      <button type="button" class="accion corregir">✅ Corregir</button>
-      <button type="button" class="accion limpiar">Limpiar</button>
-    </div>
-    <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>Óvalo subrayado: id_cliente es la clave, será PRIMARY KEY.
-Doble óvalo: teléfonos es multivaluado, puede tener varios valores.
-Óvalo punteado: edad es derivado, se calcula y no se guarda.</pre>
-    </details>
-  </article>
+    <div id="quiz-mer">
+      <div class="quiz-pregunta" data-correcta="b" data-pista="nombre es texto, precio es decimal, fecha es DATE y tanto stock como cantidad son enteros.">
+        <p><strong>1.</strong> Para <code>nombre</code>, <code>precio</code>, <code>fecha</code>, <code>stock</code> y <code>cantidad</code>, ¿qué secuencia de tipos es correcta?</p>
+        <label><input type="radio" name="mer-q1" value="a"> INT, VARCHAR, DATE, DECIMAL, INT</label>
+        <label><input type="radio" name="mer-q1" value="b"> VARCHAR, DECIMAL, DATE, INT, INT</label>
+        <label><input type="radio" name="mer-q1" value="c"> VARCHAR, INT, DATE, DECIMAL, INT</label>
+        <label><input type="radio" name="mer-q1" value="d"> DECIMAL, VARCHAR, DATE, INT, INT</label>
+        <div class="quiz-feedback"></div>
+      </div>
 
-  <article class="ejercicio" data-id="mer3">
-    <h3>✍️ Ejercicio 2.3: cardinalidades <span class="nivel">Difícil</span></h3>
-    <p class="consigna">
-      Escribí la cardinalidad de cada caso y usá el símbolo sobre la línea:
-      <strong>PERSONA – DNI</strong>, <strong>DUEÑO – MASCOTA</strong> y
-      <strong>CLIENTE – PRODUCTO</strong> (muchos clientes compran muchos productos).
-    </p>
-    <div class="paleta-titulo">Símbolos</div>
-    <div class="paleta">
-      <button type="button" data-shape="rect">Rectángulo</button>
-      <button type="button" data-shape="rombo">Rombo</button>
-      <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
+      <div class="quiz-pregunta" data-correcta="b" data-pista="La tabla intermedia guarda las claves de las dos entidades que relaciona.">
+        <p><strong>2.</strong> En la tabla intermedia <code>compras</code>, ¿qué columnas son FK hacia <code>clientes</code> y <code>productos</code>?</p>
+        <label><input type="radio" name="mer-q2" value="a"> id_compra e id_cliente</label>
+        <label><input type="radio" name="mer-q2" value="b"> id_cliente y id_producto</label>
+        <label><input type="radio" name="mer-q2" value="c"> fecha y cantidad</label>
+        <label><input type="radio" name="mer-q2" value="d"> nombre y precio</label>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <div class="quiz-pregunta" data-correcta="b" data-pista="AUTO_INCREMENT se usa en una clave entera creada por el motor, como id_compra.">
+        <p><strong>3.</strong> ¿Dónde conviene usar <code>AUTO_INCREMENT</code>?</p>
+        <label><input type="radio" name="mer-q3" value="a"> En el documento del cliente</label>
+        <label><input type="radio" name="mer-q3" value="b"> En id_compra, clave de la tabla intermedia</label>
+        <label><input type="radio" name="mer-q3" value="c"> En la fecha de la compra</label>
+        <label><input type="radio" name="mer-q3" value="d"> En el precio del producto</label>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <div class="quiz-pregunta" data-correcta="b" data-pista="La FK de una tabla referencia la PK de otra: eso es integridad referencial.">
+        <p><strong>4.</strong> ¿Cómo se llama la relación entre la PK de una tabla y la FK de otra?</p>
+        <label><input type="radio" name="mer-q4" value="a"> Cardinalidad</label>
+        <label><input type="radio" name="mer-q4" value="b"> Integridad referencial</label>
+        <label><input type="radio" name="mer-q4" value="c"> Atributo derivado</label>
+        <label><input type="radio" name="mer-q4" value="d"> Atributo multivaluado</label>
+        <div class="quiz-feedback"></div>
+      </div>
     </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="Cardinalidades…"></div>
+
     <div class="acciones">
-      <button type="button" class="accion corregir">✅ Corregir</button>
-      <button type="button" class="accion limpiar">Limpiar</button>
+      <button type="button" class="accion corregir-quiz">✅ Corregir</button>
+      <button type="button" class="accion limpiar-quiz">Limpiar</button>
     </div>
-    <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>PERSONA - DNI: 1:1. Una persona tiene un solo DNI.
-DUEÑO - MASCOTA: 1:N. Un dueño tiene muchas mascotas; cada mascota tiene un solo dueño.
-CLIENTE - PRODUCTO: N:M. Muchos clientes compran muchos productos.</pre>
-    </details>
+    <div class="resultado" id="res-quiz"></div>
   </article>
 </section>
 
@@ -384,28 +319,13 @@ CLIENTE - PRODUCTO: N:M. Muchos clientes compran muchos productos.</pre>
   <h2 class="seccion">3 · BD</h2>
 
   <article class="ejercicio" data-id="bd1">
-    <h3>✍️ Ejercicio 3.1: crear las tablas <span class="nivel">Medio</span></h3>
+    <h3>✍️ Ejercicio 3.1: crear una tabla <span class="nivel">Medio</span></h3>
     <p class="consigna">
-      Escribí el SQL para crear <strong>clientes</strong>, <strong>productos</strong> y
-      <strong>compras</strong>. Incluí <strong>PRIMARY KEY</strong>, <strong>FOREIGN KEY</strong>
-      y los tipos <code>INT</code>, <code>VARCHAR</code>, <code>DECIMAL</code> y <code>DATE</code>.
+      Escribí el <code>CREATE TABLE</code> de <strong>productos</strong> con
+      <code>id_producto</code> como PK, <code>nombre</code>, <code>precio</code> y
+      <code>stock</code>. Usá tipos correctos.
     </p>
-    <div class="paleta-titulo">Símbolos</div>
-    <div class="paleta">
-      <button type="button" data-shape="rect">Rectángulo</button>
-      <button type="button" data-shape="rombo">Rombo</button>
-      <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
-      <button type="button" data-token="CREATE TABLE">CREATE TABLE</button>
-      <button type="button" data-token="PRIMARY KEY">PRIMARY KEY</button>
-      <button type="button" data-token="FOREIGN KEY">FOREIGN KEY</button>
-    </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="CREATE TABLE…"></div>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE…"></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -413,51 +333,22 @@ CLIENTE - PRODUCTO: N:M. Muchos clientes compran muchos productos.</pre>
     <div class="resultado"></div>
     <details class="solucion">
       <summary>Ver solución esperada</summary>
-      <pre>CREATE TABLE clientes (
-  id_cliente INT PRIMARY KEY,
-  nombre VARCHAR(50),
-  apellido VARCHAR(50)
-);
-
-CREATE TABLE productos (
+      <pre>CREATE TABLE productos (
   id_producto INT PRIMARY KEY,
   nombre VARCHAR(50),
-  precio DECIMAL(10,2)
-);
-
-CREATE TABLE compras (
-  id_compra INT PRIMARY KEY,
-  id_cliente INT,
-  id_producto INT,
-  fecha DATE,
-  cantidad INT,
-  FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
-  FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
+  precio DECIMAL(10,2),
+  stock INT
 );</pre>
     </details>
   </article>
 
   <article class="ejercicio" data-id="bd2">
-    <h3>✍️ Ejercicio 3.2: cargar datos <span class="nivel">Fácil</span></h3>
+    <h3>✍️ Ejercicio 3.2: insertar datos <span class="nivel">Fácil</span></h3>
     <p class="consigna">
-      Escribí un <strong>INSERT INTO</strong> para agregar un cliente, un producto y una compra.
-      Usá <strong>VALUES</strong> en cada sentencia.
+      Escribí un <strong>INSERT INTO</strong> para cargar un producto con
+      <code>nombre</code>, <code>precio</code> y <code>stock</code>. Usá <strong>VALUES</strong>.
     </p>
-    <div class="paleta-titulo">Símbolos</div>
-    <div class="paleta">
-      <button type="button" data-shape="rect">Rectángulo</button>
-      <button type="button" data-shape="rombo">Rombo</button>
-      <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
-      <button type="button" data-token="INSERT INTO">INSERT INTO</button>
-      <button type="button" data-token="VALUES">VALUES</button>
-    </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="INSERT INTO…"></div>
+    <textarea class="respuesta" spellcheck="false" placeholder="INSERT INTO…"></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -465,40 +356,18 @@ CREATE TABLE compras (
     <div class="resultado"></div>
     <details class="solucion">
       <summary>Ver solución esperada</summary>
-      <pre>INSERT INTO clientes (id_cliente, nombre, apellido)
-VALUES (1, 'Ana', 'Pérez');
-
-INSERT INTO productos (id_producto, nombre, precio)
-VALUES (10, 'Pizza', 2500.00);
-
-INSERT INTO compras (id_compra, id_cliente, id_producto, fecha, cantidad)
-VALUES (100, 1, 10, '2026-05-20', 2);</pre>
+      <pre>INSERT INTO productos (nombre, precio, stock)
+VALUES ('Teclado', 8500.00, 10);</pre>
     </details>
   </article>
 
   <article class="ejercicio" data-id="bd3">
-    <h3>✍️ Ejercicio 3.3: consultar con JOIN <span class="nivel">Difícil</span></h3>
+    <h3>✍️ Ejercicio 3.3: consultar con SELECT <span class="nivel">Difícil</span></h3>
     <p class="consigna">
-      Escribí un <strong>SELECT</strong> que muestre el nombre del cliente y el nombre del producto
-      de cada compra. Usá <strong>FROM compras</strong>, dos <strong>JOIN</strong> y <strong>ON</strong>.
+      Escribí un <strong>SELECT</strong> que muestre el nombre del cliente y el nombre del
+      producto de cada compra. Usá <strong>FROM compras</strong>, dos <strong>JOIN</strong> y <strong>ON</strong>.
     </p>
-    <div class="paleta-titulo">Símbolos</div>
-    <div class="paleta">
-      <button type="button" data-shape="rect">Rectángulo</button>
-      <button type="button" data-shape="rombo">Rombo</button>
-      <button type="button" data-shape="ovalo">Óvalo</button>
-      <button type="button" data-shape="clave">Óvalo subrayado</button>
-      <button type="button" data-shape="doble">Doble óvalo</button>
-      <button type="button" data-shape="punteado">Óvalo punteado</button>
-      <button type="button" data-token="1:1">1:1</button>
-      <button type="button" data-token="1:N">1:N</button>
-      <button type="button" data-token="N:M">N:M</button>
-      <button type="button" data-token="SELECT">SELECT</button>
-      <button type="button" data-token="FROM">FROM</button>
-      <button type="button" data-token="JOIN">JOIN</button>
-      <button type="button" data-token="ON">ON</button>
-    </div>
-    <div class="respuesta" contenteditable="true" data-placeholder="SELECT con JOIN…"></div>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT…"></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -536,9 +405,13 @@ function normalizar(s){
 
 function contexto(articulo){
   const caja = articulo.querySelector('.respuesta');
-  const crudo = caja.innerText || '';
+  const crudo = (caja && typeof caja.value === 'string')
+    ? caja.value
+    : (caja ? (caja.innerText || '') : '');
   const t = normalizar(crudo);
-  const formas = Array.from(caja.querySelectorAll('.forma')).map(f => f.dataset.tipo || '');
+  const formas = caja
+    ? Array.from(caja.querySelectorAll('.forma')).map(f => f.dataset.tipo || '')
+    : [];
   return {
     caja: caja,
     crudo: crudo,
@@ -550,66 +423,37 @@ function contexto(articulo){
 
 const EJERCICIOS = {
   der1: { requisitos: [
-    { d:'Nombra la tabla clientes', f:c => c.t.includes('clientes') },
-    { d:'Nombra la tabla productos', f:c => c.t.includes('productos') },
-    { d:'Nombra la tabla intermedia compras', f:c => c.t.includes('compras') || c.t.includes('pedidos') },
-    { d:'Indica la cardinalidad N:M', f:c => /n\s*:\s*m/.test(c.t) },
-    { d:'Marca una PRIMARY KEY / PK', f:c => /primary key|\bpk\b/.test(c.t) },
-    { d:'Marca dos FOREIGN KEY / FK', f:c => c.n('\\bfk\\b|foreign key') >= 2 },
-    { d:'Incluye fecha y cantidad en la intermedia', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
+    { d:'Dibuja una entidad (CLIENTE o PRODUCTO)', f:c => /cliente|producto/.test(c.t) && c.formas.includes('rect') },
+    { d:'Dibuja la relación COMPRA o COMPRAR', f:c => /compra|comprar/.test(c.t) && c.formas.includes('rombo') },
+    { d:'Marca id_cliente con óvalo subrayado', f:c => c.formas.includes('clave') && c.t.includes('id_cliente') },
+    { d:'Marca teléfonos con doble óvalo', f:c => c.formas.includes('doble') && c.t.includes('telefonos') },
+    { d:'Marca edad con óvalo punteado', f:c => c.formas.includes('punteado') && c.t.includes('edad') }
   ]},
   der2: { requisitos: [
-    { d:'id_compra es la PK', f:c => /id_compra[^\n]*(pk|primary key)|(pk|primary key)[^\n]*id_compra/.test(c.t) },
-    { d:'id_cliente es FK', f:c => /id_cliente[^\n]*(fk|foreign key)|(fk|foreign key)[^\n]*id_cliente/.test(c.t) },
-    { d:'id_producto es FK', f:c => /id_producto[^\n]*(fk|foreign key)|(fk|foreign key)[^\n]*id_producto/.test(c.t) },
-    { d:'AUTO_INCREMENT va en id_compra', f:c => /id_compra[^\n]*auto_increment|auto_increment[^\n]*id_compra/.test(c.t) },
-    { d:'Reconoce fecha y cantidad como atributos propios', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
+    { d:'Dibuja la entidad CLIENTE', f:c => c.t.includes('cliente') && c.formas.includes('rect') },
+    { d:'Dibuja la entidad PEDIDO', f:c => c.t.includes('pedido') && c.formas.includes('rect') },
+    { d:'Dibuja la relación con rombo', f:c => c.formas.includes('rombo') },
+    { d:'Marca la cardinalidad 1:N', f:c => /1\s*:\s*n/.test(c.t) },
+    { d:'No usa cardinalidad N:M', f:c => !/n\s*:\s*m/.test(c.t) }
   ]},
   der3: { requisitos: [
-    { d:'nombre es VARCHAR', f:c => /nombre[^\n]*varchar/.test(c.t) },
-    { d:'precio es DECIMAL', f:c => /precio[^\n]*decimal/.test(c.t) },
-    { d:'fecha es DATE', f:c => /fecha[^\n]*date/.test(c.t) },
-    { d:'stock es INT', f:c => /stock[^\n]*int/.test(c.t) },
-    { d:'cantidad es INT', f:c => /cantidad[^\n]*int/.test(c.t) }
-  ]},
-  mer1: { requisitos: [
-    { d:'Entidad CLIENTE', f:c => c.t.includes('cliente') },
-    { d:'Entidad PRODUCTO', f:c => c.t.includes('producto') },
-    { d:'Relación COMPRA o COMPRAR', f:c => c.t.includes('compra') },
-    { d:'Un atributo del cliente (nombre, apellido o teléfono)', f:c => /nombre|apellido|telefono/.test(c.t) },
-    { d:'Usó al menos tres símbolos', f:c => c.formas.length >= 3 },
-    { d:'Usó rectángulo, rombo y óvalo', f:c => ['rect','rombo','ovalo'].every(x => c.formas.includes(x)) }
-  ]},
-  mer2: { requisitos: [
-    { d:'Reconoce el óvalo subrayado como clave', f:c => c.t.includes('clave') || c.t.includes('primary key') },
-    { d:'Identifica id_cliente', f:c => c.t.includes('id_cliente') },
-    { d:'Reconoce el doble óvalo como multivaluado', f:c => c.t.includes('multivaluado') || c.t.includes('varios') },
-    { d:'Identifica teléfonos', f:c => c.t.includes('telefonos') },
-    { d:'Reconoce el óvalo punteado como derivado', f:c => c.t.includes('derivado') || c.t.includes('calcula') },
-    { d:'Identifica edad', f:c => c.t.includes('edad') },
-    { d:'Usó los tres óvalos especiales', f:c => ['clave','doble','punteado'].every(x => c.formas.includes(x)) }
-  ]},
-  mer3: { requisitos: [
-    { d:'PERSONA – DNI es 1:1', f:c => c.t.includes('persona') && c.t.includes('dni') && /1\s*:\s*1/.test(c.t) },
-    { d:'DUEÑO – MASCOTA es 1:N', f:c => c.t.includes('dueno') && c.t.includes('mascota') && /1\s*:\s*n/.test(c.t) },
-    { d:'CLIENTE – PRODUCTO es N:M', f:c => c.t.includes('cliente') && c.t.includes('producto') && /n\s*:\s*m/.test(c.t) },
-    { d:'Usó los tres símbolos de cardinalidad', f:c => ['1:1','1:N','N:M'].every(x => c.t.includes(normalizar(x))) }
+    { d:'Dibuja la entidad CLIENTE', f:c => c.t.includes('cliente') && c.formas.includes('rect') },
+    { d:'Dibuja la entidad PRODUCTO', f:c => c.t.includes('producto') && c.formas.includes('rect') },
+    { d:'Dibuja la entidad intermedia COMPRA', f:c => c.t.includes('compra') },
+    { d:'Marca la cardinalidad N:M', f:c => /n\s*:\s*m/.test(c.t) },
+    { d:'Incluye fecha y cantidad en COMPRA', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
   ]},
   bd1: { requisitos: [
-    { d:'Escribió tres CREATE TABLE', f:c => c.n('create\\s+table') >= 3 },
-    { d:'Crea la tabla clientes', f:c => c.t.includes('clientes') },
+    { d:'Usa CREATE TABLE', f:c => /create\s+table/.test(c.t) },
     { d:'Crea la tabla productos', f:c => c.t.includes('productos') },
-    { d:'Crea la tabla compras', f:c => c.t.includes('compras') },
     { d:'Usa PRIMARY KEY', f:c => c.t.includes('primary key') },
-    { d:'Usa FOREIGN KEY', f:c => c.t.includes('foreign key') },
-    { d:'Usa INT, VARCHAR, DECIMAL y DATE', f:c => ['int','varchar','decimal','date'].every(x => c.t.includes(x)) }
+    { d:'Usa VARCHAR, DECIMAL e INT', f:c => ['varchar','decimal','int'].every(x => c.t.includes(x)) }
   ]},
   bd2: { requisitos: [
-    { d:'Escribió tres INSERT INTO', f:c => c.n('insert\\s+into') >= 3 },
-    { d:'Escribió tres VALUES', f:c => c.n('values') >= 3 },
-    { d:'Carga clientes', f:c => c.t.includes('clientes') },
-    { d:'Carga productos', f:c => c.t.includes('productos') },
-    { d:'Carga compras', f:c => c.t.includes('compras') }
+    { d:'Usa INSERT INTO', f:c => /insert\s+into/.test(c.t) },
+    { d:'Usa VALUES', f:c => c.t.includes('values') },
+    { d:'Carga la tabla productos', f:c => c.t.includes('productos') },
+    { d:'Incluye nombre, precio y stock', f:c => ['nombre','precio','stock'].every(x => c.t.includes(x)) }
   ]},
   bd3: { requisitos: [
     { d:'Usa SELECT', f:c => c.t.includes('select') },
@@ -629,7 +473,7 @@ document.addEventListener('selectionchange', function(){
   const caja = nodo && nodo.nodeType === 1
     ? nodo.closest('.respuesta')
     : (nodo && nodo.parentElement ? nodo.parentElement.closest('.respuesta') : null);
-  if (caja) ultimoRango = sel.getRangeAt(0).cloneRange();
+  if (caja && caja.tagName !== 'TEXTAREA') ultimoRango = sel.getRangeAt(0).cloneRange();
 });
 
 function rangoEn(caja){
@@ -688,6 +532,7 @@ function insertarForma(tipo, articulo){
   const conf = SHAPES[tipo];
   if (!conf) return;
   const caja = articulo.querySelector('.respuesta');
+  if (!caja || caja.tagName === 'TEXTAREA') return;
   const forma = document.createElement('span');
   forma.className = 'forma ' + conf.clase;
   forma.dataset.tipo = tipo;
@@ -698,6 +543,7 @@ function insertarForma(tipo, articulo){
 
 function insertarToken(texto, articulo){
   const caja = articulo.querySelector('.respuesta');
+  if (!caja || caja.tagName === 'TEXTAREA') return;
   const token = document.createElement('span');
   token.className = 'token';
   token.textContent = texto;
@@ -743,12 +589,59 @@ document.querySelectorAll('.corregir').forEach(function(boton){
 document.querySelectorAll('.limpiar').forEach(function(boton){
   boton.addEventListener('click', function(){
     const articulo = boton.closest('.ejercicio');
-    articulo.querySelector('.respuesta').innerHTML = '';
+    const caja = articulo.querySelector('.respuesta');
+    if (caja && typeof caja.value === 'string') caja.value = '';
+    else if (caja) caja.innerHTML = '';
     articulo.querySelector('.resultado').innerHTML = '';
     articulo.classList.remove('correcto');
     ultimoRango = null;
   });
 });
+
+const botonQuiz = document.querySelector('.corregir-quiz');
+if (botonQuiz){
+  botonQuiz.addEventListener('click', function(){
+    const preguntas = Array.from(document.querySelectorAll('#quiz-mer .quiz-pregunta'));
+    let bien = 0;
+    preguntas.forEach(function(p){
+      const elegida = p.querySelector('input:checked');
+      const correcta = p.dataset.correcta;
+      const pista = p.dataset.pista || '';
+      const feedback = p.querySelector('.quiz-feedback');
+      p.querySelectorAll('label').forEach(function(l){ l.classList.remove('bien','mal'); });
+      if (!elegida){
+        feedback.className = 'quiz-feedback mal';
+        feedback.textContent = '❌ Elegí una opción.';
+        return;
+      }
+      const ok = elegida.value === correcta;
+      if (ok) bien++;
+      feedback.className = 'quiz-feedback ' + (ok ? 'si' : 'mal');
+      feedback.textContent = (ok ? '✅ Correcto. ' : '❌ Revisá: ') + pista;
+      const correctaLabel = p.querySelector('input[value="' + correcta + '"]').closest('label');
+      correctaLabel.classList.add('bien');
+      if (!ok) elegida.closest('label').classList.add('mal');
+    });
+    const total = preguntas.length;
+    document.getElementById('res-quiz').innerHTML =
+      '<div class="resumen' + (bien === total ? '' : ' parcial') + '">' +
+      (bien === total ? '✅ ' : '✍️ ') + bien + ' de ' + total + ' respuestas correctas' +
+      '</div>';
+  });
+}
+
+const botonLimpiarQuiz = document.querySelector('.limpiar-quiz');
+if (botonLimpiarQuiz){
+  botonLimpiarQuiz.addEventListener('click', function(){
+    document.querySelectorAll('#quiz-mer input[type="radio"]').forEach(function(i){ i.checked = false; });
+    document.querySelectorAll('#quiz-mer label').forEach(function(l){ l.classList.remove('bien','mal'); });
+    document.querySelectorAll('#quiz-mer .quiz-feedback').forEach(function(f){
+      f.className = 'quiz-feedback';
+      f.textContent = '';
+    });
+    document.getElementById('res-quiz').innerHTML = '';
+  });
+}
 </script>
 </body>
 </html>
