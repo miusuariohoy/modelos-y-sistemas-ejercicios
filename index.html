@@ -346,9 +346,11 @@ footer p{margin:.2rem 0}
       que apuntan a <code>cliente</code> y <code>producto</code>. <code>fecha</code> va como
       <code>DATE</code> y <code>cantidad</code> como <code>INT</code>. En SQL esas tablas se escriben
       en plural: <code>clientes</code>, <code>productos</code> y <code>compras</code>.
-      Usá el menú para insertar las entidades, los atributos, las marcas PK/FK y las líneas. En cada
-      línea indicá <strong>desde</strong> qué entidad sale, la cardinalidad y <strong>hacia</strong> qué
-      entidad va la flecha.
+      Usá el menú para insertar las entidades, los atributos, las marcas PK/FK y las líneas. Las
+      líneas no se agregan solas: insertalas con <strong>Línea de relación</strong>. Primero hacé
+      clic en la entidad o línea que quieras dejar atrás y después apretá el botón: la línea nueva
+      aparece justo ahí. En cada línea indicá <strong>desde</strong> qué entidad sale, la cardinalidad y
+      <strong>hacia</strong> qué entidad va la flecha.
     </p>
     <div class="paleta-titulo">Menú para armar el MER</div>
     <div class="menu-mer">
@@ -843,9 +845,6 @@ function prepararMenuMer(){
     if (!boton || !diagrama) return;
     const accion = boton.dataset.mer;
     if (accion === 'tabla'){
-      if (diagrama.lastElementChild && diagrama.lastElementChild.classList.contains('mer-tabla')){
-        diagrama.appendChild(nuevaLineaMer());
-      }
       diagrama.appendChild(nuevaTablaMer());
     }
     else if (accion === 'atributo'){
@@ -854,7 +853,17 @@ function prepararMenuMer(){
       if (!tabla){ tabla = nuevaTablaMer(); diagrama.appendChild(tabla); }
       tabla.appendChild(nuevoCampoMer());
     } else if (accion === 'linea'){
-      diagrama.appendChild(nuevaLineaMer());
+      const sel = window.getSelection();
+      const nodo = sel && sel.anchorNode;
+      let ancla = nodo
+        ? (nodo.nodeType === 1
+            ? nodo.closest('.mer-tabla, .mer-linea')
+            : nodo.parentElement && nodo.parentElement.closest('.mer-tabla, .mer-linea'))
+        : null;
+      if (!ancla || !diagrama.contains(ancla)) ancla = diagrama.lastElementChild;
+      const linea = nuevaLineaMer();
+      if (ancla && ancla.nextSibling) diagrama.insertBefore(linea, ancla.nextSibling);
+      else diagrama.appendChild(linea);
     } else if (accion === 'pk' || accion === 'fk'){
       escribirMarcaMer(accion.toUpperCase(), caja, diagrama);
     }
