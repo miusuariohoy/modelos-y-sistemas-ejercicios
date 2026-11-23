@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ejercitación interactiva con corrección de DER, MER y base de datos, con accesos a las guías del mismo repositorio.">
 <title>Ejercitación con corrección · DER · MER · BD</title>
 <style>
 :root{
@@ -142,7 +143,25 @@ details.solucion pre{
   white-space:pre-wrap; font-family:Consolas,"Courier New",monospace;
   font-size:.84rem; margin:.5rem 0 0;
 }
+nav.nav-guias{
+  display:flex; gap:.4rem; flex-wrap:wrap; justify-content:center;
+  padding:.6rem 1rem; background:var(--verde-claro);
+  border-bottom:1px solid var(--borde);
+}
+nav.nav-guias a{
+  color:var(--verde); text-decoration:none; font-weight:700; font-size:.9rem;
+  background:#fff; border:1px solid var(--borde);
+  border-radius:999px; padding:.3rem .75rem;
+}
+nav.nav-guias a:hover{background:var(--verde); color:#fff}
+.volver{margin:.7rem 0 .1rem}
+.volver a{
+  color:#eafbe9; font-weight:700; text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,.7); padding-bottom:.1rem;
+}
+.volver a:hover{border-bottom-color:#fff}
 footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
+footer p{margin:.2rem 0}
 @media (max-width:600px){
   header.hero h1{font-size:1.35rem}
   .forma-rombo{width:110px; height:64px}
@@ -155,12 +174,21 @@ footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
   <h1>Ejercitación con corrección · DER · MER · BD</h1>
   <p>En <strong>DER</strong> tocás símbolos y escribís dentro. En <strong>MER</strong> respondés un cuestionario y en <strong>BD</strong> escribís SQL. Después presionás <strong>✅ Corregir</strong>.</p>
   <p class="pista">Tres partes: <strong>1 · DER</strong>, <strong>2 · MER</strong>, <strong>3 · BD</strong>. Cada respuesta se corrige acá mismo.</p>
+  <p class="volver"><a href="https://miusuariohoy.github.io/unamasdesistemas/">← Volver a Unamas de Sistemas</a></p>
 </header>
 
-<nav class="solo">
+<nav class="solo" aria-label="Ejercicios de esta página">
   <a href="#der">1 · DER</a>
   <a href="#mer">2 · MER</a>
   <a href="#bd">3 · BD</a>
+</nav>
+
+<nav class="nav-guias" aria-label="Guías del repositorio">
+  <a href="mer.html">1 · MER</a>
+  <a href="der.html">2 · DER</a>
+  <a href="mysql.html">3 · MySQL</a>
+  <a href="dia.html">4 · Dia</a>
+  <a href="guia_completa.html">Guía completa</a>
 </nav>
 
 <main>
@@ -344,7 +372,10 @@ footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
 
 </main>
 
-<footer>Ejercitación autocorregible · DER · MER · BD</footer>
+<footer>
+  <p>Ejercitación autocorregible · DER · MER · BD</p>
+  <p>Diseñado por la profesora Alejandra Moreira</p>
+</footer>
 
 <script>
 const SHAPES = {
