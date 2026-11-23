@@ -175,6 +175,16 @@ ol.pasos li strong{color:var(--verde)}
 }
 .quiz-pregunta p{margin:.1rem 0 .4rem}
 .quiz-pregunta label{display:block; font-size:.92rem; padding:.12rem 0; cursor:pointer}
+.opciones{display:grid; gap:.35rem; margin:.55rem 0}
+.opcion{
+  display:flex; align-items:flex-start; gap:.45rem;
+  border:1px solid var(--borde); border-radius:8px;
+  padding:.45rem .6rem; background:#fff; cursor:pointer; font-size:.92rem;
+}
+.opcion:hover{background:var(--verde-claro); border-color:#86efac}
+.opcion input{margin:.15rem 0 0; flex:0 0 auto}
+.opcion-sim{width:28px; height:20px; flex:0 0 auto; vertical-align:middle}
+.opcion code{font-family:Consolas,"Courier New",monospace; font-size:.9em}
 .feedback{font-size:.88rem; margin-top:.35rem; min-height:1.1em}
 .feedback.ok, .checklist .ok{color:#0b6623; font-weight:600}
 .feedback.mal, .checklist .mal{color:#b00020; font-weight:600}
@@ -1219,64 +1229,6 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     Pensa donde va la FK.</p>
     <p><em>Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
-  <details class="pista">
-                      <summary>Pista: pensá dónde va la FK</summary>
-                      <ol>
-                          <li>Al ser <strong>1:N</strong>, la FK <code >id_dueno</code> va en <code >mascotas</code> (lado N).</li>
-                          <li>No hace falta tabla intermedia.</li>
-                          <li>La edad se calcula con <code >TIMESTAMPDIFF(YEAR, ...)</code> en el SELECT.</li>
-                      </ol>
-                  </details>
-  <details class="pista">
-                      <summary>Ver la solución del anexo (veterinaria.sql)</summary>
-                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS veterinaria;
-  <span class="kw">USE</span> veterinaria;
-  
-  <span class="kw">CREATE TABLE</span> duenos (
-      id_dueno INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
-      fecha_nacimiento DATE <span class="kw">NOT NULL</span>
-  );
-  
-  <span class="cm">-- ATRIBUTO MULTIVALUADO -> tabla propia</span>
-  <span class="kw">CREATE TABLE</span> duenos_telefonos (
-      id_telefono INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      id_dueno INT <span class="kw">NOT NULL</span>,
-      telefono VARCHAR(20) <span class="kw">NOT NULL</span>,
-      <span class="kw">FOREIGN KEY</span> (id_dueno)
-          <span class="kw">REFERENCES</span> duenos(id_dueno)
-  );
-  
-  <span class="cm">-- RELACIÓN 1:N -> FOREIGN KEY en la tabla del lado N</span>
-  <span class="kw">CREATE TABLE</span> mascotas (
-      id_mascota INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      nombre VARCHAR(40) <span class="kw">NOT NULL</span>,
-      especie VARCHAR(30) <span class="kw">NOT NULL</span>,
-      id_dueno INT <span class="kw">NOT NULL</span>,
-      <span class="kw">FOREIGN KEY</span> (id_dueno)
-          <span class="kw">REFERENCES</span> duenos(id_dueno)
-  );
-  
-  <span class="kw">INSERT INTO</span> duenos (nombre, fecha_nacimiento) <span class="kw">VALUES</span>
-      (<span class="str">'Ana Gomez'</span>, <span class="str">'1990-05-12'</span>),
-      (<span class="str">'Luis Perez'</span>, <span class="str">'1985-11-30'</span>);
-  
-  <span class="kw">INSERT INTO</span> duenos_telefonos (id_dueno, telefono) <span class="kw">VALUES</span>
-      (1, <span class="str">'2664-111111'</span>),
-      (1, <span class="str">'2664-222222'</span>);
-  
-  <span class="kw">INSERT INTO</span> mascotas (nombre, especie, id_dueno) <span class="kw">VALUES</span>
-      (<span class="str">'Rocco'</span>, <span class="str">'perro'</span>, 1),
-      (<span class="str">'Misu'</span>, <span class="str">'gato'</span>, 1),
-      (<span class="str">'Pepa'</span>, <span class="str">'coneja'</span>, 2);
-  
-  <span class="cm">-- La EDAD es DERIVADA: no se guarda, se calcula</span>
-  <span class="kw">SELECT</span> m.nombre, d.nombre <span class="kw">AS</span> dueno,
-         <span class="fn">TIMESTAMPDIFF</span>(YEAR, d.fecha_nacimiento, <span class="fn">CURDATE</span>())
-             <span class="kw">AS</span> edad_dueno
-  <span class="kw">FROM</span> mascotas m
-  <span class="kw">JOIN</span> duenos d <span class="kw">ON</span> d.id_dueno = m.id_dueno;</code></pre>
-                  </details>
 
   <div class="ejercicio">
     <h2>Ejercicio 3 - La Escuela (espejo del Boletin Digital)</h2>
@@ -1457,7 +1409,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 <!-- ========================= EVALUACIÓN ======================== -->
 <section id="evaluacion">
   <h1>Parte 7 &middot; Evaluación</h1>
-  <p>Escribí tus respuestas en cada cuadro. En los ejercicios 1 y 2, los botones <strong>dibujan el símbolo</strong> dentro del área de respuesta: apretalos y el dibujo aparece donde está el cursor. Completá tus datos y presioná <strong>✅ Corregir y enviar</strong>: se guardarán respuestas, nota y corrección en el repositorio <code>inform</code>. La corrección final la hace el docente.</p>
+  <p>Elegí <strong>una opción por pregunta</strong> y presioná <strong>✅ Corregir y enviar</strong>. Los símbolos del DER se muestran como ayuda visual: se ven, pero <strong>no se puede escribir dentro de ellos</strong>. Se guardarán respuestas, nota y corrección en el repositorio <code>inform</code>. La corrección final la hace el docente.</p>
 
   <form class="eval-form" id="form-evaluacion"
         data-examen="modelos-sistemas-unamas"
@@ -1476,56 +1428,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
   <div class="estado-eval" id="estado-eval7" role="status" aria-live="polite"></div>
   <p class="nota"><strong>Privacidad:</strong> guardamos nombre, apellido, curso, respuestas, nota y fecha de envío. El contenido viaja cifrado; no pedimos contraseñas ni datos sensibles.</p>
 
-  <div class="eval-ej">
-    <h2>1. Los símbolos del Diagrama DER</h2>
-    <p>Dibujá con los botones el símbolo de la entidad, la relación y el atributo, y explicá con tus palabras qué significa el óvalo subrayado.</p>
-    <div class="area-dibujo" id="in-eval1" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Dibujá y escribí acá tu respuesta…"></div>
-  </div>
-
-  <div class="eval-ej">
-    <h2>2. De la pizzería N:M al Modelo MER</h2>
-    <p><strong>Dato:</strong> un cliente pide <strong>muchas</strong> pizzas y una pizza es pedida por
-    <strong>muchos</strong> clientes. Por eso la relación <code>PIDE</code> es <strong>N:M</strong>.</p>
-    <p>Respondé en el cuadro estas cuatro cosas, una por línea:</p>
-    <ol class="pasos">
-      <li>¿Qué entidad intermedia se agrega para romper el N:M?</li>
-      <li>¿Cómo se llama esa tabla en el Modelo MER?</li>
-      <li>¿Qué tres tablas quedan y qué columnas tiene la intermedia?</li>
-      <li>¿Cuántas FK tiene la intermedia y hacia qué tablas apuntan?</li>
-    </ol>
-    <div class="nota"><strong>Ayuda:</strong> la intermedia guarda la fecha y la cantidad del pedido,
-    y sus dos FK apuntan a las claves de <code>clientes</code> y <code>pizzas</code>.</div>
-    <div class="area-dibujo" id="in-eval2" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Dibujá y escribí acá tu respuesta…"></div>
-  </div>
-
-  <div class="eval-ej">
-    <h2>3. SQL de la tabla clientes</h2>
-    <p>Escribí la tabla clientes con dni, nombre y telefono.</p>
-    <textarea id="in-eval3" rows="6" placeholder="Escribí acá tu respuesta…"></textarea>
-  </div>
-
-  <div class="eval-ej">
-    <h2>4. Diferencia entre Diagrama DER y Modelo MER</h2>
-    <p>Explicá la diferencia usando las palabras <strong>símbolos</strong>, <strong>tablas</strong>, <strong>PK</strong> y <strong>FK</strong>.</p>
-  </div>
-
-  <div class="eval-ej">
-    <h2>5. ¿Qué es una entidad?</h2>
-    <p>Escribí qué es una entidad y nombrá una del ejemplo de la tienda.</p>
-    <textarea id="in-eval5" rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
-  </div>
-
-  <div class="eval-ej">
-    <h2>6. ¿Qué es la PRIMARY KEY?</h2>
-    <p>Escribí qué significa PK y para qué sirve.</p>
-    <textarea id="in-eval6" rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
-  </div>
-
-  <div class="eval-ej">
-    <h2>7. ¿Qué es la FOREIGN KEY?</h2>
-    <p>Escribí qué significa FK y para qué sirve.</p>
-    <textarea id="in-eval7" rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
-  </div>
+  <div id="eval-preguntas"></div>
 
   <div id="eval-progreso" class="puntaje" aria-live="polite">Evaluación con envío &middot; Corrección automática y docente</div>
 </section>
@@ -1581,10 +1484,7 @@ const PREGUNTAS = [
     explicacion:'CREATE TABLE define la tabla con sus columnas y restricciones.' },
   { texto:'¿Para qué sirve ORDER BY?',
     opciones:['Para ordenar los resultados','Para borrar filas','Para crear una base'], correcta:0,
-    explicacion:'ORDER BY ordena las filas: ASC de menor a mayor y DESC de mayor a menor.' },
-  { texto:'¿Qué es un atributo derivado?',
-    opciones:['Se calcula, no se guarda','Tiene varios valores','Es la clave primaria'], correcta:0,
-    explicacion:'El óvalo punteado marca un dato derivado: se obtiene con una cuenta, como la edad.' }
+    explicacion:'ORDER BY ordena las filas: ASC de menor a mayor y DESC de mayor a menor.' }
 ];
 
 function dibujarQuiz(){
@@ -1627,196 +1527,187 @@ function reiniciarQuiz(){
   resultado.className = 'puntaje';
 }
 
-/* ---------- Evaluación: los botones dibujan el símbolo ---------- */
-const SIMBOLOS = [
-  { tipo:'rect',     etiqueta:'Rectángulo', icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
-  { tipo:'rombo',    etiqueta:'Rombo', icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
-  { tipo:'ovalo',    etiqueta:'Óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
-  { tipo:'clave',    etiqueta:'Óvalo clave', icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
-  { tipo:'doble',    etiqueta:'Doble óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
-  { tipo:'punteado', etiqueta:'Óvalo punteado', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
-  { tipo:'1:N',      etiqueta:'1:N', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
-  { tipo:'N:M',      etiqueta:'N:M', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
-  { tipo:'PK',       etiqueta:'PK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
-  { tipo:'FK',       etiqueta:'FK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
+/* ---------- Evaluación: opción múltiple con símbolos visuales ---------- */
+/* Los SVG se dibujan como ayuda; no hay áreas escribibles ni contenteditable. */
+const SIMBOLOS = {
+  rect:     { etiqueta:'Rectángulo (entidad)', icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
+  rombo:    { etiqueta:'Rombo (relación)', icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
+  ovalo:    { etiqueta:'Óvalo (atributo)', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
+  clave:    { etiqueta:'Óvalo clave', icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
+  doble:    { etiqueta:'Doble óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
+  punteado: { etiqueta:'Óvalo punteado', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
+  '1:N':    { etiqueta:'Cardinalidad 1:N', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
+  'N:M':    { etiqueta:'Cardinalidad N:M', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
+  PK:       { etiqueta:'PK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
+  FK:       { etiqueta:'FK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
+};
+
+const EVAL_PREGUNTAS = [
+  { n:1, titulo:'Los símbolos del Diagrama DER', grupo:'A',
+    texto:'¿Qué símbolo representa una <strong>entidad</strong> en el Diagrama DER?',
+    simbolos:['rect','rombo','ovalo','clave','doble','punteado'],
+    opciones:[ {t:'Rombo', sim:'rombo'}, {t:'Rectángulo', sim:'rect'},
+               {t:'Óvalo', sim:'ovalo'}, {t:'Doble óvalo', sim:'doble'} ],
+    correcta:1, pista:'La entidad se dibuja con rectángulo y su nombre en mayúsculas.' },
+
+  { n:2, titulo:'De la pizzería N:M al Modelo MER', grupo:'A',
+    texto:'Un cliente pide muchas pizzas y una pizza es pedida por muchos clientes (relación <code>PIDE</code> N:M). ¿Cómo se resuelve en el Modelo MER?',
+    simbolos:['N:M','FK','PK'],
+    opciones:[ {t:'Con una tabla intermedia (PEDIDOS) con dos FK: una a clientes y otra a pizzas.'},
+               {t:'Con un óvalo punteado al lado de la relación.'},
+               {t:'Borrando la cardinalidad N:M del diagrama.'},
+               {t:'Con una sola FK en la tabla de pizzas.'} ],
+    correcta:0, pista:'La entidad intermedia rompe el N:M y guarda fecha y cantidad.' },
+
+  { n:3, titulo:'SQL de la tabla clientes', grupo:'C',
+    texto:'¿Cuál es la sentencia correcta para crear la tabla <code>clientes</code> con <code>dni</code> como clave, <code>nombre</code> y <code>telefono</code>?',
+    opciones:[ {t:'CREATE DATABASE clientes (dni INT, nombre VARCHAR(50), telefono VARCHAR(20));', code:true},
+               {t:'CREATE TABLE clientes (dni INT PRIMARY KEY, nombre VARCHAR(50), telefono VARCHAR(20));', code:true},
+               {t:'CREATE TABLE clientes (dni INT, nombre VARCHAR(50), telefono VARCHAR(20));', code:true},
+               {t:'INSERT INTO clientes (dni, nombre, telefono) VALUES (1, "Ana", "2664-111111");', code:true} ],
+    correcta:1, pista:'CREATE TABLE define la tabla y dni debe declararse PRIMARY KEY.' },
+
+  { n:4, titulo:'Diferencia entre Diagrama DER y Modelo MER', grupo:'A',
+    texto:'¿Cuál es la diferencia principal entre el Diagrama DER y el Modelo MER?',
+    opciones:[ {t:'El DER usa tablas con PK y FK; el MER usa símbolos.'},
+               {t:'El DER usa símbolos (rectángulos, rombos y óvalos); el MER usa tablas con PK y FK.'},
+               {t:'Ambos son exactamente lo mismo, solo cambia el nombre.'},
+               {t:'El DER es solo para MySQL y el MER es solo para dibujar.'} ],
+    correcta:1, pista:'El DER es gráfico (símbolos) y el MER es relacional (tablas con PK y FK).' },
+
+  { n:5, titulo:'¿Qué es una entidad?', grupo:'B',
+    texto:'¿Qué es una entidad en un modelo de datos?',
+    opciones:[ {t:'Un objeto o cosa del mundo real del que guardamos datos, por ejemplo CLIENTE.'},
+               {t:'Una consulta SQL que cruza dos tablas.'},
+               {t:'Un tipo de dato como INT o VARCHAR.'},
+               {t:'La clave foránea de una tabla.'} ],
+    correcta:0, pista:'CLIENTE, PRODUCTO y PEDIDO son entidades del ejemplo de la tienda.' },
+
+  { n:6, titulo:'¿Qué es la PRIMARY KEY?', grupo:'B',
+    texto:'¿Qué significa PK y para qué sirve?',
+    opciones:[ {t:'Clave primaria: identifica de forma única cada fila de una tabla.'},
+               {t:'Clave foránea: apunta a otra tabla.'},
+               {t:'Un atributo derivado que se calcula en el SELECT.'},
+               {t:'Un campo que puede repetirse en varias filas.'} ],
+    correcta:0, pista:'La PK no se repite y no puede ser NULL.' },
+
+  { n:7, titulo:'¿Qué es la FOREIGN KEY?', grupo:'B',
+    texto:'¿Qué significa FK y para qué sirve?',
+    opciones:[ {t:'Clave foránea: referencia la PRIMARY KEY de otra tabla y une ambos modelos.'},
+               {t:'Clave primaria de la tabla donde está.'},
+               {t:'Un atributo con varios valores.'},
+               {t:'Una cláusula para ordenar resultados.'} ],
+    correcta:0, pista:'La FK se escribe en la tabla del lado N y apunta a la PK del lado 1.' },
+
+  { n:8, titulo:'Atributos derivados y multivaluados', grupo:'B',
+    texto:'¿Qué es un atributo derivado?',
+    simbolos:['punteado','doble'],
+    opciones:[ {t:'Se calcula con una cuenta, no se guarda (por ejemplo, la edad).', sim:'punteado'},
+               {t:'Puede tener varios valores (por ejemplo, varios teléfonos).', sim:'doble'},
+               {t:'Es la clave primaria de la tabla.', sim:'clave'},
+               {t:'Es la foreign key de otra tabla.', sim:'FK'} ],
+    correcta:0, pista:'El óvalo punteado marca el dato derivado; el doble óvalo, el multivaluado.' },
+
+  { n:9, titulo:'¿Dónde va la FOREIGN KEY en una relación 1:N?', grupo:'B',
+    texto:'Un DUENO tiene muchas MASCOTAS y cada mascota pertenece a un solo dueno (relación 1:N). ¿Dónde se escribe la FK?',
+    simbolos:['1:N','FK'],
+    opciones:[ {t:'En la tabla del lado N, es decir en mascotas (id_dueno).'},
+               {t:'En la tabla del lado 1, es decir en duenos.'},
+               {t:'En una tabla intermedia nueva.'},
+               {t:'Tanto en duenos como en mascotas.'} ],
+    correcta:0, pista:'En 1:N la FK va en la tabla del lado N; no hace falta tabla intermedia.' }
 ];
 
-/* Inserta el dibujo en el área de respuesta, donde esté el cursor. */
-function insertarDibujo(area, html){
-  if(!area) return;
-  area.focus();
-  const sel = window.getSelection();
-  let rango;
-  if(sel.rangeCount && area.contains(sel.anchorNode)){
-    rango = sel.getRangeAt(0);
-    rango.deleteContents();
-  } else {
-    rango = document.createRange();
-    rango.selectNodeContents(area);
-    rango.collapse(false);
-  }
-  const plantilla = document.createElement('template');
-  plantilla.innerHTML = html;
-  const nodo = plantilla.content.firstChild;
-  rango.insertNode(nodo);
-  rango.setStartAfter(nodo);
-  rango.collapse(true);
-  sel.removeAllRanges();
-  sel.addRange(rango);
-  area.dispatchEvent(new Event('input', { bubbles:true }));
+function escaparEval(s){
+  return String(s).replace(/[&<>"]/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+  });
 }
 
-/* Solo los ejercicios 1 y 2 tienen paleta de dibujo. */
-['eval1','eval2'].forEach(function(id){
-  const area = document.getElementById('in-' + id);
-  if(!area) return;
-  const wrap = document.createElement('div');
-  wrap.className = 'ex-paleta';
-  const rotulo = document.createElement('span');
-  rotulo.className = 'ex-paleta-label';
-  rotulo.textContent = 'Símbolos';
-  wrap.appendChild(rotulo);
-  SIMBOLOS.forEach(function(s){
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'ex-sym';
-    b.innerHTML = '<svg class="ex-sym-icon" viewBox="0 0 28 20" aria-hidden="true">' +
-      s.icona + '</svg><span class="ex-sym-name">' + s.etiqueta + '</span>';
-    b.title = 'Dibujar ' + s.etiqueta + ' en el área de respuesta';
-    b.addEventListener('click', function(){
-      insertarDibujo(area,
-        '<span class="ins-simbolo" data-forma="' + s.tipo + '"><svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
-        s.icona + '</svg>&nbsp;</span>');
-    });
-    wrap.appendChild(b);
-  });
-  area.parentNode.insertBefore(wrap, area);
-});
+function svgSimboloEval(tipo){
+  const sim = SIMBOLOS[tipo];
+  if (!sim) return '';
+  return '<svg class="opcion-sim" viewBox="0 0 28 20" aria-hidden="true">' + sim.icona + '</svg>';
+}
+
+function dibujarEval(){
+  const caja = document.getElementById('eval-preguntas');
+  if (!caja) return;
+  caja.innerHTML = EVAL_PREGUNTAS.map(function(p){
+    const simbolos = (p.simbolos || []).map(function(t){
+      return '<span title="' + escaparEval(SIMBOLOS[t].etiqueta) + '">' + svgSimboloEval(t) + '</span>';
+    }).join('');
+    const ayuda = simbolos
+      ? '<div class="ex-paleta" aria-label="Símbolos de ayuda, no escribibles"><span class="ex-paleta-label">Símbolos (solo se ven)</span>' + simbolos + '</div>'
+      : '';
+    const opciones = p.opciones.map(function(o, j){
+      const icono = o.sim ? svgSimboloEval(o.sim) : '';
+      const texto = o.code
+        ? '<code>' + escaparEval(o.t) + '</code>'
+        : escaparEval(o.t);
+      return '<label class="opcion"><input type="radio" name="ev7-q' + p.n + '" value="' + j + '">' +
+             icono + '<span>' + texto + '</span></label>';
+    }).join('');
+    return '<div class="eval-ej" data-pregunta="' + p.n + '">' +
+      '<h2>' + p.n + '. ' + escaparEval(p.titulo) + '</h2>' +
+      '<p>' + p.texto + '</p>' + ayuda +
+      '<div class="opciones" role="radiogroup" aria-label="Opciones de la pregunta ' + p.n + '">' + opciones + '</div>' +
+      '<div class="feedback" id="fb-eval' + p.n + '"></div></div>';
+  }).join('');
+}
 
 /* ---------- Parte 7: corrección y envío cifrado al repo inform ---------- */
 const CLAVE_ENVIO_PARTE7 = 'modelos-sistemas-parte7-enviada-v1';
 
-function normalizarEval(s){
-  return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .toLowerCase().replace(/\s+/g,' ').trim();
-}
-
-function formasEval(n){
-  const area = document.getElementById('in-eval' + n);
-  if (!area) return [];
-  return Array.from(area.querySelectorAll('[data-forma]')).map(x => x.dataset.forma || '');
-}
-
-function textoEval(n){
-  const area = document.getElementById('in-eval' + n);
-  if (!area) return '';
-  let crudo = (typeof area.value === 'string') ? area.value : (area.innerText || '');
-  if (area.tagName !== 'TEXTAREA') crudo += ' ' + formasEval(n).join(' ');
-  return normalizarEval(crudo);
-}
-
-function crudoEval(n){
-  const area = document.getElementById('in-eval' + n);
-  if (!area) return { texto:'', html:'' };
-  const texto = (typeof area.value === 'string') ? area.value : (area.innerText || '');
-  const html = area.tagName === 'TEXTAREA' ? area.value : area.innerHTML;
-  return { texto:texto.trim(), html:html };
-}
-
-function panelEval(n){
-  const ejes = document.querySelectorAll('#evaluacion .eval-ej');
-  const ej = ejes[n - 1];
-  let panel = document.getElementById('res-eval' + n);
-  if (!panel && ej){
-    panel = document.createElement('div');
-    panel.className = 'checklist';
-    panel.id = 'res-eval' + n;
-    panel.setAttribute('aria-live', 'polite');
-    ej.appendChild(panel);
-  }
-  return panel;
-}
-
 function corregirTodoEval(){
-  const textos = {};
   const respuestas = {};
-  for (let n = 1; n <= 7; n++){
-    textos[n] = textoEval(n);
-    respuestas['ej' + n] = n === 4
-      ? { texto:'Solo enunciado (sin respuesta escribible)', html:'' }
-      : crudoEval(n);
-  }
-  const f1 = formasEval(1);
-  const f2 = formasEval(2);
-  const t1 = textos[1], t2 = textos[2], t3 = textos[3];
-  const t5 = textos[5], t6 = textos[6], t7 = textos[7];
-
-  const criterios = [
-    { n:1, d:'Dibujó la entidad con rectángulo', f:() => f1.includes('rect') },
-    { n:1, d:'Dibujó la relación con rombo', f:() => f1.includes('rombo') },
-    { n:1, d:'Dibujó un atributo con óvalo', f:() => f1.some(x => ['ovalo','clave','doble','punteado'].includes(x)) },
-    { n:1, d:'Explicó el óvalo subrayado o la clave', f:() => /subrayad|clave|primary key/.test(t1) },
-
-    { n:2, d:'Nombró la entidad intermedia PEDIDO', f:() => /pedid/.test(t2) },
-    { n:2, d:'Indicó la tabla pedidos', f:() => /pedidos/.test(t2) },
-    { n:2, d:'Mencionó clientes, pizzas y pedidos', f:() => ['clientes','pizzas','pedidos'].every(x => t2.includes(x)) },
-    { n:2, d:'Incluyó fecha y cantidad', f:() => t2.includes('fecha') && t2.includes('cantidad') },
-    { n:2, d:'Indicó dos FK hacia clientes y pizzas', f:() => /fk|foreign key|clave foranea/.test(t2) && /id_cliente/.test(t2) && /id_pizza/.test(t2) },
-
-    { n:3, d:'Usó CREATE TABLE clientes', f:() => /create\s+table\s+clientes/.test(t3) },
-    { n:3, d:'Puso dni como PRIMARY KEY', f:() => t3.includes('dni') && /primary key/.test(t3) },
-    { n:3, d:'Incluyó nombre y telefono', f:() => ['nombre','telefono'].every(x => t3.includes(x)) },
-    { n:3, d:'Cerró la sentencia con ;', f:() => /;\s*$/.test(t3) },
-
-    { n:5, d:'Definió entidad como objeto o elemento', f:() => t5.includes('entidad') && /objeto|cosa|persona|elemento|sujeto/.test(t5) },
-    { n:5, d:'Nombró una entidad de la tienda', f:() => /cliente|producto|compra|pedido/.test(t5) },
-
-    { n:6, d:'Explicó PK como clave primaria', f:() => /clave primaria|primary key|\bpk\b/.test(t6) },
-    { n:6, d:'Explicó que identifica cada fila', f:() => /identific|unica|registro|fila/.test(t6) },
-
-    { n:7, d:'Explicó FK como clave foránea', f:() => /clave foranea|foreign key|\bfk\b/.test(t7) },
-    { n:7, d:'Explicó que referencia otra tabla', f:() => /otra tabla|referencia|apunta|relacion/.test(t7) }
-  ];
-
-  const puntos = { A:0, B:0, C:0 };
-  const totales = { A:0, B:0, C:0 };
   const detalle = [];
   const fallos = [];
+  const puntos = { A:0, B:0, C:0 };
+  const totales = { A:0, B:0, C:0 };
+  let bien = 0;
 
-  criterios.forEach(function(c){
-    const grupo = c.n === 3 ? 'C' : ((c.n === 1 || c.n === 2) ? 'A' : 'B');
-    const ok = !!c.f();
-    if (ok) puntos[grupo]++;
-    totales[grupo]++;
-    detalle.push('Ej' + c.n + ' · ' + c.d + ': ' + (ok ? 'OK' : 'FALTA'));
-    if (!ok) fallos.push('Ej' + c.n + ': ' + c.d);
-  });
+  EVAL_PREGUNTAS.forEach(function(p){
+    const marcada = document.querySelector('input[name="ev7-q' + p.n + '"]:checked');
+    const elegida = marcada ? Number(marcada.value) : -1;
+    const ok = elegida === p.correcta;
+    const letra = function(i){ return String.fromCharCode(65 + i); };
+    const elegidaTexto = elegida >= 0 ? letra(elegida) + ') ' + p.opciones[elegida].t : 'Sin responder';
+    const correctaTexto = letra(p.correcta) + ') ' + p.opciones[p.correcta].t;
 
-  /* Se muestra el resultado por ejercicio, sin revelar una respuesta completa. */
-  criterios.forEach(function(c){
-    const panel = panelEval(c.n);
-    if (!panel) return;
-    const mismos = criterios.filter(x => x.n === c.n);
-    const ya = panel.dataset.listo === '1';
-    if (!ya){
-      const bien = mismos.filter(x => criterios.indexOf(x) >= 0 && x.f()).length;
-      panel.innerHTML = '<div class="fila"><strong>' + bien + ' de ' + mismos.length + ' criterios</strong></div>' +
-        mismos.map(x => {
-          const ok = !!x.f();
-          return '<div class="fila ' + (ok ? 'ok' : 'falta') + '">' +
-            (ok ? '✔ ' : '✘ ') + x.d + '</div>';
-        }).join('');
-      panel.dataset.listo = '1';
-      const ej = document.querySelectorAll('#evaluacion .eval-ej')[c.n - 1];
-      if (ej) ej.classList.toggle('correcto', bien === mismos.length);
+    if (ok){ bien++; puntos[p.grupo]++; }
+    totales[p.grupo]++;
+    if (!ok) fallos.push('P' + p.n + ': ' + elegidaTexto);
+    detalle.push('P' + p.n + ' · ' + (ok ? 'OK' : 'FALTA') +
+      ' · Elegida: ' + elegidaTexto + ' · Correcta: ' + correctaTexto + ' · ' + p.pista);
+
+    /* Corrección breve: no revela la opción correcta en la pantalla. */
+    const fb = document.getElementById('fb-eval' + p.n);
+    if (fb){
+      fb.className = 'feedback ' + (ok ? 'ok' : 'mal');
+      fb.textContent = ok
+        ? '✔ Correcto.'
+        : (elegida < 0 ? 'Sin responder. Revisá esta pregunta.' : '✘ Revisá esta pregunta.');
     }
+    const ej = document.querySelector('#evaluacion .eval-ej[data-pregunta="' + p.n + '"]');
+    if (ej) ej.classList.toggle('correcto', ok);
+
+    respuestas['pregunta' + p.n] = {
+      elegida: elegida >= 0 ? letra(elegida) : '',
+      texto: elegidaTexto,
+      correcta: correctaTexto,
+      ok: ok,
+      grupo: p.grupo
+    };
   });
 
-  const bien = puntos.A + puntos.B + puntos.C;
-  const total = totales.A + totales.B + totales.C;
+  const total = EVAL_PREGUNTAS.length;
   const nota = Math.round((bien / total) * 100) / 10;
-  detalle.unshift('Nota: ' + String(nota).replace('.', ',') + ' de 10 (' + bien + ' de ' + total + ' criterios)');
-  detalle.push('Ej4: solo enunciado, sin respuesta escribible.');
+  detalle.unshift('Nota: ' + String(nota).replace('.', ',') + ' de 10 (' + bien + ' de ' + total + ' preguntas)');
+
+  const progreso = document.getElementById('eval-progreso');
+  if (progreso) progreso.textContent = 'Resultado: ' + bien + ' de ' + total +
+    ' (' + Math.round(bien / total * 100) + '%) · Corrección automática y docente';
 
   return {
     nota:nota,
@@ -1833,9 +1724,7 @@ function corregirTodoEval(){
 function bloquearEvaluacionParte7(estado){
   const form = document.getElementById('form-evaluacion');
   if (form) form.querySelectorAll('input, button').forEach(function(el){ el.disabled = true; });
-  document.querySelectorAll('#evaluacion textarea').forEach(function(t){ t.disabled = true; });
-  document.querySelectorAll('#evaluacion .area-dibujo').forEach(function(a){ a.setAttribute('contenteditable', 'false'); });
-  document.querySelectorAll('#evaluacion .ex-sym').forEach(function(b){ b.disabled = true; });
+  document.querySelectorAll('#evaluacion input[type="radio"]').forEach(function(r){ r.disabled = true; });
   const boton = document.getElementById('btn-enviar-eval7');
   if (boton) boton.textContent = '✅ Evaluación enviada';
   if (estado) estado.textContent = '✅ Evaluación enviada. Ya no se puede modificar.';
@@ -1900,6 +1789,7 @@ function bloquearEvaluacionParte7(estado){
 })();
 
 dibujarQuiz();
+dibujarEval();
 </script>
 
 <script>

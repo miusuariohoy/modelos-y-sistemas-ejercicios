@@ -127,6 +127,10 @@ textarea.respuesta::placeholder{color:#94a3b8}
 .forma-clave .contenido{text-decoration:underline; font-weight:700}
 .forma-multivalor{border:4px double #1e293b}
 .forma-derivado{border-style:dashed; background:#fff}
+.forma, .forma .contenido, .ins-simbolo{
+  -webkit-user-select:none; user-select:none;
+}
+.forma .contenido[contenteditable="false"]{cursor:default}
 .token{
   display:inline-block; margin:.12rem .25rem; padding:.2rem .5rem;
   border:1px solid #1e293b; border-radius:999px;
@@ -561,8 +565,9 @@ function prepararPaletas(){
       const sim = SIMBOLOS[tipo];
       if (!sim) return;
       const caja = boton.closest('.ejercicio').querySelector('.respuesta');
+      /* La forma sigue dibujándose, pero no se puede escribir dentro de ella. */
       insertarDibujo(caja,
-        '<span class="ins-simbolo" data-forma="' + tipo + '">' +
+        '<span class="ins-simbolo" data-forma="' + tipo + '" contenteditable="false" aria-readonly="true">' +
         '<svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
         sim.icona + '</svg>&nbsp;</span>');
     });
@@ -570,6 +575,12 @@ function prepararPaletas(){
 }
 
 prepararPaletas();
+
+/* Formas antiguas .forma y símbolos: se ven, pero nunca se escribe en ellos. */
+document.querySelectorAll('.forma, .forma .contenido').forEach(function(el){
+  el.setAttribute('contenteditable', 'false');
+  el.setAttribute('aria-readonly', 'true');
+});
 
 function resultadosArticulo(articulo){
   const c = contexto(articulo);
