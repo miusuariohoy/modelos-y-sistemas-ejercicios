@@ -80,6 +80,31 @@ textarea.respuesta{
   resize:vertical;
 }
 textarea.respuesta::placeholder{color:#94a3b8}
+.tablas-mer{white-space:normal; line-height:1.5; padding:.8rem}
+.mer-diagrama{
+  display:flex; align-items:center; justify-content:center;
+  gap:.5rem; flex-wrap:wrap;
+}
+.mer-tabla{
+  border:1px solid var(--borde); border-radius:8px;
+  min-width:155px; overflow:hidden; background:#fff;
+}
+.mer-tabla h4{
+  margin:0; padding:.35rem .6rem; text-align:center;
+  background:var(--verde-claro); color:var(--verde); font-size:.9rem;
+}
+.campo{
+  min-height:30px; padding:.3rem .55rem; outline:none;
+  border-top:1px dashed var(--borde);
+  font-family:Consolas,"Courier New",monospace; font-size:.85rem;
+}
+.campo:empty::before{content:attr(data-placeholder); color:#94a3b8}
+.campo:focus{background:#f8fbff}
+.mer-linea{font-weight:700; color:var(--verde); white-space:nowrap; text-align:center}
+@media (max-width:640px){
+  .mer-diagrama{flex-direction:column}
+  .mer-linea{font-size:.85rem}
+}
 .paleta button{
   display:inline-flex; align-items:center; gap:.35rem;
 }
@@ -302,12 +327,37 @@ footer p{margin:.2rem 0}
     <p class="consigna">
       Muchos <strong>clientes</strong> compran muchos <strong>productos</strong>. Escribí las tablas
       <code>clientes</code>, <code>productos</code> y <code>compras</code> con el
-      <strong>tipo de cada columna</strong> (<code>INT</code>, <code>VARCHAR</code>, <code>DATE</code>),
+      <strong>tipo de cada columna</strong> (<code>INT</code>, <code>VARCHAR</code>, <code>DECIMAL</code>, <code>DATE</code>),
       la <strong>PK</strong> de cada tabla y las <strong>dos FK</strong> en <code>compras</code>
       que apuntan a <code>clientes</code> y <code>productos</code>. <code>fecha</code> va como
       <code>DATE</code> y <code>cantidad</code> como <code>INT</code>.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="clientes&#10;  id_cliente PK INT&#10;  ...&#10;&#10;compras&#10;  id_compra PK INT&#10;  id_cliente FK INT&#10;  ..."></textarea>
+    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Completá las columnas de cada tabla…">
+      <div class="mer-diagrama">
+        <div class="mer-tabla">
+          <h4>clientes</h4>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="columna PK INT"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="VARCHAR(50)"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="VARCHAR(50)"></div>
+        </div>
+        <div class="mer-linea" contenteditable="false">1──N</div>
+        <div class="mer-tabla">
+          <h4>compras (intermedia)</h4>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="columna PK INT"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="FK INT a clientes"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="FK INT a productos"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="DATE"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="INT"></div>
+        </div>
+        <div class="mer-linea" contenteditable="false">N──1</div>
+        <div class="mer-tabla">
+          <h4>productos</h4>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="columna PK INT"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="VARCHAR(50)"></div>
+          <div class="campo" data-respuesta contenteditable="true" data-placeholder="DECIMAL(10,2)"></div>
+        </div>
+      </div>
+    </div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -481,20 +531,35 @@ function normalizar(s){
 
 function contexto(articulo){
   const caja = articulo.querySelector('.respuesta');
+  const esTablas = articulo.dataset.id === 'mer1';
   let crudo = (caja && typeof caja.value === 'string')
     ? caja.value
     : (caja ? (caja.innerText || '') : '');
+  if (esTablas && caja){
+    /* En el diagrama sólo cuenta lo que escribe el alumno, no los rótulos fijos. */
+    crudo = Array.from(caja.querySelectorAll('[data-respuesta]'))
+      .map(function(x){ return (x.innerText || '').trim(); })
+      .filter(Boolean).join('\n');
+  }
   const formas = caja
     ? Array.from(caja.querySelectorAll('[data-forma]')).map(f => f.dataset.forma || '')
     : [];
-  if (caja && caja.tagName !== 'TEXTAREA') crudo += ' ' + formas.join(' ');
+  if (caja && caja.tagName !== 'TEXTAREA' && !esTablas) crudo += ' ' + formas.join(' ');
   return {
     caja: caja,
     crudo: crudo.trim(),
-    html: caja ? (caja.tagName === 'TEXTAREA' ? caja.value : caja.innerHTML) : '',
+    html: esTablas ? crudo : (caja ? (caja.tagName === 'TEXTAREA' ? caja.value : caja.innerHTML) : ''),
     t: normalizar(crudo),
     formas: formas
   };
+}
+
+function camposTabla(c, indice){
+  const tabla = c.caja && c.caja.querySelectorAll('.mer-tabla')[indice];
+  if (!tabla) return [];
+  return Array.from(tabla.querySelectorAll('[data-respuesta]'))
+    .map(function(x){ return (x.innerText || '').trim(); })
+    .filter(Boolean);
 }
 
 const EJERCICIOS = {
@@ -520,9 +585,9 @@ const EJERCICIOS = {
     { d:'Incluye fecha y cantidad en COMPRA', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
   ]},
   mer1: { requisitos: [
-    { d:'Escribe la tabla clientes', f:c => c.t.includes('clientes') },
-    { d:'Escribe la tabla productos', f:c => c.t.includes('productos') },
-    { d:'Escribe la tabla intermedia compras', f:c => c.t.includes('compras') },
+    { d:'Completa la tabla clientes', f:c => camposTabla(c, 0).length >= 2 },
+    { d:'Completa la tabla productos', f:c => camposTabla(c, 2).length >= 2 },
+    { d:'Completa la tabla intermedia compras', f:c => camposTabla(c, 1).length >= 4 },
     { d:'Indica una PK', f:c => /primary key|\bpk\b/.test(c.t) },
     { d:'Indica dos FK', f:c => (c.t.match(/\bfk\b|foreign key/g) || []).length >= 2 },
     { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) },
@@ -654,6 +719,11 @@ function prepararPaletas(){
 
 prepararPaletas();
 
+const PLANTILLA_MER1 = (function(){
+  const caja = document.querySelector('.ejercicio[data-id="mer1"] .respuesta');
+  return caja ? caja.innerHTML : '';
+})();
+
 function resultadosArticulo(articulo){
   const c = contexto(articulo);
   const datos = EJERCICIOS[articulo.dataset.id];
@@ -689,7 +759,8 @@ document.querySelectorAll('.limpiar').forEach(function(boton){
   boton.addEventListener('click', function(){
     const articulo = boton.closest('.ejercicio');
     const caja = articulo.querySelector('.respuesta');
-    if (caja && typeof caja.value === 'string') caja.value = '';
+    if (articulo.dataset.id === 'mer1' && caja) caja.innerHTML = PLANTILLA_MER1;
+    else if (caja && typeof caja.value === 'string') caja.value = '';
     else if (caja) caja.innerHTML = '';
     articulo.querySelector('.resultado').innerHTML = '';
     articulo.classList.remove('correcto');
@@ -837,6 +908,9 @@ function bloquearEvaluacionPortada(estado){
   document.querySelectorAll('.respuesta').forEach(function(caja){
     if (caja.tagName === 'TEXTAREA') caja.disabled = true;
     else caja.setAttribute('contenteditable', 'false');
+  });
+  document.querySelectorAll('.campo').forEach(function(c){
+    c.setAttribute('contenteditable', 'false');
   });
   const boton = document.getElementById('btn-enviar-eval');
   if (boton) boton.textContent = '✅ Evaluación enviada';
