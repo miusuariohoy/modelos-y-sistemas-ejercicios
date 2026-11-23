@@ -425,7 +425,7 @@ ol.pasos li strong{color:var(--verde)}
   <p>Una relación también puede tener <strong>atributos propios</strong>. En la compra,
   <code>fecha</code> y <code>cantidad</code> no son del cliente ni del producto por separado:
   son <strong>del hecho de comprar</strong>.</p>
-<pre class="codigo"><span class="cm">-- En el MER: el rombo COMPRA tiene colgando fecha y cantidad.</span>
+<pre class="codigo"><span class="cm">-- En el DER: el rombo COMPRA tiene colgando fecha y cantidad.</span>
 <span class="cm">-- En el MER: esos atributos pasan a la tabla intermedia compras.</span>
 compras
   id_compra    PK
@@ -549,35 +549,114 @@ compras
 <!-- ========================= MODELO MER ========================= -->
 <section id="mer">
   <h1>Parte 2 &middot; Modelo MER: de las ideas a las tablas</h1>
-  <p>El <strong>Modelo MER</strong> pasa del dibujo conceptual a las <strong>tablas</strong>
-  reales, como en MySQL Workbench: cada entidad se convierte en una caja con
-  sus campos adentro, marcando quien es PK y quien FK. La entidad
-  intermedia que nacio de la N:M (COMPRA) tambien es una tabla: contiene
-  las dos claves foraneas mas sus atributos propios.</p>
+  <p>El <strong>Modelo de Entidades y Relaciones (MER)</strong> es el paso que va del
+  dibujo del <strong>DER</strong> a las <strong>tablas reales</strong> de MySQL. Ac&aacute;
+  ya no se dibujan rombos: cada entidad del modelo conceptual se convierte en una
+  caja con columnas, y cada relaci&oacute;n se resuelve con una <strong>clave for&aacute;nea</strong>
+  o con una <strong>tabla intermedia</strong>. La convenci&oacute;n de esta gu&iacute;a es simple:
+  en el MER se trabaja con <strong>entidades en singular</strong> (<code>cliente</code>,
+  <code>producto</code>, <code>compra</code>); cuando escribamos SQL, las tablas se llamar&aacute;n
+  <strong>en plural</strong> (<code>clientes</code>, <code>productos</code>, <code>compras</code>).</p>
 
+  <h2 class="sub">1. Qu&eacute; cambia entre el DER y el MER</h2>
+  <p>El DER responde <em>«qu&eacute; cosas hay y c&oacute;mo se relacionan»</em> con s&iacute;mbolos.
+  El MER responde <em>«c&oacute;mo se guarda eso en tablas»</em> con columnas, tipos y claves.</p>
+  <table class="datos">
+    <thead><tr><th>En el DER (s&iacute;mbolos)</th><th>En el MER (tablas)</th><th>Por qu&eacute;</th></tr></thead>
+    <tbody>
+      <tr><td>Rect&aacute;ngulo = entidad</td><td>Una caja/tabla con sus columnas</td><td>Los datos de esa cosa necesitan un lugar donde guardarse.</td></tr>
+      <tr><td>&Oacute;valo subrayado = clave</td><td><strong>PK</strong> (PRIMARY KEY) con su tipo</td><td>Identifica cada fila sin repetirse: es la «direcci&oacute;n» de ese registro.</td></tr>
+      <tr><td>Rombo = relaci&oacute;n</td><td><strong>FK</strong> (FOREIGN KEY) o tabla intermedia</td><td>En una base relacional las relaciones no se dibujan: se guardan como claves.</td></tr>
+      <tr><td>&Oacute;valo doble = atributo multivaluado</td><td>Otra tabla con FK hacia la original</td><td>Una celda no puede tener varios valores; se separan en varias filas.</td></tr>
+      <tr><td>&Oacute;valo punteado = atributo derivado</td><td>No se guarda: se calcula en la consulta</td><td>Guardarlo duplicar&iacute;a datos que ya se pueden obtener.</td></tr>
+      <tr><td>N:M con atributos propios</td><td>Tabla intermedia con dos FK y esas columnas</td><td>La fecha o la cantidad son del hecho, no de una de las dos entidades.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub">2. Tipos de atributos: c&oacute;mo se escribe cada columna</h2>
+  <p>En el MER cada atributo del DER se convierte en una columna con un <strong>tipo de dato</strong>.
+  Elegir bien el tipo evita desperdiciar espacio y permite hacer comparaciones correctas
+  (por ejemplo, ordenar fechas o sumar importes).</p>
+  <table class="datos">
+    <thead><tr><th>Tipo de atributo (DER)</th><th>C&oacute;mo se guarda (MER / MySQL)</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Clave</strong> (subrayado)</td><td><code>INT</code> o <code>VARCHAR</code> + <code>PRIMARY KEY</code>. Si la numeraci&oacute;n la hace MySQL, agreg&aacute; <code>AUTO_INCREMENT</code>.</td><td><code>id_producto INT PK AI</code>, <code>dni VARCHAR(8) PK</code></td></tr>
+      <tr><td><strong>Simple</strong> texto</td><td><code>VARCHAR(n)</code>, donde <em>n</em> es el m&aacute;ximo de caracteres.</td><td><code>nombre VARCHAR(50)</code></td></tr>
+      <tr><td><strong>Simple</strong> n&uacute;mero entero</td><td><code>INT</code> para cantidades, stocks, edades.</td><td><code>stock INT</code>, <code>cantidad INT</code></td></tr>
+      <tr><td><strong>Simple</strong> n&uacute;mero decimal</td><td><code>DECIMAL(10,2)</code>: 10 d&iacute;gitos en total, 2 despu&eacute;s de la coma. Nunca <code>FLOAT</code> para dinero.</td><td><code>precio DECIMAL(10,2)</code></td></tr>
+      <tr><td><strong>Simple</strong> fecha</td><td><code>DATE</code> (o <code>DATETIME</code> si adem&aacute;s guard&aacute;s la hora).</td><td><code>fecha DATE</code></td></tr>
+      <tr><td><strong>Multivaluado</strong> (doble &oacute;valo)</td><td>Una <strong>tabla aparte</strong> con una FK hacia la entidad original. Un valor por fila.</td><td><code>telefonos</code> &rarr; tabla <code>telefonos</code> con <code>id_cliente FK</code> y <code>numero</code></td></tr>
+      <tr><td><strong>Derivado</strong> (punteado)</td><td>No se crea columna: se calcula con <code>SELECT</code> cuando se necesita.</td><td><code>total = precio * cantidad</code></td></tr>
+      <tr><td><strong>Compuesto</strong></td><td>Se desarma en columnas simples: <code>direccion</code> &rarr; calle, n&uacute;mero, localidad.</td><td><code>calle VARCHAR(60)</code>, <code>numero INT</code></td></tr>
+      <tr><td><strong>Atributo de N:M</strong></td><td>Columna de la <strong>tabla intermedia</strong>, al lado de las dos FK.</td><td><code>fecha</code> y <code>cantidad</code> en <code>compras</code></td></tr>
+    </tbody>
+  </table>
+  <div class="okbox"><strong>Regla pr&aacute;ctica:</strong> si el dato puede repetirse dentro de una
+  misma fila (varios tel&e9;fonos), no va en esa tabla: va en otra con una FK. Si el dato se obtiene
+  multiplicando o sumando otros (un total), no se guarda: se calcula.</div>
+
+  <h2 class="sub">3. C&oacute;mo se convierte cada s&iacute;mbolo del DER</h2>
+  <ul>
+    <li><strong>Entidad &rarr; tabla.</strong> El nombre conceptual va en singular en el MER:
+    <code>cliente</code>. En SQL se escribe <code>clientes</code>.</li>
+    <li><strong>Identificador &rarr; PK.</strong> Se escribe como primera columna y se marca
+    <code>PK</code>. Si es entero generado por MySQL, tambi&eacute;n <code>AI</code>.</li>
+    <li><strong>Atributo &rarr; columna.</strong> Con su tipo elegido seg&uacute;n la tabla anterior.</li>
+    <li><strong>Relaci&oacute;n &rarr; clave ajena.</strong> La cardinalidad decide d&oacute;nde
+    se pone esa FK. Esa es la parte que explicamos ahora.</li>
+  </ul>
+
+  <h2 class="sub">4. Hacia d&oacute;nde va la relaci&oacute;n (y por qu&eacute;)</h2>
+  <p>La FK siempre <strong>apunta desde la tabla que «mira» a la otra hacia la PK de la otra</strong>.
+  Se escribe en la tabla que tiene que <em>recordar</em> qui&eacute;n es el due&ntilde;o de cada fila.
+  Por eso la direcci&oacute;n depende de la cardinalidad:</p>
+  <ol class="pasos">
+    <li><strong>1:N &rarr; la FK va en el lado N (la tabla «muchos»).</strong>
+    Un cliente tiene muchos pedidos, pero cada pedido es de un solo cliente. Entonces
+    <code>pedidos</code> guarda <code>id_cliente FK</code> apuntando a <code>clientes.id_cliente</code>.
+    Si la pusi&eacute;ramos en <code>clientes</code>, un cliente tendr&iacute;a que repetir una lista
+    de pedidos en una sola celda, lo cual no es permitido.</li>
+    <li><strong>1:1 &rarr; la FK va en la tabla que depende de la otra, con <code>UNIQUE</code>.</strong>
+    Un alumno tiene una sola libreta y una libreta pertenece a un solo alumno. La libreta
+    guarda <code>id_alumno FK UNIQUE</code>: con <code>UNIQUE</code> evitamos que un alumno
+    tenga dos libretas.</li>
+    <li><strong>N:M &rarr; no hay una sola FK: se crea la tabla intermedia.</strong>
+    Muchos clientes compran muchos productos. Ninguna de las dos tablas puede guardar la
+    relaci&oacute;n completa en una columna. Por eso nace <code>compras</code> con
+    <code>id_cliente FK</code> y <code>id_producto FK</code>: cada fila es una compra y apunta
+    a las dos PK. Los atributos del hecho (<code>fecha</code>, <code>cantidad</code>) van ah&iacute;.</li>
+  </ol>
+  <div class="nota"><strong>C&oacute;mo leer una l&iacute;nea del MER:</strong> en
+  <code>1──N cliente_dni</code> se lee «un cliente aparece en muchas compras y cada compra
+  recuerda a su cliente con <code>cliente_dni</code>». La flecha conceptual va del lado N
+  hacia el lado 1, porque es la FK la que apunta a la PK. En este curso escribimos la
+  cardinalidad como <code>1──N</code> o <code>N──1</code> al lado del trazo; no hace falta
+  dibujar flecha.</div>
+
+  <p>Ac&aacute; est&aacute; el ejemplo completo. Fijate en la direcci&oacute;n de las dos FK:</p>
   <div class="der-wrap">
     <div class="tblbox">
       <h4>clientes</h4>
-      <div><span class="pk">dni</span> PK INT</div>
+      <div><span class="pk">id_cliente</span> PK INT</div>
       <div>nombre VARCHAR(50)</div>
       <div>apellido VARCHAR(50)</div>
       <div>telefono VARCHAR(20)</div>
     </div>
     <div class="conector">1&#9472;&#9472;N
-cliente_dni</div>
+id_cliente FK en compras</div>
     <div class="tblbox">
       <h4>compras (intermedia)</h4>
       <div><span class="pk">id_compra</span> PK AI INT</div>
-      <div><span class="fk">cliente_dni</span> FK INT</div>
-      <div><span class="fk">producto_cod</span> FK INT</div>
+      <div><span class="fk">id_cliente</span> FK INT &rarr; clientes</div>
+      <div><span class="fk">id_producto</span> FK INT &rarr; productos</div>
       <div>fecha DATE</div>
       <div>cantidad INT</div>
     </div>
     <div class="conector">N&#9472;&#9472;1
-producto_cod</div>
+id_producto FK en compras</div>
     <div class="tblbox">
       <h4>productos</h4>
-      <div><span class="pk">codigo</span> PK AI INT</div>
+      <div><span class="pk">id_producto</span> PK AI INT</div>
       <div>nombre VARCHAR(50)</div>
       <div>precio DECIMAL(10,2)</div>
       <div>stock INT</div>
@@ -585,43 +664,54 @@ producto_cod</div>
   </div>
 
   <ul>
-    <li><strong>PK = PRIMARY KEY:</strong> identifica cada fila, nunca se repite ni queda vacia.</li>
-    <li><strong>FK = FOREIGN KEY:</strong> apunta a la PK de otra tabla y une los datos.</li>
-    <li><strong>AI = AUTO_INCREMENT:</strong> MySQL numera solo.</li>
-    <li>Lectura de las lineas: un cliente (1) aparece en N compras; un producto (1) aparece en N compras.</li>
+    <li><strong>PK = PRIMARY KEY:</strong> identifica cada fila, nunca se repite ni queda vac&iacute;a.</li>
+    <li><strong>FK = FOREIGN KEY:</strong> apunta a la PK de otra tabla y une los datos. Eso se llama
+    <strong>integridad referencial</strong>: no pod&eacute;s cargar una compra con un cliente que no existe.</li>
+    <li><strong>AI = AUTO_INCREMENT:</strong> MySQL numera solo las claves enteras.</li>
+    <li>Lectura de las l&iacute;neas: un cliente (1) aparece en N compras; un producto (1) aparece en N
+    compras. Las dos FK est&aacute;n en <code>compras</code>, que es el lado N de ambas relaciones.</li>
   </ul>
 
-  <div class="nota">
-    <strong>&iquest;Con que simbolo se dibuja la entidad intermedia?</strong>
-    En el Modelo MER se dibuja con el <strong>mismo simbolo que cualquier tabla</strong>.
-    No tiene simbolo nuevo: la distinguen sus dos <strong>FOREIGN KEY</strong>
-    (una hacia cada entidad que unia la N:M original) y sus atributos
-    convertidos en columnas. Suele heredar el nombre que traia del Diagrama DER:
-    la entidad COMPRA pasa a ser la tabla <code>compras</code>.
-  </div>
+  <p>Ese MER ya se puede escribir como SQL. El puente entre el dibujo y la base es
+  <code>CREATE TABLE</code>:</p>
+<pre class="codigo"><span class="kw">CREATE TABLE</span> compras (
+  id_compra    <span class="kw">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  id_cliente   <span class="kw">INT</span> <span class="kw">NOT NULL</span>,
+  id_producto  <span class="kw">INT</span> <span class="kw">NOT NULL</span>,
+  fecha        <span class="kw">DATE</span>,
+  cantidad     <span class="kw">INT</span>,
+  <span class="kw">FOREIGN KEY</span> (id_cliente)  <span class="kw">REFERENCES</span> clientes(id_cliente),
+  <span class="kw">FOREIGN KEY</span> (id_producto) <span class="kw">REFERENCES</span> productos(id_producto)
+);</pre>
+  <div class="nota"><strong>&iquest;Con qu&eacute; s&iacute;mbolo se dibuja la entidad intermedia?</strong>
+  En el MER se dibuja con el <strong>mismo s&iacute;mbolo que cualquier tabla</strong>. No tiene
+  s&iacute;mbolo nuevo: la distinguen sus dos <strong>FOREIGN KEY</strong> (una hacia cada entidad
+  que un&iacute;a la N:M original) y sus atributos convertidos en columnas. Suele heredar el nombre
+  que tra&iacute;a del DER: la entidad COMPRA pasa a ser la tabla <code>compras</code>.</div>
 
+  <h2 class="sub">5. Pr&aacute;ctica guiada: pas&aacute; la pizzer&iacute;a al MER</h2>
   <div class="ejercicio" data-ej="prac_mer">
-    <h2>Practica guiada: pas&aacute; ese Diagrama DER al Modelo MER</h2>
     <p>Usando la pizzer&iacute;a del ejercicio anterior, convert&iacute; el diagrama a
     tablas. Segu&iacute; estos pasos:</p>
     <ol class="pasos">
       <li><strong>Cada entidad &rarr; una tabla:</strong> abr&iacute; una caja para
-      <code>clientes</code> y otra para <code>pizzas</code>, con sus atributos como
-      columnas.</li>
+      <code>cliente</code> y otra para <code>pizza</code>, con sus atributos como
+      columnas y su tipo (sin escribir <code>PEDIDO</code> todav&iacute;a).</li>
       <li><strong>Las claves &rarr; PRIMARY KEY:</strong> lo que estaba subrayado
-      (id_cliente, id_pizza) ahora se marca como PK.</li>
-      <li><strong>&iquest;C&oacute;mo era la relaci&oacute;n?</strong> PIDE era N:M: por eso
-      en el Diagrama DER insertaste la entidad intermedia PEDIDO; en el Modelo MER ser&aacute;
-      la tabla <code>pedidos</code>.</li>
-      <li><strong>Dentro de la intermedia:</strong> su PK (id_pedido) y las dos
-      FK (id_cliente hacia clientes, id_pizza hacia pizzas).</li>
-      <li><strong>Los atributos de la intermedia &rarr; columnas:</strong> fecha y
-      cantidad colgaban de PEDIDO: ahora son columnas de
-      <code>pedidos</code>.</li>
-      <li><strong>Eleg&iacute; los tipos de dato:</strong> INT para ids y cantidad,
-      VARCHAR para textos, DECIMAL(10,2) para precio, DATE para fecha.</li>
-      <li><strong>Chequeo final:</strong> &iquest;quedan 3 tablas? &iquest;cada una
-      tiene PK? &iquest;las dos FK de pedidos apuntan a PK existentes?</li>
+      (<code>id_cliente</code>, <code>id_pizza</code>) ahora se marca como PK.</li>
+      <li><strong>&iquest;C&oacute;mo era la relaci&oacute;n?</strong> PIDE era N:M: por eso en el
+      DER insertaste la entidad intermedia PEDIDO; en el MER ser&aacute; la tabla <code>pedido</code>.</li>
+      <li><strong>Dentro de la intermedia:</strong> su PK (<code>id_pedido</code>) y las dos FK
+      (<code>id_cliente</code> apunta a <code>cliente</code>, <code>id_pizza</code> apunta a
+      <code>pizza</code>). Ambas FK van en el lado N, que es el pedido.</li>
+      <li><strong>Los atributos de la intermedia &rarr; columnas:</strong> fecha y cantidad
+      colgaban de PEDIDO: ahora son columnas de <code>pedido</code>.</li>
+      <li><strong>Eleg&iacute; los tipos de dato:</strong> <code>INT</code> para ids y cantidad,
+      <code>VARCHAR</code> para textos, <code>DECIMAL(10,2)</code> para precio,
+      <code>DATE</code> para fecha.</li>
+      <li><strong>Chequeo final:</strong> &iquest;quedan 3 tablas? &iquest;cada una tiene PK?
+      &iquest;las dos FK de pedido apuntan a PK existentes? &iquest;la cardinalidad est&aacute;
+      escrita como <code>1──N</code> y <code>N──1</code>?</li>
     </ol>
   </div>
 </section>
