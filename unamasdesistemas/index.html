@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Guía de Unamas de Sistemas: Diagrama DER, Modelo MER y MySQL con ejemplos, simuladores, actividades y soluciones guiadas.">
+<meta name="description" content="Guía de Teoría: Diagrama DER, Modelo MER y MySQL con ejemplos, simuladores, actividades y soluciones guiadas.">
 <title>Guía interactiva: Diagrama DER · Modelo MER · Base de Datos</title>
 <style>
 :root{
@@ -1149,76 +1149,6 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     cardinalidad? Donde aparece un atributo multivaluado?<br>
     Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
-  <details class="pista">
-                      <summary>Pista: dos relaciones especiales</summary>
-                      <ol>
-                          <li>LECTOR – LIBRO es <strong>N:M</strong> → tabla intermedia <code >prestamos</code>.</li>
-                          <li>Los teléfonos son <strong>multivaluados</strong> → tabla <code >lectores_telefonos</code>.</li>
-                          <li>Las fechas del préstamo son atributos del rombo: van en <code >prestamos</code>.</li>
-                      </ol>
-                  </details>
-  <details class="pista">
-                      <summary>Ver la solución del anexo (biblioteca.sql)</summary>
-                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS biblioteca;
-  <span class="kw">USE</span> biblioteca;
-  
-  <span class="kw">CREATE TABLE</span> lectores (
-      id_lector INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
-      apellido VARCHAR(50) <span class="kw">NOT NULL</span>
-  );
-  
-  <span class="cm">-- ATRIBUTO MULTIVALUADO -> tabla propia</span>
-  <span class="kw">CREATE TABLE</span> lectores_telefonos (
-      id_telefono INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      id_lector INT <span class="kw">NOT NULL</span>,
-      telefono VARCHAR(20) <span class="kw">NOT NULL</span>,
-      <span class="kw">FOREIGN KEY</span> (id_lector)
-          <span class="kw">REFERENCES</span> lectores(id_lector)
-  );
-  
-  <span class="kw">CREATE TABLE</span> libros (
-      id_libro INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      titulo VARCHAR(60) <span class="kw">NOT NULL</span>,
-      autor VARCHAR(50) <span class="kw">NOT NULL</span>,
-      anio INT
-  );
-  
-  <span class="cm">-- RELACIÓN N:M PRESTA -> tabla intermedia</span>
-  <span class="kw">CREATE TABLE</span> prestamos (
-      id_prestamo INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      id_lector INT <span class="kw">NOT NULL</span>,
-      id_libro INT <span class="kw">NOT NULL</span>,
-      fecha_prestamo DATE <span class="kw">NOT NULL</span>,
-      fecha_devolucion DATE,
-      <span class="kw">FOREIGN KEY</span> (id_lector)
-          <span class="kw">REFERENCES</span> lectores(id_lector),
-      <span class="kw">FOREIGN KEY</span> (id_libro)
-          <span class="kw">REFERENCES</span> libros(id_libro)
-  );
-  
-  <span class="kw">INSERT INTO</span> lectores (nombre, apellido) <span class="kw">VALUES</span>
-      (<span class="str">'Ana'</span>, <span class="str">'Gomez'</span>), (<span class="str">'Luis'</span>, <span class="str">'Perez'</span>);
-  
-  <span class="kw">INSERT INTO</span> lectores_telefonos (id_lector, telefono) <span class="kw">VALUES</span>
-      (1, <span class="str">'11-1234-5678'</span>),
-      (1, <span class="str">'11-4567-8901'</span>);
-  
-  <span class="kw">INSERT INTO</span> libros (titulo, autor, anio) <span class="kw">VALUES</span>
-      (<span class="str">'El principito'</span>, <span class="str">'Saint-Exupery'</span>, 1943),
-      (<span class="str">'Rayuela'</span>, <span class="str">'Cortazar'</span>, 1963);
-  
-  <span class="kw">INSERT INTO</span> prestamos (id_lector, id_libro,
-                         fecha_prestamo, fecha_devolucion)
-  <span class="kw">VALUES</span> (1, 1, <span class="str">'2026-08-01'</span>, <span class="str">'2026-08-15'</span>),
-         (2, 2, <span class="str">'2026-08-10'</span>, <span class="kw">NULL</span>);
-  
-  <span class="kw">SELECT</span> l.apellido, b.titulo,
-         p.fecha_prestamo, p.fecha_devolucion
-  <span class="kw">FROM</span> prestamos p
-  <span class="kw">JOIN</span> lectores l <span class="kw">ON</span> l.id_lector = p.id_lector
-  <span class="kw">JOIN</span> libros   b <span class="kw">ON</span> b.id_libro  = p.id_libro;</code></pre>
-                  </details>
 
   <div class="ejercicio">
     <h2>Ejercicio 2 - La Veterinaria</h2>
@@ -1239,63 +1169,6 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     tu base     bdescuela.</p>
     <p><em>Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
-  <details class="pista">
-                      <summary>Pista: relación N:M con notas</summary>
-                      <ol>
-                          <li>CURSA es N:M → tabla intermedia <code >cursadas</code>.</li>
-                          <li><code >nota_1co</code> y <code >nota_2co</code> son atributos del rombo: columnas de <code >cursadas</code>.</li>
-                          <li>El promedio es derivado: <code >(nota_1co + nota_2co) / 2 AS promedio</code>.</li>
-                      </ol>
-                  </details>
-  <details class="pista">
-                      <summary>Ver la solución del anexo (escuela_der.sql)</summary>
-                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS escuela_der;
-  <span class="kw">USE</span> escuela_der;
-  
-  <span class="kw">CREATE TABLE</span> alumnos (
-      dni INT <span class="kw">PRIMARY KEY</span>,
-      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
-      apellido VARCHAR(50) <span class="kw">NOT NULL</span>
-  );
-  
-  <span class="kw">CREATE TABLE</span> materias (
-      id_materia INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      nombre VARCHAR(50) <span class="kw">NOT NULL</span>
-  );
-  
-  <span class="cm">-- RELACIÓN N:M CURSA -> tabla intermedia</span>
-  <span class="kw">CREATE TABLE</span> cursadas (
-      id_cursada INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      alumno_dni INT <span class="kw">NOT NULL</span>,
-      materia_id INT <span class="kw">NOT NULL</span>,
-      nota_1co DECIMAL(4,2),
-      nota_2co DECIMAL(4,2),
-      <span class="kw">FOREIGN KEY</span> (alumno_dni)
-          <span class="kw">REFERENCES</span> alumnos(dni),
-      <span class="kw">FOREIGN KEY</span> (materia_id)
-          <span class="kw">REFERENCES</span> materias(id_materia)
-  );
-  
-  <span class="kw">INSERT INTO</span> alumnos <span class="kw">VALUES</span>
-      (30111222, <span class="str">'Ana'</span>,  <span class="str">'Gomez'</span>),
-      (28333444, <span class="str">'Luis'</span>, <span class="str">'Perez'</span>);
-  
-  <span class="kw">INSERT INTO</span> materias (nombre) <span class="kw">VALUES</span>
-      (<span class="str">'Programacion'</span>), (<span class="str">'Base de Datos'</span>);
-  
-  <span class="kw">INSERT INTO</span> cursadas (alumno_dni, materia_id, nota_1co, nota_2co)
-  <span class="kw">VALUES</span> (30111222, 1, 8.00, 9.00),
-         (30111222, 2, 6.00, 7.50),
-         (28333444, 1, 4.00, 6.00);
-  
-  <span class="cm">-- El PROMEDIO es DERIVADO: se calcula en la consulta</span>
-  <span class="kw">SELECT</span> a.apellido, m.nombre,
-         c.nota_1co, c.nota_2co,
-         (c.nota_1co + c.nota_2co) / 2 <span class="kw">AS</span> promedio
-  <span class="kw">FROM</span> cursadas c
-  <span class="kw">JOIN</span> alumnos  a <span class="kw">ON</span> a.dni        = c.alumno_dni
-  <span class="kw">JOIN</span> materias m <span class="kw">ON</span> m.id_materia = c.materia_id;</code></pre>
-                  </details>
 
   <div class="ejercicio">
     <h2>Ejercicio 4 - El Gimnasio</h2>
@@ -1313,84 +1186,6 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     guardar&iacute;as la fecha de alta y el turno?<br>
     Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
-  <details class="pista">
-                      <summary>Ver la solución del anexo (gimnasio.sql)</summary>
-                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS gimnasio;
-  <span class="kw">USE</span> gimnasio;
-  
-  <span class="kw">CREATE TABLE</span> socios (
-      nro_socio INT <span class="kw">PRIMARY KEY</span>,
-      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
-      apellido VARCHAR(50) <span class="kw">NOT NULL</span>
-  );
-  
-  <span class="cm">-- ATRIBUTO MULTIVALUADO -> tabla propia</span>
-  <span class="kw">CREATE TABLE</span> socios_telefonos (
-      id_telefono INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      nro_socio INT <span class="kw">NOT NULL</span>,
-      telefono VARCHAR(20) <span class="kw">NOT NULL</span>,
-      <span class="kw">FOREIGN KEY</span> (nro_socio)
-          <span class="kw">REFERENCES</span> socios(nro_socio)
-  );
-  
-  <span class="kw">CREATE TABLE</span> entrenadores (
-      legajo INT <span class="kw">PRIMARY KEY</span>,
-      nombre VARCHAR(60) <span class="kw">NOT NULL</span>,
-      especialidad VARCHAR(50) <span class="kw">NOT NULL</span>
-  );
-  
-  <span class="cm">-- RELACIÓN 1:N -> FOREIGN KEY en la tabla del lado N</span>
-  <span class="kw">CREATE TABLE</span> actividades (
-      cod_actividad INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
-      horario VARCHAR(40) <span class="kw">NOT NULL</span>,
-      cupo INT <span class="kw">NOT NULL</span>,
-      legajo_entrenador INT <span class="kw">NOT NULL</span>,
-      <span class="kw">FOREIGN KEY</span> (legajo_entrenador)
-          <span class="kw">REFERENCES</span> entrenadores(legajo)
-  );
-  
-  <span class="cm">-- RELACIÓN N:M SOCIO-ACTIVIDAD -> tabla intermedia</span>
-  <span class="kw">CREATE TABLE</span> inscripciones (
-      id_inscripcion INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
-      nro_socio INT <span class="kw">NOT NULL</span>,
-      cod_actividad INT <span class="kw">NOT NULL</span>,
-      fecha_alta DATE <span class="kw">NOT NULL</span>,
-      turno VARCHAR(20) <span class="kw">NOT NULL</span>,
-      <span class="kw">FOREIGN KEY</span> (nro_socio)
-          <span class="kw">REFERENCES</span> socios(nro_socio),
-      <span class="kw">FOREIGN KEY</span> (cod_actividad)
-          <span class="kw">REFERENCES</span> actividades(cod_actividad)
-  );
-  
-  <span class="kw">INSERT INTO</span> socios <span class="kw">VALUES</span>
-      (1, <span class="str">'Ana'</span>,  <span class="str">'Gomez'</span>),
-      (2, <span class="str">'Luis'</span>, <span class="str">'Perez'</span>);
-  
-  <span class="kw">INSERT INTO</span> socios_telefonos (nro_socio, telefono) <span class="kw">VALUES</span>
-      (1, <span class="str">'2664-111111'</span>),
-      (1, <span class="str">'2664-222222'</span>);
-  
-  <span class="kw">INSERT INTO</span> entrenadores <span class="kw">VALUES</span>
-      (101, <span class="str">'Carla Diaz'</span>,  <span class="str">'Musculacion'</span>),
-      (102, <span class="str">'Marcos Ruiz'</span>, <span class="str">'Yoga'</span>);
-  
-  <span class="kw">INSERT INTO</span> actividades (nombre, horario, cupo, legajo_entrenador)
-  <span class="kw">VALUES</span> (<span class="str">'Musculacion'</span>, <span class="str">'Lun y Mie 18:00'</span>, 20, 101),
-         (<span class="str">'Yoga'</span>,        <span class="str">'Mar y Jue 19:00'</span>, 15, 102);
-  
-  <span class="kw">INSERT INTO</span> inscripciones (nro_socio, cod_actividad, fecha_alta, turno)
-  <span class="kw">VALUES</span> (1, 1, <span class="str">'2026-08-01'</span>, <span class="str">'Mañana'</span>),
-         (1, 2, <span class="str">'2026-08-03'</span>, <span class="str">'Tarde'</span>),
-         (2, 1, <span class="str">'2026-08-05'</span>, <span class="str">'Tarde'</span>);
-  
-  <span class="kw">SELECT</span> s.apellido, a.nombre <span class="kw">AS</span> actividad,
-         e.nombre <span class="kw">AS</span> entrenador, i.fecha_alta, i.turno
-  <span class="kw">FROM</span> inscripciones i
-  <span class="kw">JOIN</span> socios       s <span class="kw">ON</span> s.nro_socio     = i.nro_socio
-  <span class="kw">JOIN</span> actividades  a <span class="kw">ON</span> a.cod_actividad = i.cod_actividad
-  <span class="kw">JOIN</span> entrenadores e <span class="kw">ON</span> e.legajo        = a.legajo_entrenador;</code></pre>
-                  </details>
 </section>
 
 

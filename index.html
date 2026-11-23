@@ -127,10 +127,6 @@ textarea.respuesta::placeholder{color:#94a3b8}
 .forma-clave .contenido{text-decoration:underline; font-weight:700}
 .forma-multivalor{border:4px double #1e293b}
 .forma-derivado{border-style:dashed; background:#fff}
-.forma, .forma .contenido, .ins-simbolo{
-  -webkit-user-select:none; user-select:none;
-}
-.forma .contenido[contenteditable="false"]{cursor:default}
 .token{
   display:inline-block; margin:.12rem .25rem; padding:.2rem .5rem;
   border:1px solid #1e293b; border-radius:999px;
@@ -204,7 +200,7 @@ footer p{margin:.2rem 0}
   <h1>Ejercitación con corrección · DER · MER · BD</h1>
   <p>En <strong>DER</strong> tocás símbolos y escribís dentro. En <strong>MER</strong> respondés un cuestionario y en <strong>BD</strong> escribís SQL. Después presionás <strong>✅ Corregir</strong>.</p>
   <p class="pista">Cuatro partes: <strong>1 · DER</strong>, <strong>2 · MER</strong>, <strong>3 · BD</strong> y <strong>4 · Entrega</strong>. Podés corregir acá mismo y enviar tu evaluación al docente.</p>
-  <p class="volver"><a href="unamasdesistemas/">← Volver a Unamas de Sistemas</a></p>
+  <p class="volver"><a href="unamasdesistemas/">← Volver a Teoría</a></p>
 </header>
 
 <nav class="solo" aria-label="Ejercicios de esta página">
@@ -218,7 +214,7 @@ footer p{margin:.2rem 0}
   <a href="mer.html">1 · MER</a>
   <a href="der.html">2 · DER</a>
   <a href="mysql.html">3 · MySQL</a>
-  <a href="unamasdesistemas/">Unamas de Sistemas</a>
+  <a href="unamasdesistemas/">Teoría</a>
 </nav>
 
 <main>
@@ -449,6 +445,16 @@ const SIMBOLOS = {
   FK:       { etiqueta:'FK',              icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
 };
 
+/* Formas editables: el botón dibuja el símbolo y se puede escribir adentro. */
+const SHAPES = {
+  rect:      { clase:'forma-rect',                  placeholder:'entidad' },
+  rombo:     { clase:'forma-rombo',                 placeholder:'relación' },
+  ovalo:     { clase:'forma-ovalo',                 placeholder:'atributo' },
+  clave:     { clase:'forma-ovalo forma-clave',     placeholder:'clave' },
+  doble:     { clase:'forma-ovalo forma-multivalor', placeholder:'multivaluado' },
+  punteado:  { clase:'forma-ovalo forma-derivado',   placeholder:'derivado' }
+};
+
 function normalizar(s){
   return String(s)
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
@@ -517,7 +523,7 @@ const EJERCICIOS = {
 };
 
 /* Inserta el dibujo real en el área de respuesta, donde esté el cursor. */
-function insertarDibujo(caja, html){
+function insertarDibujo(caja, html, enfocarDentro){
   if(!caja || caja.tagName === 'TEXTAREA') return;
   caja.focus();
   const sel = window.getSelection();
@@ -538,6 +544,26 @@ function insertarDibujo(caja, html){
   rango.collapse(true);
   sel.removeAllRanges();
   sel.addRange(rango);
+  if (enfocarDentro){
+    const interior = nodo.querySelector('.contenido');
+    if (interior){
+      const dentro = document.createRange();
+      dentro.selectNodeContents(interior);
+      dentro.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(dentro);
+    }
+  }
+  return nodo;
+}
+
+function insertarForma(caja, tipo){
+  const conf = SHAPES[tipo];
+  if (!conf || !caja || caja.tagName === 'TEXTAREA') return;
+  insertarDibujo(caja,
+    '<span class="forma ' + conf.clase + '" data-forma="' + tipo + '" contenteditable="true">' +
+      '<span class="contenido" contenteditable="true" data-placeholder="' + conf.placeholder + '"></span>' +
+    '</span>', true);
 }
 
 function tipoDeBoton(boton){
@@ -565,22 +591,19 @@ function prepararPaletas(){
       const sim = SIMBOLOS[tipo];
       if (!sim) return;
       const caja = boton.closest('.ejercicio').querySelector('.respuesta');
-      /* La forma sigue dibujándose, pero no se puede escribir dentro de ella. */
-      insertarDibujo(caja,
-        '<span class="ins-simbolo" data-forma="' + tipo + '" contenteditable="false" aria-readonly="true">' +
-        '<svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
-        sim.icona + '</svg>&nbsp;</span>');
+      if (boton.dataset.shape){
+        insertarForma(caja, tipo);
+      } else {
+        insertarDibujo(caja,
+          '<span class="ins-simbolo" data-forma="' + tipo + '" aria-readonly="true">' +
+          '<svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
+          sim.icona + '</svg>&nbsp;</span>');
+      }
     });
   });
 }
 
 prepararPaletas();
-
-/* Formas antiguas .forma y símbolos: se ven, pero nunca se escribe en ellos. */
-document.querySelectorAll('.forma, .forma .contenido').forEach(function(el){
-  el.setAttribute('contenteditable', 'false');
-  el.setAttribute('aria-readonly', 'true');
-});
 
 function resultadosArticulo(articulo){
   const c = contexto(articulo);
