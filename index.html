@@ -581,7 +581,9 @@ footer p{margin:.2rem 0}
   <h2 class="seccion">4 · Consultas (SELECT)</h2>
   <p>Todas las consultas de este apartado se hacen sobre una sola tabla llamada
   <code>productos(id_producto, nombre, precio, stock)</code>. No hace falta JOIN.
-  Escribí la consulta completa y presioná <strong>✅ Corregir</strong> en cada ejercicio.</p>
+  En las actividades <strong>3, 4 y 5</strong> primero tenés que crear esa tabla con
+  <code>CREATE TABLE</code> y después escribir la consulta. Presioná
+  <strong>✅ Corregir</strong> en cada ejercicio.</p>
 
   <article class="ejercicio" data-id="con1">
     <h3>✍️ Ejercicio 4.1: filtrar con WHERE <span class="nivel">Fácil</span></h3>
@@ -618,11 +620,13 @@ footer p{margin:.2rem 0}
   <article class="ejercicio" data-id="con3">
     <h3>✍️ Ejercicio 4.3: comparar con &gt; <span class="nivel">Fácil</span></h3>
     <p class="consigna">
-      El signo <strong>&gt;</strong> compara valores numéricos o fechas. Escribí una consulta que
-      devuelva <code>nombre</code> y <code>stock</code> de los productos con
-      <strong>más de 10 unidades</strong> en stock: <code>WHERE stock &gt; 10</code>.
+      Primero creá la tabla con <code>CREATE TABLE productos</code>: <code>id_producto</code> como
+      PK entero, <code>nombre VARCHAR(50)</code>, <code>precio DECIMAL(10,2)</code> y
+      <code>stock INT</code>. Después, el signo <strong>&gt;</strong> compara valores numéricos:
+      escribí una consulta que devuelva <code>nombre</code> y <code>stock</code> de los productos
+      con <strong>más de 10 unidades</strong> en stock, usando <code>WHERE stock &gt; 10</code>.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, stock FROM productos WHERE stock > 10;"></textarea>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE productos (...);&#10;SELECT nombre, stock FROM productos WHERE stock > 10;"></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -633,11 +637,14 @@ footer p{margin:.2rem 0}
   <article class="ejercicio" data-id="con4">
     <h3>✍️ Ejercicio 4.4: comparar con &lt; <span class="nivel">Fácil</span></h3>
     <p class="consigna">
-      El signo <strong>&lt;</strong> es el contrario. Mostrá <code>nombre</code> y
-      <code>precio</code> de los productos que cuestan <strong>menos de 1000</strong>:
-      <code>WHERE precio &lt; 1000</code>. No incluyas los que cuestan exactamente 1000.
+      Volvé a crear la tabla con <code>CREATE TABLE productos</code> (id_producto PK,
+      nombre VARCHAR, precio DECIMAL y stock INT) para practicar también la creación. Después,
+      el signo <strong>&lt;</strong> es el contrario de <code>&gt;</code>: mostrá
+      <code>nombre</code> y <code>precio</code> de los productos que cuestan
+      <strong>menos de 1000</strong>, con <code>WHERE precio &lt; 1000</code>. No incluyas los que
+      cuestan exactamente 1000.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE precio < 1000;"></textarea>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE productos (...);&#10;SELECT nombre, precio FROM productos WHERE precio < 1000;"></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -648,12 +655,13 @@ footer p{margin:.2rem 0}
   <article class="ejercicio" data-id="con5">
     <h3>✍️ Ejercicio 4.5: limitar con LIMIT <span class="nivel">Medio</span></h3>
     <p class="consigna">
-      <strong>LIMIT</strong> corta la cantidad de filas que devuelve la consulta. Escribí una
-      consulta que muestre <code>nombre</code> de los <strong>5 primeros productos ordenados
-      alfabéticamente</strong>. Necesitás <code>ORDER BY nombre</code> y, al final,
-      <code>LIMIT 5</code>.
+      Volvé a crear la tabla con <code>CREATE TABLE productos</code> (id_producto PK, nombre
+      VARCHAR, precio DECIMAL y stock INT). Después, <strong>LIMIT</strong> corta la cantidad de
+      filas que devuelve la consulta: escribí una consulta que muestre <code>nombre</code> de los
+      <strong>5 primeros productos ordenados alfabéticamente</strong>. Necesitás
+      <code>ORDER BY nombre</code> y, al final, <code>LIMIT 5</code>.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre FROM productos ORDER BY nombre LIMIT 5;"></textarea>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE productos (...);&#10;SELECT nombre FROM productos ORDER BY nombre LIMIT 5;"></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -900,73 +908,56 @@ footer p{margin:.2rem 0}
 <!-- ========================= EVALUACIÓN BD ========================= -->
 <section id="evaluacion-bd">
   <h2 class="seccion">7 · Evaluación solo BD (sin corrección visible)</h2>
-  <p>Esta evaluación cubre solamente base de datos: crear tablas, insertar datos y consultar
-  con <code>WHERE</code>, <code>ORDER BY</code>, <code>&gt;</code>, <code>&lt;</code>,
-  <code>LIMIT</code>, <code>LIKE</code>, <code>COUNT</code> y <code>DISTINCT</code>. Al enviar no
-  verás corrección ni nota; el docente sí la recibe. Después de enviar no se puede modificar.</p>
+  <p>Esta evaluación cubre solamente base de datos, en 4 actividades: crear una tabla, crear dos
+  tablas relacionadas, insertar en una tabla y escribir consultas con <code>WHERE</code>,
+  <code>ORDER BY</code>, <code>&gt;</code>, <code>&lt;</code>, <code>LIMIT</code>,
+  <code>LIKE</code> y <code>COUNT</code>. Al enviar no verás corrección ni nota; el docente sí la
+  recibe. Después de enviar no se puede modificar.</p>
 
   <article class="ejercicio" data-id="evbd-crear">
-    <h3>Evaluación BD · Actividad 1: crear tablas relacionadas</h3>
+    <h3>Evaluación BD · Actividad 1: crear una tabla</h3>
     <p class="consigna">
-      Escribí el SQL para crear <code>clientes(id_cliente PK INT, nombre VARCHAR(50))</code>,
-      <code>productos(id_producto PK AI INT, nombre VARCHAR(50), precio DECIMAL(10,2))</code> y
-      <code>compras(id_compra PK AI INT, id_cliente FK INT, id_producto FK INT, fecha DATE,
-      cantidad INT)</code>. Usá <code>CREATE TABLE</code>, <code>PRIMARY KEY</code>,
-      <code>AUTO_INCREMENT</code> y los dos <code>FOREIGN KEY ... REFERENCES</code>. El orden
-      de creación importa: primero las tablas referenciadas.
+      Escribí el SQL para crear <code>productos(id_producto PK AI INT, nombre VARCHAR(50),
+      precio DECIMAL(10,2), stock INT)</code>. Usá <code>CREATE TABLE</code>,
+      <code>PRIMARY KEY</code> y <code>AUTO_INCREMENT</code>.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE clientes (...);\nCREATE TABLE productos (...);\nCREATE TABLE compras (...);"></textarea>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE productos (...);"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-relacionadas">
+    <h3>Evaluación BD · Actividad 2: crear dos tablas relacionadas</h3>
+    <p class="consigna">
+      Escribí el SQL para crear <code>clientes(id_cliente PK INT, nombre VARCHAR(50))</code> y
+      <code>compras(id_compra PK AI INT, id_cliente FK INT, fecha DATE, cantidad INT)</code>.
+      Usá <code>CREATE TABLE</code>, <code>PRIMARY KEY</code>, <code>AUTO_INCREMENT</code> y
+      <code>FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)</code>. Creá primero
+      <code>clientes</code>, porque es la tabla referenciada.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE clientes (...);\nCREATE TABLE compras (...);"></textarea>
   </article>
 
   <article class="ejercicio" data-id="evbd-insertar">
-    <h3>Evaluación BD · Actividad 2: insertar datos relacionados</h3>
+    <h3>Evaluación BD · Actividad 3: insertar en una tabla</h3>
     <p class="consigna">
-      Con las tablas anteriores, escribí tres <code>INSERT INTO</code>: uno para
-      <code>clientes</code> (nombre), uno para <code>productos</code> (nombre y precio) y uno para
-      <code>compras</code> (id_cliente, id_producto, fecha y cantidad). Usá <code>VALUES</code>
-      y cargá en <code>compras</code> claves que ya existan en las otras dos tablas.
+      Con la tabla <code>productos</code> de la actividad 1, escribí un
+      <code>INSERT INTO productos</code> que cargue <code>nombre</code>, <code>precio</code> y
+      <code>stock</code>. Usá <code>VALUES</code> con valores concretos.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="INSERT INTO clientes ...;\nINSERT INTO productos ...;\nINSERT INTO compras ...;"></textarea>
+    <textarea class="respuesta" spellcheck="false" placeholder="INSERT INTO productos (nombre, precio, stock) VALUES (...);"></textarea>
   </article>
 
-  <article class="ejercicio" data-id="evbd-where">
-    <h3>Evaluación BD · Actividad 3: filtrar con WHERE</h3>
+  <article class="ejercicio" data-id="evbd-consultas">
+    <h3>Evaluación BD · Actividad 4: consultas</h3>
     <p class="consigna">
-      Mostrá <code>nombre</code> y <code>precio</code> de los productos cuyo precio sea
-      <strong>mayor o igual que 500</strong> y menor que 2000. Necesitás dos condiciones con
-      <code>WHERE</code> unidas por <code>AND</code>.
+      Escribí tres consultas sobre <code>productos</code>:<br>
+      1) <code>nombre</code> y <code>precio</code> con <code>stock &gt; 10</code> y
+      <code>precio &lt; 1000</code>, uniendo las condiciones con <code>AND</code>.<br>
+      2) <code>nombre</code> y <code>precio</code> de los productos cuyo nombre contenga
+      «papel», con <code>LIKE '%papel%'</code>, ordenados por <code>precio</code> y con
+      <code>LIMIT 5</code>.<br>
+      3) Contar los productos con <code>COUNT(*) AS total_productos</code>.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE ...;"></textarea>
-  </article>
-
-  <article class="ejercicio" data-id="evbd-orden">
-    <h3>Evaluación BD · Actividad 4: ordenar y limitar</h3>
-    <p class="consigna">
-      Mostrá <code>nombre</code> y <code>stock</code> de los productos con stock <strong>mayor
-      que 0</strong>, ordenados de <strong>menor a mayor stock</strong>, y quedate solo con los
-      <strong>3 primeros</strong>. Usá <code>WHERE</code>, <code>ORDER BY</code> y <code>LIMIT</code>.
-    </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, stock FROM productos WHERE stock > 0 ORDER BY stock LIMIT 3;"></textarea>
-  </article>
-
-  <article class="ejercicio" data-id="evbd-like">
-    <h3>Evaluación BD · Actividad 5: buscar con LIKE</h3>
-    <p class="consigna">
-      Buscá los productos cuyo nombre <strong>contenga «papel»</strong> en cualquier posición.
-      El patrón con <code>%</code> a los dos lados es <code>'%papel%'</code>. Mostrá
-      <code>nombre</code> y <code>precio</code>.
-    </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE nombre LIKE ...;"></textarea>
-  </article>
-
-  <article class="ejercicio" data-id="evbd-count">
-    <h3>Evaluación BD · Actividad 6: contar y evitar repetidos</h3>
-    <p class="consigna">
-      Escribí dos consultas: una con <code>COUNT(*) AS total_compras</code> sobre
-      <code>compras</code>, y otra con <code>SELECT DISTINCT id_cliente FROM compras</code> para
-      listar los clientes que compraron, sin repetirlos.
-    </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT COUNT(*) AS total_compras FROM compras;\nSELECT DISTINCT ...;"></textarea>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE stock > 10 AND precio < 1000;&#10;SELECT nombre, precio FROM productos WHERE nombre LIKE '%papel%' ORDER BY precio LIMIT 5;&#10;SELECT COUNT(*) AS total_productos FROM productos;"></textarea>
   </article>
 
   <article class="ejercicio">
@@ -1246,18 +1237,24 @@ const EJERCICIOS = {
     { d:'Ordena de mayor a menor con DESC', f:c => /\bdesc\b/.test(c.t) }
   ]},
   con3: { requisitos: [
+    { d:'Crea la tabla con CREATE TABLE productos', f:c => /create\s+table\s+productos/.test(c.t) },
+    { d:'Incluye id_producto, nombre, precio y stock', f:c => hayPK(c, 'id_producto') && ['nombre','precio','stock'].every(x => c.t.includes(x)) },
     { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
     { d:'Muestra nombre y stock', f:c => c.t.includes('nombre') && c.t.includes('stock') },
     { d:'Filtra con WHERE stock', f:c => /\bwhere\s+stock/.test(c.t) },
     { d:'Usa el operador > con 10', f:c => />\s*10/.test(c.t) }
   ]},
   con4: { requisitos: [
+    { d:'Crea la tabla con CREATE TABLE productos', f:c => /create\s+table\s+productos/.test(c.t) },
+    { d:'Incluye id_producto, nombre, precio y stock', f:c => hayPK(c, 'id_producto') && ['nombre','precio','stock'].every(x => c.t.includes(x)) },
     { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
     { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
     { d:'Filtra con WHERE precio', f:c => /\bwhere\s+precio/.test(c.t) },
     { d:'Usa el operador < con 1000', f:c => /<\s*1000/.test(c.t) }
   ]},
   con5: { requisitos: [
+    { d:'Crea la tabla con CREATE TABLE productos', f:c => /create\s+table\s+productos/.test(c.t) },
+    { d:'Incluye id_producto, nombre, precio y stock', f:c => hayPK(c, 'id_producto') && ['nombre','precio','stock'].every(x => c.t.includes(x)) },
     { d:'Muestra nombre de productos', f:c => /\bselect\s+nombre\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
     { d:'Ordena alfabéticamente por nombre', f:c => /order\s+by\s+nombre/.test(c.t) },
     { d:'Límite con LIMIT 5', f:c => /\blimit\s+5\b/.test(c.t) },
@@ -1321,42 +1318,33 @@ const EJERCICIOS = {
     { d:'Carga id_autor en el libro', f:c => c.t.includes('id_autor') }
   ]},
   'evbd-crear': { requisitos: [
-    { d:'Crea las tres tablas', f:c => (c.t.match(/create\s+table/g) || []).length >= 3 && ['clientes','productos','compras'].every(x => c.t.includes(x)) },
-    { d:'Define PRIMARY KEY en las tres', f:c => hayPK(c, 'id_cliente') && hayPK(c, 'id_producto') && hayPK(c, 'id_compra') },
+    { d:'Crea la tabla productos', f:c => /create\s+table\s+productos/.test(c.t) },
+    { d:'Define PRIMARY KEY con id_producto', f:c => hayPK(c, 'id_producto') },
     { d:'Usa AUTO_INCREMENT', f:c => /auto_increment/.test(c.t) },
-    { d:'Declara dos FOREIGN KEY', f:c => (c.t.match(/foreign\s+key/g) || []).length >= 2 },
-    { d:'Referencia a clientes y productos', f:c => /references\s+clientes\s*\(\s*id_cliente\s*\)/.test(c.t) && /references\s+productos\s*\(\s*id_producto\s*\)/.test(c.t) },
-    { d:'Usa INT, VARCHAR, DECIMAL y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && c.t.includes('decimal') && /\bdate\b/.test(c.t) }
+    { d:'Incluye nombre, precio y stock', f:c => ['nombre','precio','stock'].every(x => c.t.includes(x)) },
+    { d:'Usa INT, VARCHAR y DECIMAL', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && c.t.includes('decimal') }
+  ]},
+  'evbd-relacionadas': { requisitos: [
+    { d:'Crea clientes y compras', f:c => (c.t.match(/create\s+table/g) || []).length >= 2 && ['clientes','compras'].every(x => c.t.includes(x)) },
+    { d:'Define PRIMARY KEY en ambas tablas', f:c => hayPK(c, 'id_cliente') && hayPK(c, 'id_compra') },
+    { d:'Usa AUTO_INCREMENT en compras', f:c => /auto_increment/.test(c.t) },
+    { d:'Declara la FK en compras', f:c => hayFK(c, 'id_cliente') },
+    { d:'Referencia a clientes(id_cliente)', f:c => /references\s+clientes\s*\(\s*id_cliente\s*\)/.test(c.t) },
+    { d:'Usa INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) }
   ]},
   'evbd-insertar': { requisitos: [
-    { d:'Inserta en las tres tablas', f:c => (c.t.match(/insert\s+into/g) || []).length >= 3 && ['clientes','productos','compras'].every(x => c.t.includes(x)) },
+    { d:'Inserta en productos', f:c => /insert\s+into\s+productos/.test(c.t) },
     { d:'Usa VALUES', f:c => /\bvalues\b/.test(c.t) },
-    { d:'Carga nombre y precio de producto', f:c => c.t.includes('nombre') && c.t.includes('precio') },
-    { d:'Carga las FK en compras', f:c => c.t.includes('id_cliente') && c.t.includes('id_producto') },
-    { d:'Carga fecha y cantidad en compras', f:c => /\bfecha\b/.test(c.t) && c.t.includes('cantidad') }
+    { d:'Carga nombre, precio y stock', f:c => ['nombre','precio','stock'].every(x => c.t.includes(x)) },
+    { d:'Inserta solamente en productos', f:c => !/insert\s+into\s+(clientes|compras)/.test(c.t) }
   ]},
-  'evbd-where': { requisitos: [
-    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
-    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
-    { d:'Usa dos condiciones con AND', f:c => /\band\b/.test(c.t) },
-    { d:'Usa >= 500 y < 2000', f:c => />=\s*500/.test(c.t) && /<\s*2000/.test(c.t) }
-  ]},
-  'evbd-orden': { requisitos: [
-    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
-    { d:'Filtra con WHERE stock > 0', f:c => /\bwhere\s+stock\s*>\s*0/.test(c.t) },
-    { d:'Ordena por stock', f:c => /order\s+by\s+stock/.test(c.t) },
-    { d:'Limita a 3 filas', f:c => /\blimit\s+3\b/.test(c.t) }
-  ]},
-  'evbd-like': { requisitos: [
-    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
-    { d:'Filtra con LIKE', f:c => /\blike\b/.test(c.t) },
-    { d:'Usa el patrón %papel%', f:c => /'%papel%'|"%papel%"/i.test(c.t) },
-    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') }
-  ]},
-  'evbd-count': { requisitos: [
-    { d:'Cuenta las compras con COUNT(*)', f:c => /count\s*\(\s*\*\s*\)/.test(c.t) && /\bfrom\s+compras\b/.test(c.t) },
-    { d:'Usa el alias total_compras', f:c => /\bas\s+total_compras\b/.test(c.t) },
-    { d:'Lista id_cliente sin repetir', f:c => /\bselect\s+distinct\s+id_cliente\b/.test(c.t) && /\bfrom\s+compras\b/.test(c.t) }
+  'evbd-consultas': { requisitos: [
+    { d:'Filtra con WHERE stock > 10', f:c => /\bwhere\s+stock\s*>\s*10/.test(c.t) },
+    { d:'Filtra con precio < 1000 y AND', f:c => /<\s*1000/.test(c.t) && /\band\b/.test(c.t) },
+    { d:'Busca con LIKE %papel%', f:c => /\blike\s+'%papel%'/.test(c.t) },
+    { d:'Ordena por precio', f:c => /order\s+by\s+precio/.test(c.t) },
+    { d:'Limita a 5 filas', f:c => /\blimit\s+5\b/.test(c.t) },
+    { d:'Cuenta con COUNT(*) AS total_productos', f:c => /count\s*\(\s*\*\s*\)\s+as\s+total_productos/.test(c.t) }
   ]}
 };
 
@@ -1876,8 +1864,8 @@ const EVALUACIONES = {
     clave:'modelos-sistemas-bd-enviada-v1',
     quiz:'#quiz-eval-bd',
     grupos:{
-      A:['evbd-crear','evbd-insertar'],
-      B:['evbd-where','evbd-orden','evbd-like','evbd-count'],
+      A:['evbd-crear','evbd-relacionadas'],
+      B:['evbd-insertar','evbd-consultas'],
       C:[]
     }
   }

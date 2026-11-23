@@ -23,15 +23,18 @@ y FK) → Base de datos MySQL**.
 - La portada (`index.html`) tiene **ejercitación autocorregible** con
   **4 ejercicios de DER, 4 de MER, 4 de BD y 8 de consultas** (`WHERE`,
   `ORDER BY`, `>`, `<`, `LIMIT`, `LIKE`, `COUNT` y `DISTINCT`), más un
-  cuestionario de opción múltiple. Cada enunciado explica qué se pide y por qué.
+  cuestionario de opción múltiple. Las consultas 3 a 5 también piden crear antes
+  la tabla `productos` con `CREATE TABLE`. Cada enunciado explica qué se pide y
+  por qué.
 - En DER, la paleta inserta los **símbolos** en el cursor (rectángulo, rombo,
   óvalos, cardinalidades). En MER, el menú inserta entidades, atributos, PK, FK
   y líneas con cardinalidad `1 a N` / `N a 1` entre las entidades. La
   convención es **DER = símbolos; MER = tipos de atributo y FK**.
 - Después de la ejercitación hay dos **evaluaciones sin corrección visible**:
   `modelos-sistemas-general` (2 DER + 2 MER + 2 BD + 6 opción múltiple) y
-  `modelos-sistemas-bd` (crear/insertar/tablas relacionadas y consultas + 6
-  opción múltiple). Piden nombre, apellido y curso, calculan la nota
+  `modelos-sistemas-bd` (4 actividades: crear una tabla, crear dos tablas
+  relacionadas, insertar en una tabla y consultas + 6 opción múltiple). Piden
+  nombre, apellido y curso, calculan la nota
   internamente y la envían cifrada al repo `inform` mediante `scripts/entrega.js`.
 - La guía de Teoría amplía el MER con tablas de tipos de atributo, la
   conversión DER → MER y la dirección de las relaciones (`1:N`, `1:1`, `N:M`).
