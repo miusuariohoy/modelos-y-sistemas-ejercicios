@@ -17,8 +17,8 @@
 
 <nav class="sumario">
     <a href="index.html">🏠 Inicio</a>
-    <a href="mer.html">1 · MER</a>
-    <a href="der.html">2 · DER</a>
+    <a href="der.html">1 · DER</a>
+    <a href="mer.html">2 · MER</a>
     <a href="mysql.html" class="activo">3 · MySQL</a>
 </nav>
 
@@ -117,14 +117,6 @@
                     <code class="inline">stock</code> INT DEFAULT 0.<br>
                     Terminá cada sentencia con punto y coma.
                 </p>
-                <details class="pista">
-                    <summary>Pista: tres sentencias para empezar</summary>
-                    <ol>
-                        <li><code class="inline">CREATE DATABASE tienda;</code></li>
-                        <li><code class="inline">USE tienda;</code></li>
-                        <li>Un <code class="inline">CREATE TABLE</code> por cada tabla, con sus columnas entre paréntesis.</li>
-                    </ol>
-                </details>
                 <textarea class="code-input" id="in-sql_crear" spellcheck="false" placeholder="CREATE DATABASE ...&#10;USE ...&#10;&#10;CREATE TABLE clientes (&#10;  ...&#10;);&#10;&#10;CREATE TABLE productos (&#10;  ...&#10;);"></textarea>
                 <div class="ex-actions">
                     <button class="btn btn-primary" onclick="corregir('sql_crear')">✅ Corregir</button>
@@ -182,14 +174,6 @@
                     (sin escribir el código, porque es AUTO_INCREMENT). Usá textos con comillas simples y
                     precios con dos decimales.
                 </p>
-                <details class="pista">
-                    <summary>Pista: mirá las columnas de cada tabla</summary>
-                    <ol>
-                        <li>En <code class="inline">clientes</code> el dni <strong>sí</strong> se escribe: no es automático.</li>
-                        <li>En <code class="inline">productos</code> el código <strong>no</strong> se escribe.</li>
-                        <li>Separá las filas con comas y terminá con punto y coma.</li>
-                    </ol>
-                </details>
                 <textarea class="code-input" id="in-sql_insertar" spellcheck="false" placeholder="INSERT INTO clientes (dni, nombre, apellido, telefono) VALUES&#10;(...),&#10;(...),&#10;(...);&#10;&#10;INSERT INTO productos (nombre, precio, stock) VALUES&#10;(...),&#10;(...),&#10;(...);"></textarea>
                 <div class="ex-actions">
                     <button class="btn btn-primary" onclick="corregir('sql_insertar')">✅ Corregir</button>
@@ -344,14 +328,6 @@
                     <code class="inline">productos(codigo)</code>, y elegí un
                     <code class="inline">ON DELETE</code> (RESTRICT o CASCADE).
                 </p>
-                <details class="pista">
-                    <summary>Pista: dos líneas de FK al final</summary>
-                    <ol>
-                        <li>Las columnas primero, una por línea.</li>
-                        <li>Después de las columnas, las dos FK separadas por coma.</li>
-                        <li>La última FK no lleva coma antes del paréntesis de cierre.</li>
-                    </ol>
-                </details>
                 <textarea class="code-input" id="in-sql_relaciones" spellcheck="false" placeholder="CREATE TABLE compras (&#10;  id_compra ... ,&#10;  cliente_dni ... ,&#10;  producto_codigo ... ,&#10;  fecha ... ,&#10;  cantidad ... ,&#10;  FOREIGN KEY (...) REFERENCES ...,&#10;  FOREIGN KEY (...) REFERENCES ...&#10;);"></textarea>
                 <div class="ex-actions">
                     <button class="btn btn-primary" onclick="corregir('sql_relaciones')">✅ Corregir</button>
@@ -451,15 +427,6 @@
                     <strong>(c)</strong> Mostrá los <strong>clientes sin compras</strong> con
                     <code class="inline">LEFT JOIN</code> e <code class="inline">IS NULL</code>.
                 </p>
-                <details class="pista">
-                    <summary>Pista: armá el camino de las claves</summary>
-                    <ol>
-                        <li>Salí de <code class="inline">compras</code> y uní con <code class="inline">clientes</code> por el dni.</li>
-                        <li>Después uní con <code class="inline">productos</code> por el código.</li>
-                        <li>Para el total, multiplicá <code class="inline">precio * cantidad</code> dentro de SUM.</li>
-                        <li>Para los que no compraron, LEFT JOIN y filtrá <code class="inline">id_compra IS NULL</code>.</li>
-                    </ol>
-                </details>
                 <textarea class="code-input" id="in-sql_join" spellcheck="false" placeholder="-- (a)&#10;SELECT ...&#10;FROM compras co&#10;JOIN ...&#10;&#10;-- (b)&#10;SELECT ...&#10;&#10;-- (c)&#10;SELECT ..."></textarea>
                 <div class="ex-actions">
                     <button class="btn btn-primary" onclick="corregir('sql_join')">✅ Corregir</button>
@@ -513,15 +480,6 @@
                     <strong>datos</strong> en las tres, una consulta con <strong>JOIN</strong> y una consulta
                     con <strong>GROUP BY</strong>. Usá INT, VARCHAR, DECIMAL y DATE.
                 </p>
-                <details class="pista">
-                    <summary>Pista: reutilizá lo que ya corregiste</summary>
-                    <ol>
-                        <li>Copiá el CREATE de clientes y productos del tema 1.</li>
-                        <li>Copiá el CREATE de compras del tema 4.</li>
-                        <li>Copiá los INSERT del tema 2 y agregá los de compras.</li>
-                        <li>Copiá una consulta con JOIN y una con GROUP BY del tema 5.</li>
-                    </ol>
-                </details>
                 <textarea class="code-input" id="in-sql_completo" spellcheck="false" placeholder="-- 1. Base&#10;CREATE DATABASE ...&#10;USE ...&#10;&#10;-- 2. Tablas&#10;CREATE TABLE clientes (...);&#10;CREATE TABLE productos (...);&#10;CREATE TABLE compras (...);&#10;&#10;-- 3. Datos&#10;INSERT INTO ...&#10;&#10;-- 4. Consultas&#10;SELECT ... JOIN ...&#10;SELECT ... GROUP BY ..."></textarea>
                 <div class="ex-actions">
                     <button class="btn btn-primary" onclick="corregir('sql_completo')">✅ Corregir</button>
@@ -529,65 +487,6 @@
                 </div>
                 <div class="result" id="res-sql_completo"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver un script completo de ejemplo</summary>
-                    <pre style="margin:.4rem 0 0;"><code>DROP DATABASE IF EXISTS tienda;
-CREATE DATABASE tienda;
-USE tienda;
-
-CREATE TABLE clientes (
-    dni      INT PRIMARY KEY,
-    nombre   VARCHAR(50) NOT NULL,
-    apellido VARCHAR(50) NOT NULL,
-    telefono VARCHAR(20)
-);
-
-CREATE TABLE productos (
-    codigo INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(50) NOT NULL,
-    precio DECIMAL(10,2) NOT NULL,
-    stock  INT DEFAULT 0
-);
-
-CREATE TABLE compras (
-    id_compra       INT PRIMARY KEY AUTO_INCREMENT,
-    cliente_dni     INT NOT NULL,
-    producto_codigo INT NOT NULL,
-    fecha           DATE NOT NULL,
-    cantidad        INT NOT NULL,
-    FOREIGN KEY (cliente_dni) REFERENCES clientes(dni),
-    FOREIGN KEY (producto_codigo) REFERENCES productos(codigo)
-);
-
-INSERT INTO clientes (dni, nombre, apellido, telefono) VALUES
-(30111222, 'Ana', 'Gómez', '11-5555-1111'),
-(28444555, 'Bruno', 'Pérez', NULL),
-(40999888, 'Carla', 'López', '11-5555-3333');
-
-INSERT INTO productos (nombre, precio, stock) VALUES
-('Muzzarella', 8500.50, 20),
-('Napolitana', 9200.00, 15),
-('Fugazzeta', 9900.75, 8);
-
-INSERT INTO compras (cliente_dni, producto_codigo, fecha, cantidad) VALUES
-(30111222, 1, '2026-03-02', 2),
-(30111222, 2, '2026-03-05', 1),
-(28444555, 3, '2026-03-06', 1),
-(40999888, 3, '2026-03-08', 3),
-(30111222, 3, '2026-03-10', 1);
-
-SELECT cl.nombre, p.nombre AS producto, co.cantidad, co.fecha
-FROM compras co
-JOIN clientes cl ON co.cliente_dni = cl.dni
-JOIN productos p ON co.producto_codigo = p.codigo;
-
-SELECT cl.nombre, SUM(p.precio * co.cantidad) AS total
-FROM clientes cl
-JOIN compras co ON co.cliente_dni = cl.dni
-JOIN productos p ON co.producto_codigo = p.codigo
-GROUP BY cl.nombre
-ORDER BY total DESC;</code></pre>
-                </details>
             </div>
         </article>
 
@@ -725,7 +624,7 @@ ORDER BY total DESC;</code></pre>
 </main>
 
 <footer class="pie">
-    Curso interactivo · MER · DER · MySQL<br>Diseñado por la profesora Alejandra Moreira
+    Curso interactivo · DER · MER · MySQL<br>Diseñado por la profesora Alejandra Moreira
 </footer>
 
 <script>
