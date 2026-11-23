@@ -909,7 +909,8 @@ footer p{margin:.2rem 0}
 <section id="evaluacion-bd">
   <h2 class="seccion">7 · Evaluación solo BD (sin corrección visible)</h2>
   <p>Esta evaluación cubre solamente base de datos, en 4 actividades: crear una tabla, crear dos
-  tablas relacionadas, insertar en una tabla y escribir seis consultas con <code>WHERE</code>,
+  tablas relacionadas, insertar en una tabla y escribir seis consultas separadas con
+  <code>WHERE</code>,
   <code>ORDER BY</code>, <code>&gt;</code>, <code>&lt;</code>, <code>LIMIT</code>,
   <code>LIKE</code> y <code>COUNT</code>. Al enviar no verás corrección ni nota; el docente sí la
   recibe. Después de enviar no se puede modificar.</p>
@@ -946,24 +947,58 @@ footer p{margin:.2rem 0}
     <textarea class="respuesta" spellcheck="false"></textarea>
   </article>
 
-  <article class="ejercicio" data-id="evbd-consultas">
-    <h3>Evaluación BD · Actividad 4: consultas</h3>
+  <article class="ejercicio" data-id="evbd-con1">
+    <h3>Evaluación BD · Actividad 4 · Consulta 1</h3>
     <p class="consigna">
-      Escribí seis consultas:<br>
-      1) Sobre <code>productos</code>: <code>nombre</code> y <code>precio</code> con
-      <code>stock &gt; 10</code> y <code>precio &lt; 1000</code>, uniendo las condiciones con
-      <code>AND</code>.<br>
-      2) Sobre <code>productos</code>: <code>nombre</code> y <code>precio</code> de los productos
-      cuyo nombre contenga «papel», con <code>LIKE '%papel%'</code>, ordenados por
-      <code>precio</code> y con <code>LIMIT 5</code>.<br>
-      3) Sobre <code>productos</code>: contar los productos con
-      <code>COUNT(*) AS total_productos</code>.<br>
-      4) Sobre <code>compras</code>: <code>id_compra</code>, <code>fecha</code> y
+      Sobre <code>productos</code>: escribí un <code>SELECT</code> de <code>nombre</code> y
+      <code>precio</code> con <code>stock &gt; 10</code> y <code>precio &lt; 1000</code>, uniendo
+      las dos condiciones con <code>AND</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-con2">
+    <h3>Evaluación BD · Actividad 4 · Consulta 2</h3>
+    <p class="consigna">
+      Sobre <code>productos</code>: mostrá <code>nombre</code> y <code>precio</code> de los
+      productos cuyo nombre contenga «papel», con <code>LIKE '%papel%'</code>, ordenados por
+      <code>precio</code> y con <code>LIMIT 5</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-con3">
+    <h3>Evaluación BD · Actividad 4 · Consulta 3</h3>
+    <p class="consigna">
+      Sobre <code>productos</code>: contá los productos con
+      <code>COUNT(*) AS total_productos</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-con4">
+    <h3>Evaluación BD · Actividad 4 · Consulta 4</h3>
+    <p class="consigna">
+      Sobre <code>compras</code>: mostrá <code>id_compra</code>, <code>fecha</code> y
       <code>cantidad</code> de las compras con <code>cantidad &gt; 1</code>, ordenadas por
-      <code>fecha DESC</code> y con <code>LIMIT 3</code>.<br>
-      5) Sobre <code>clientes</code>: <code>nombre</code> de los que empiezan con «M», con
-      <code>LIKE 'M%'</code>, ordenados alfabéticamente.<br>
-      6) Sobre <code>productos</code>: contar los que cuestan más de 1000 con
+      <code>fecha DESC</code> y con <code>LIMIT 3</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-con5">
+    <h3>Evaluación BD · Actividad 4 · Consulta 5</h3>
+    <p class="consigna">
+      Sobre <code>clientes</code>: mostrá <code>nombre</code> de los que empiezan con «M», con
+      <code>LIKE 'M%'</code>, ordenados alfabéticamente.
+    </p>
+    <textarea class="respuesta" spellcheck="false"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-con6">
+    <h3>Evaluación BD · Actividad 4 · Consulta 6</h3>
+    <p class="consigna">
+      Sobre <code>productos</code>: contá los que cuestan más de 1000 con
       <code>COUNT(*) AS productos_caros</code> y <code>WHERE precio &gt; 1000</code>.
     </p>
     <textarea class="respuesta" spellcheck="false"></textarea>
@@ -1347,19 +1382,40 @@ const EJERCICIOS = {
     { d:'Carga nombre, precio y stock', f:c => ['nombre','precio','stock'].every(x => c.t.includes(x)) },
     { d:'Inserta solamente en productos', f:c => !/insert\s+into\s+(clientes|compras)/.test(c.t) }
   ]},
-  'evbd-consultas': { requisitos: [
+  'evbd-con1': { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
     { d:'Filtra con WHERE stock > 10', f:c => /\bwhere\s+stock\s*>\s*10/.test(c.t) },
-    { d:'Filtra con precio < 1000 y AND', f:c => /<\s*1000/.test(c.t) && /\band\b/.test(c.t) },
+    { d:'Usa precio < 1000 y AND', f:c => /<\s*1000/.test(c.t) && /\band\b/.test(c.t) }
+  ]},
+  'evbd-con2': { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
     { d:'Busca con LIKE %papel%', f:c => /\blike\s+'%papel%'/.test(c.t) },
     { d:'Ordena por precio', f:c => /order\s+by\s+precio/.test(c.t) },
-    { d:'Limita a 5 filas', f:c => /\blimit\s+5\b/.test(c.t) },
-    { d:'Cuenta con COUNT(*) AS total_productos', f:c => /count\s*\(\s*\*\s*\)\s+as\s+total_productos/.test(c.t) },
-    { d:'Consulta compras con cantidad > 1', f:c => /\bfrom\s+compras\b/.test(c.t) && /\bwhere\s+cantidad\s*>\s*1/.test(c.t) },
+    { d:'Limita a 5 filas', f:c => /\blimit\s+5\b/.test(c.t) }
+  ]},
+  'evbd-con3': { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Cuenta con COUNT(*) AS total_productos', f:c => /count\s*\(\s*\*\s*\)\s+as\s+total_productos/.test(c.t) }
+  ]},
+  'evbd-con4': { requisitos: [
+    { d:'Usa SELECT sobre compras', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+compras\b/.test(c.t) },
     { d:'Muestra id_compra, fecha y cantidad', f:c => c.t.includes('id_compra') && c.t.includes('fecha') && c.t.includes('cantidad') },
-    { d:'Ordena compras por fecha DESC y limita a 3', f:c => /order\s+by\s+fecha/.test(c.t) && /\bdesc\b/.test(c.t) && /\blimit\s+3\b/.test(c.t) },
-    { d:'Consulta clientes con LIKE M%', f:c => /\bfrom\s+clientes\b/.test(c.t) && /\blike\s+'m%'/i.test(c.t) },
-    { d:'Ordena clientes por nombre', f:c => /order\s+by\s+nombre/.test(c.t) },
-    { d:'Cuenta productos caros con COUNT(*) AS productos_caros', f:c => /count\s*\(\s*\*\s*\)\s+as\s+productos_caros/.test(c.t) && /\bwhere\s+precio\s*>\s*1000/.test(c.t) }
+    { d:'Filtra con WHERE cantidad > 1', f:c => /\bwhere\s+cantidad\s*>\s*1/.test(c.t) },
+    { d:'Ordena por fecha DESC', f:c => /order\s+by\s+fecha/.test(c.t) && /\bdesc\b/.test(c.t) },
+    { d:'Limita a 3 filas', f:c => /\blimit\s+3\b/.test(c.t) }
+  ]},
+  'evbd-con5': { requisitos: [
+    { d:'Usa SELECT sobre clientes', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+clientes\b/.test(c.t) },
+    { d:'Muestra nombre', f:c => c.t.includes('nombre') },
+    { d:'Busca con LIKE M%', f:c => /\blike\s+'m%'/i.test(c.t) },
+    { d:'Ordena por nombre', f:c => /order\s+by\s+nombre/.test(c.t) }
+  ]},
+  'evbd-con6': { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Cuenta con COUNT(*) AS productos_caros', f:c => /count\s*\(\s*\*\s*\)\s+as\s+productos_caros/.test(c.t) },
+    { d:'Filtra con WHERE precio > 1000', f:c => /\bwhere\s+precio\s*>\s*1000/.test(c.t) }
   ]}
 };
 
@@ -1880,7 +1936,7 @@ const EVALUACIONES = {
     quiz:'#quiz-eval-bd',
     grupos:{
       A:['evbd-crear','evbd-relacionadas'],
-      B:['evbd-insertar','evbd-consultas'],
+      B:['evbd-insertar','evbd-con1','evbd-con2','evbd-con3','evbd-con4','evbd-con5','evbd-con6'],
       C:[]
     }
   }
