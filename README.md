@@ -33,7 +33,8 @@ y FK) → Base de datos MySQL**.
 - Después de la ejercitación hay dos **evaluaciones sin corrección visible**:
   `modelos-sistemas-general` (2 DER + 2 MER + 2 BD + 6 opción múltiple) y
   `modelos-sistemas-bd` (4 actividades: crear una tabla, crear dos tablas
-  relacionadas, insertar en una tabla y consultas + 6 opción múltiple). Piden
+  relacionadas, insertar en una tabla y 6 consultas + 6 opción múltiple; sin
+  ejemplos en gris claro dentro de los cuadros de respuesta). Piden
   nombre, apellido y curso, calculan la nota
   internamente y la envían cifrada al repo `inform` mediante `scripts/entrega.js`.
 - La guía de Teoría amplía el MER con tablas de tipos de atributo, la
