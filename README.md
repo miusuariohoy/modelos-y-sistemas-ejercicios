@@ -14,6 +14,7 @@ datos MySQL → programa Dia**.
 | `mysql.html` | Crear la base, insertar datos, consultar, relaciones y consultas de varias tablas |
 | `dia.html` | Uso del programa Dia: pantalla, hoja ER, hoja Database y exportación |
 | `guia_completa.html` | Guía completa original de una sola página (material de consulta) |
+| `unamasdesistemas/` | Guía de Unamas de Sistemas (DER, MER, BD y PDF de intensificación), integrada en este mismo repo |
 | `guia_anterior.html` | Versión anterior de la guía de una sola página (se conserva por historial) |
 
 `estilos.css` y `app.js` son compartidos por las cinco páginas del curso.
@@ -42,5 +43,8 @@ No requiere servidor: abrir `index.html` en cualquier navegador.
 Para publicarlo con GitHub Pages: *Settings → Pages → branch `main`,
 carpeta raíz*.
 
-Sitio publicado:
+Sitio publicado (portada principal):
 <https://miusuariohoy.github.io/modelos-y-sistemas-ejercicios/>
+
+La guía de Unamas de Sistemas quedó integrada en este repo y se abre en
+<https://miusuariohoy.github.io/modelos-y-sistemas-ejercicios/unamasdesistemas/>.
