@@ -99,12 +99,22 @@ textarea.respuesta::placeholder{color:#94a3b8}
   font-family:Consolas,"Courier New",monospace; font-size:.85rem;
 }
 .campo:empty::before,
-.mer-tabla h4:empty::before{content:attr(data-placeholder); color:#94a3b8}
-.campo:focus, .mer-tabla h4:focus{background:#f8fbff}
-.mer-linea{font-weight:700; color:var(--verde); white-space:nowrap; text-align:center}
+.mer-tabla h4:empty::before,
+.mer-card:empty::before{content:attr(data-placeholder); color:#94a3b8}
+.campo:focus, .mer-tabla h4:focus, .mer-card:focus{background:#f8fbff}
+.mer-linea{
+  display:inline-flex; align-items:center; gap:.2rem;
+  font-weight:700; color:var(--verde); white-space:nowrap;
+}
+.mer-card{
+  min-width:52px; padding:.15rem .2rem; outline:none;
+  text-align:center; font-size:.8rem;
+  border-bottom:1px dashed var(--borde);
+}
 @media (max-width:640px){
   .mer-diagrama{flex-direction:column}
   .mer-linea{font-size:.8rem}
+  .mer-card{min-width:46px}
 }
 .paleta button, .menu-mer button{
   display:inline-flex; align-items:center; gap:.35rem;
@@ -337,7 +347,7 @@ footer p{margin:.2rem 0}
       Usá el menú para insertar las entidades, los atributos, las marcas PK/FK y las líneas. Las
       líneas no se agregan solas: insertalas con <strong>Línea de relación</strong>. Primero hacé
       clic en la entidad o línea que quieras dejar atrás y después apretá el botón: la línea nueva
-      aparece justo ahí. La línea es solo un trazo: la cardinalidad se expresa con las FK.
+      aparece justo ahí. En cada línea escribí la cardinalidad: <code>1──N</code> o <code>N──1</code>.
     </p>
     <div class="paleta-titulo">Menú para armar el MER</div>
     <div class="menu-mer">
@@ -587,6 +597,13 @@ const EJERCICIOS = {
   mer1: { requisitos: [
     { d:'Arma tres entidades con el menú', f:c => !!c.caja && c.caja.querySelectorAll('.mer-tabla').length >= 3 },
     { d:'Une las entidades con dos líneas', f:c => !!c.caja && c.caja.querySelectorAll('.mer-linea').length >= 2 },
+    { d:'Escribe 1──N o N──1 en las dos líneas', f:c => {
+        const lineas = c.caja ? c.caja.querySelectorAll('.mer-linea') : [];
+        return lineas.length >= 2 && Array.from(lineas).every(x => {
+          const card = x.querySelector('.mer-card');
+          return !!card && /1.*n|n.*1/i.test(normalizar(card.innerText || ''));
+        });
+      } },
     { d:'Nombra cliente, producto y compra en singular', f:c => {
         const titulos = titulosMer(c);
         return ['cliente','producto','compra'].every(n => titulos.includes(n));
@@ -756,8 +773,17 @@ function nuevaTablaMer(){
 function nuevaLineaMer(){
   const linea = document.createElement('div');
   linea.className = 'mer-linea';
-  linea.setAttribute('aria-hidden', 'true');
-  linea.textContent = '────';
+  const card = document.createElement('span');
+  card.className = 'mer-card';
+  card.dataset.respuesta = '';
+  card.contentEditable = 'true';
+  card.setAttribute('data-placeholder', '1──N');
+  linea.appendChild(card);
+  const trazo = document.createElement('span');
+  trazo.className = 'mer-trazo';
+  trazo.setAttribute('aria-hidden', 'true');
+  trazo.textContent = '────';
+  linea.appendChild(trazo);
   return linea;
 }
 
