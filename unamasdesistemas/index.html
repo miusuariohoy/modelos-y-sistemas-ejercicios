@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Guía de Teoría: Diagrama DER, Modelo MER y MySQL con ejemplos, simuladores, actividades y soluciones guiadas.">
+<meta name="description" content="Guía de Teoría: Diagrama DER, Modelo MER y MySQL con ejemplos, simuladores, actividades y autoevaluación.">
 <title>Guía interactiva: Diagrama DER · Modelo MER · Base de Datos</title>
 <style>
 :root{
@@ -526,7 +526,7 @@ compras
     <ol class="pasos">
       <li><strong>Busc&aacute; las entidades:</strong> releé el texto y preguntate
       &iquest;de qui&eacute;n / de qu&eacute; quiero guardar datos? Son cosas:
-      <em>clientes</em> y <em>pizzas</em>. Dibuj&aacute; un rect&aacute;ngulo para cada una.</li>
+      <em>CLIENTE</em> y <em>PIZZA</em>. Dibuj&aacute; un rect&aacute;ngulo para cada una.</li>
       <li><strong>List&aacute; los atributos:</strong> colg&aacute; de cada entidad un
       &oacute;valo por caracter&iacute;stica. Cliente: nombre, apellido,
       tel&eacute;fono. Pizza: nombre, precio.</li>
@@ -1404,7 +1404,7 @@ const EVAL_PREGUNTAS = [
     correcta:0, pista:'El óvalo punteado marca el dato derivado; el doble óvalo, el multivaluado.' },
 
   { n:9, titulo:'¿Dónde va la FOREIGN KEY en una relación 1:N?', grupo:'B',
-    texto:'Un DUENO tiene muchas MASCOTAS y cada mascota pertenece a un solo dueno (relación 1:N). ¿Dónde se escribe la FK?',
+    texto:'Un DUENO tiene muchas mascotas y cada MASCOTA pertenece a un solo DUENO (relación 1:N). ¿Dónde se escribe la FK?',
     simbolos:['1:N','FK'],
     opciones:[ {t:'En la tabla del lado N, es decir en mascotas (id_dueno).'},
                {t:'En la tabla del lado 1, es decir en duenos.'},
