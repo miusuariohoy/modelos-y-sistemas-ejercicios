@@ -529,8 +529,27 @@ function insertarDibujo(caja, html, enfocarDentro){
   const sel = window.getSelection();
   let rango;
   if(sel.rangeCount && caja.contains(sel.anchorNode)){
+    const nodoSel = sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement;
+    const formas = [];
+    let actual = nodoSel;
+    while (actual && actual !== caja){
+      if (actual.classList && actual.classList.contains('forma')) formas.push(actual);
+      actual = actual.parentElement;
+    }
     rango = sel.getRangeAt(0);
-    rango.deleteContents();
+    if (formas.length){
+      /* Si el cursor está escribiendo dentro de una forma, el símbolo nuevo va al lado. */
+      let punto = formas[formas.length - 1];
+      while (punto.nextSibling && punto.nextSibling.nodeType === 3 &&
+             punto.nextSibling.textContent === '\u00a0'){
+        punto = punto.nextSibling;
+      }
+      rango = document.createRange();
+      rango.setStartAfter(punto);
+      rango.collapse(true);
+    } else {
+      rango.deleteContents();
+    }
   } else {
     rango = document.createRange();
     rango.selectNodeContents(caja);
@@ -540,10 +559,13 @@ function insertarDibujo(caja, html, enfocarDentro){
   plantilla.innerHTML = html;
   const nodo = plantilla.content.firstChild;
   rango.insertNode(nodo);
-  rango.setStartAfter(nodo);
-  rango.collapse(true);
+  const espacio = document.createTextNode('\u00a0');
+  nodo.after(espacio);
+  const despues = document.createRange();
+  despues.setStart(espacio, 1);
+  despues.collapse(true);
   sel.removeAllRanges();
-  sel.addRange(rango);
+  sel.addRange(despues);
   if (enfocarDentro){
     const interior = nodo.querySelector('.contenido');
     if (interior){
