@@ -31,7 +31,8 @@ y FK) → Base de datos MySQL**.
   y líneas con cardinalidad `1 a N` / `N a 1` entre las entidades. La
   convención es **DER = símbolos; MER = tipos de atributo y FK**.
 - Después de la ejercitación hay dos **evaluaciones sin corrección visible**:
-  `modelos-sistemas-general` (2 DER + 2 MER + 2 BD + 6 opción múltiple) y
+  `modelos-sistemas-general` (2 DER con paleta de símbolos, 2 MER con el menú
+  de tablas/campos/PK/FK/líneas, 2 BD y 6 opción múltiple) y
   `modelos-sistemas-bd` (4 actividades: crear una tabla, crear dos tablas
   relacionadas, insertar en una tabla y 6 consultas separadas, cada una con su
   propio cuadro y corrección, + 6 opción múltiple; sin ejemplos en gris claro

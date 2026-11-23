@@ -791,24 +791,53 @@ footer p{margin:.2rem 0}
   <article class="ejercicio" data-id="evg-mer1">
     <h3>Evaluación · Actividad 3: pasar el 1:N a tablas</h3>
     <p class="consigna">
-      Convertí el caso del autor y los libros al MER. Escribí <code>autor(id_autor PK INT,
-      nombre VARCHAR(50))</code> y <code>libro(id_libro PK AI INT, titulo VARCHAR(80),
-      id_autor FK INT)</code>, la cardinalidad <code>1──N</code> y una explicación de por qué la FK
-      va en <code>libro</code> y no en <code>autor</code>.
+      Convertí el caso del autor y los libros al MER. Usá el menú para armar las tablas
+      <code>autor</code> y <code>libro</code> en singular, con sus columnas y tipos: en autor,
+      <code>id_autor PK INT</code> y <code>nombre VARCHAR(50)</code>; en libro,
+      <code>id_libro PK AI INT</code>, <code>titulo VARCHAR(80)</code> e
+      <code>id_autor FK INT</code>. Agregá la línea con cardinalidad <code>1──N</code> y escribí
+      en una columna la explicación de por qué la FK va en <code>libro</code> y no en
+      <code>autor</code>.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="autor(...)\n1──N\nlibro(...)\nPorque..."></textarea>
+    <div class="paleta-titulo">Menú para armar el MER</div>
+    <div class="menu-mer">
+      <button type="button" data-mer="tabla">Tabla</button>
+      <button type="button" data-mer="atributo">Atributo</button>
+      <button type="button" data-mer="pk">PK</button>
+      <button type="button" data-mer="fk">FK</button>
+      <button type="button" data-mer="linea">Línea de relación</button>
+      <button type="button" data-mer="card1n">1 a N</button>
+      <button type="button" data-mer="cardn1">N a 1</button>
+    </div>
+    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las entidades y sus relaciones…">
+      <div class="mer-diagrama"></div>
+    </div>
   </article>
 
   <article class="ejercicio" data-id="evg-mer2">
     <h3>Evaluación · Actividad 4: N:M con atributos de la relación</h3>
     <p class="consigna">
-      Convertí el caso alumno–materia al MER: <code>alumno(id_alumno PK INT, nombre VARCHAR(50))</code>,
+      Convertí el caso alumno–materia al MER con el menú: armá
+      <code>alumno(id_alumno PK INT, nombre VARCHAR(50))</code>,
       <code>materia(id_materia PK INT, nombre VARCHAR(50))</code> y la intermedia
       <code>inscripcion(id_inscripcion PK AI INT, id_alumno FK INT, id_materia FK INT,
-      nota DECIMAL(3,1), fecha DATE)</code>. Escribí las dos cardinalidades <code>1──N</code> y
-      <code>N──1</code> y aclaró que las dos FK están en la intermedia.
+      nota DECIMAL(3,1), fecha DATE)</code>. Insertá las dos líneas con cardinalidad
+      <code>1──N</code> y <code>N──1</code> y aclaró en una columna que las dos FK están en la
+      intermedia.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="alumno(...)\nmateria(...)\ninscripcion(...)"></textarea>
+    <div class="paleta-titulo">Menú para armar el MER</div>
+    <div class="menu-mer">
+      <button type="button" data-mer="tabla">Tabla</button>
+      <button type="button" data-mer="atributo">Atributo</button>
+      <button type="button" data-mer="pk">PK</button>
+      <button type="button" data-mer="fk">FK</button>
+      <button type="button" data-mer="linea">Línea de relación</button>
+      <button type="button" data-mer="card1n">1 a N</button>
+      <button type="button" data-mer="cardn1">N a 1</button>
+    </div>
+    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las entidades y sus relaciones…">
+      <div class="mer-diagrama"></div>
+    </div>
   </article>
 
   <article class="ejercicio" data-id="evg-bd1">
@@ -1620,44 +1649,46 @@ function escribirMarcaMer(marca, caja, diagrama){
 }
 
 function prepararMenuMer(){
-  const menu = document.querySelector('.menu-mer');
-  const caja = document.querySelector('.ejercicio[data-id="mer1"] .respuesta');
-  if (!menu || !caja) return;
-  const diagrama = caja.querySelector('.mer-diagrama');
-  menu.querySelectorAll('button').forEach(function(boton){
-    const icono = ICONOS_MER[boton.dataset.mer];
-    if (!icono) return;
-    const texto = boton.textContent.trim();
-    boton.innerHTML = '<svg class="boton-icono" viewBox="0 0 28 20" aria-hidden="true">' +
-      icono + '</svg><span>' + texto + '</span>';
-    boton.title = boton.dataset.mer === 'card1n' || boton.dataset.mer === 'cardn1'
-      ? 'Insertar relación ' + texto + ' después de la entidad seleccionada'
-      : 'Insertar ' + texto.toLowerCase() + ' en el área de respuesta';
-  });
-  menu.addEventListener('mousedown', function(e){
-    if (e.target.closest('button')) e.preventDefault();
-  });
-  menu.addEventListener('click', function(e){
-    const boton = e.target.closest('button');
-    if (!boton || !diagrama) return;
-    const accion = boton.dataset.mer;
-    if (accion === 'tabla'){
-      diagrama.appendChild(nuevaTablaMer());
-    }
-    else if (accion === 'atributo'){
-      const tablas = diagrama.querySelectorAll('.mer-tabla');
-      let tabla = tablas[tablas.length - 1];
-      if (!tabla){ tabla = nuevaTablaMer(); diagrama.appendChild(tabla); }
-      tabla.appendChild(nuevoCampoMer());
-    } else if (accion === 'linea'){
-      insertarLineaMer(diagrama, '');
-    } else if (accion === 'card1n'){
-      insertarLineaMer(diagrama, '1──N');
-    } else if (accion === 'cardn1'){
-      insertarLineaMer(diagrama, 'N──1');
-    } else if (accion === 'pk' || accion === 'fk'){
-      escribirMarcaMer(accion.toUpperCase(), caja, diagrama);
-    }
+  document.querySelectorAll('.menu-mer').forEach(function(menu){
+    const articulo = menu.closest('.ejercicio');
+    const caja = articulo && articulo.querySelector('.respuesta');
+    if (!caja) return;
+    const diagrama = caja.querySelector('.mer-diagrama');
+    menu.querySelectorAll('button').forEach(function(boton){
+      const icono = ICONOS_MER[boton.dataset.mer];
+      if (!icono) return;
+      const texto = boton.textContent.trim();
+      boton.innerHTML = '<svg class="boton-icono" viewBox="0 0 28 20" aria-hidden="true">' +
+        icono + '</svg><span>' + texto + '</span>';
+      boton.title = boton.dataset.mer === 'card1n' || boton.dataset.mer === 'cardn1'
+        ? 'Insertar relación ' + texto + ' después de la entidad seleccionada'
+        : 'Insertar ' + texto.toLowerCase() + ' en el área de respuesta';
+    });
+    menu.addEventListener('mousedown', function(e){
+      if (e.target.closest('button')) e.preventDefault();
+    });
+    menu.addEventListener('click', function(e){
+      const boton = e.target.closest('button');
+      if (!boton || !diagrama) return;
+      const accion = boton.dataset.mer;
+      if (accion === 'tabla'){
+        diagrama.appendChild(nuevaTablaMer());
+      }
+      else if (accion === 'atributo'){
+        const tablas = diagrama.querySelectorAll('.mer-tabla');
+        let tabla = tablas[tablas.length - 1];
+        if (!tabla){ tabla = nuevaTablaMer(); diagrama.appendChild(tabla); }
+        tabla.appendChild(nuevoCampoMer());
+      } else if (accion === 'linea'){
+        insertarLineaMer(diagrama, '');
+      } else if (accion === 'card1n'){
+        insertarLineaMer(diagrama, '1──N');
+      } else if (accion === 'cardn1'){
+        insertarLineaMer(diagrama, 'N──1');
+      } else if (accion === 'pk' || accion === 'fk'){
+        escribirMarcaMer(accion.toUpperCase(), caja, diagrama);
+      }
+    });
   });
 }
 
