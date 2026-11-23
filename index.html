@@ -345,11 +345,10 @@ footer p{margin:.2rem 0}
       <code>DATE</code> y <code>cantidad</code> como <code>INT</code>. En SQL esas tablas se escriben
       en plural: <code>clientes</code>, <code>productos</code> y <code>compras</code>.
       Usá el menú para insertar las entidades, los atributos, las marcas PK/FK y las líneas. Las
-      líneas no se agregan solas: insertalas con <strong>Línea de relación</strong>. Primero hacé
-      clic en la entidad o línea que quieras dejar atrás y después apretá el botón: la línea nueva
-      aparece justo ahí. En cada línea escribí la cardinalidad: <code>1──N</code> o <code>N──1</code>.
-      También podés usar los botones <strong>1 a N</strong> y <strong>N a 1</strong> del menú: escriben
-      la cardinalidad en la línea que tengas seleccionada o agregan otra línea con esa cardinalidad.
+      líneas no se agregan solas. Primero hacé clic en la entidad o línea que quieras dejar atrás y
+      después apretá <strong>Línea de relación</strong>, <strong>1 a N</strong> o <strong>N a 1</strong>:
+      la línea aparece justo ahí, entre las entidades, con la cardinalidad elegida (o vacía para
+      escribirla vos).
     </p>
     <div class="paleta-titulo">Menú para armar el MER</div>
     <div class="menu-mer">
@@ -793,22 +792,22 @@ function nuevaLineaMer(){
   return linea;
 }
 
-function escribirCardinalidadMer(diagrama, valor){
+function insertarLineaMer(diagrama, cardinalidad){
   const sel = window.getSelection();
   const nodo = sel && sel.anchorNode;
-  let linea = nodo
+  let ancla = nodo
     ? (nodo.nodeType === 1
-        ? nodo.closest('.mer-linea')
-        : nodo.parentElement && nodo.parentElement.closest('.mer-linea'))
+        ? nodo.closest('.mer-tabla, .mer-linea')
+        : nodo.parentElement && nodo.parentElement.closest('.mer-tabla, .mer-linea'))
     : null;
-  if (!linea || !diagrama.contains(linea)){
-    linea = nuevaLineaMer();
-    const ultima = diagrama.lastElementChild;
-    if (ultima && ultima.nextSibling) diagrama.insertBefore(linea, ultima.nextSibling);
-    else diagrama.appendChild(linea);
+  if (!ancla || !diagrama.contains(ancla)) ancla = diagrama.lastElementChild;
+  const linea = nuevaLineaMer();
+  if (cardinalidad){
+    const card = linea.querySelector('.mer-card');
+    if (card) card.textContent = cardinalidad;
   }
-  const card = linea.querySelector('.mer-card');
-  if (card) card.textContent = valor;
+  if (ancla && ancla.nextSibling) diagrama.insertBefore(linea, ancla.nextSibling);
+  else diagrama.appendChild(linea);
   return linea;
 }
 
@@ -851,7 +850,7 @@ function prepararMenuMer(){
     boton.innerHTML = '<svg class="boton-icono" viewBox="0 0 28 20" aria-hidden="true">' +
       icono + '</svg><span>' + texto + '</span>';
     boton.title = boton.dataset.mer === 'card1n' || boton.dataset.mer === 'cardn1'
-      ? 'Poner cardinalidad ' + texto + ' en la línea seleccionada o crear una nueva'
+      ? 'Insertar relación ' + texto + ' después de la entidad seleccionada'
       : 'Insertar ' + texto.toLowerCase() + ' en el área de respuesta';
   });
   menu.addEventListener('mousedown', function(e){
@@ -870,21 +869,11 @@ function prepararMenuMer(){
       if (!tabla){ tabla = nuevaTablaMer(); diagrama.appendChild(tabla); }
       tabla.appendChild(nuevoCampoMer());
     } else if (accion === 'linea'){
-      const sel = window.getSelection();
-      const nodo = sel && sel.anchorNode;
-      let ancla = nodo
-        ? (nodo.nodeType === 1
-            ? nodo.closest('.mer-tabla, .mer-linea')
-            : nodo.parentElement && nodo.parentElement.closest('.mer-tabla, .mer-linea'))
-        : null;
-      if (!ancla || !diagrama.contains(ancla)) ancla = diagrama.lastElementChild;
-      const linea = nuevaLineaMer();
-      if (ancla && ancla.nextSibling) diagrama.insertBefore(linea, ancla.nextSibling);
-      else diagrama.appendChild(linea);
+      insertarLineaMer(diagrama, '');
     } else if (accion === 'card1n'){
-      escribirCardinalidadMer(diagrama, '1──N');
+      insertarLineaMer(diagrama, '1──N');
     } else if (accion === 'cardn1'){
-      escribirCardinalidadMer(diagrama, 'N──1');
+      insertarLineaMer(diagrama, 'N──1');
     } else if (accion === 'pk' || accion === 'fk'){
       escribirMarcaMer(accion.toUpperCase(), caja, diagrama);
     }
