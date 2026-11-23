@@ -231,6 +231,28 @@ ol.pasos li strong{color:var(--verde)}
 }
 .checklist{font-size:.9rem; margin:.5rem 0}
 .checklist .fila{padding:.12rem 0}
+.eval-ej.correcto{border-color:#16a34a; background:#f0fdf4}
+.eval-ej .checklist .ok{color:var(--verde); font-weight:700}
+.eval-ej .checklist .falta{color:#b91c1c; font-weight:700}
+.eval-form{
+  display:grid; gap:.55rem; max-width:560px;
+  border:1px solid var(--borde); border-radius:10px;
+  padding:.8rem; margin:1rem 0; background:#fff;
+}
+.eval-form label{font-weight:700; font-size:.9rem}
+.eval-form input{
+  border:1px solid var(--borde); border-radius:8px;
+  padding:.5rem .65rem; font:inherit; font-size:.95rem;
+}
+.eval-form button{
+  border:0; border-radius:8px; padding:.55rem .9rem;
+  background:var(--verde); color:#fff; font-weight:700; cursor:pointer;
+}
+.eval-form button:hover{background:#09551d}
+.eval-form button:disabled{background:#94a3b8; cursor:not-allowed}
+.estado-eval{margin:.6rem 0; font-size:.92rem; font-weight:700; min-height:1.2em}
+.estado-eval.ok{color:#15803d}
+.estado-eval.error{color:#b91c1c}
 </style>
 </head>
 <body>
@@ -1435,7 +1457,24 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 <!-- ========================= EVALUACIÓN ======================== -->
 <section id="evaluacion">
   <h1>Parte 7 &middot; Evaluación</h1>
-  <p>Escribí tus respuestas en cada cuadro. En los ejercicios 1 y 2, los botones <strong>dibujan el símbolo</strong> dentro del área de respuesta: apretalos y el dibujo aparece donde está el cursor. Esta evaluación es para practicar: la corrección la hace el docente.</p>
+  <p>Escribí tus respuestas en cada cuadro. En los ejercicios 1 y 2, los botones <strong>dibujan el símbolo</strong> dentro del área de respuesta: apretalos y el dibujo aparece donde está el cursor. Completá tus datos y presioná <strong>✅ Corregir y enviar</strong>: se guardarán respuestas, nota y corrección en el repositorio <code>inform</code>. La corrección final la hace el docente.</p>
+
+  <form class="eval-form" id="form-evaluacion"
+        data-examen="modelos-sistemas-unamas"
+        data-titulo="Evaluación DER · MER · BD (Parte 7)">
+    <label for="ev7-nombre">Nombre:</label>
+    <input id="ev7-nombre" name="nombre" type="text" placeholder="Tu nombre" required>
+
+    <label for="ev7-apellido">Apellido:</label>
+    <input id="ev7-apellido" name="apellido" type="text" placeholder="Tu apellido" required>
+
+    <label for="ev7-curso">Curso:</label>
+    <input id="ev7-curso" name="curso" type="text" placeholder="Ej.: 3º A" required>
+
+    <button id="btn-enviar-eval7" type="submit">✅ Corregir y enviar</button>
+  </form>
+  <div class="estado-eval" id="estado-eval7" role="status" aria-live="polite"></div>
+  <p class="nota"><strong>Privacidad:</strong> guardamos nombre, apellido, curso, respuestas, nota y fecha de envío. El contenido viaja cifrado; no pedimos contraseñas ni datos sensibles.</p>
 
   <div class="eval-ej">
     <h2>1. Los símbolos del Diagrama DER</h2>
@@ -1473,22 +1512,22 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
   <div class="eval-ej">
     <h2>5. ¿Qué es una entidad?</h2>
     <p>Escribí qué es una entidad y nombrá una del ejemplo de la tienda.</p>
-    <textarea rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
+    <textarea id="in-eval5" rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
   </div>
 
   <div class="eval-ej">
     <h2>6. ¿Qué es la PRIMARY KEY?</h2>
     <p>Escribí qué significa PK y para qué sirve.</p>
-    <textarea rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
+    <textarea id="in-eval6" rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
   </div>
 
   <div class="eval-ej">
     <h2>7. ¿Qué es la FOREIGN KEY?</h2>
     <p>Escribí qué significa FK y para qué sirve.</p>
-    <textarea rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
+    <textarea id="in-eval7" rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
   </div>
 
-  <div id="eval-progreso" class="puntaje" aria-live="polite">Evaluación para practicar &middot; Corrección del docente</div>
+  <div id="eval-progreso" class="puntaje" aria-live="polite">Evaluación con envío &middot; Corrección automática y docente</div>
 </section>
 
 </main>
@@ -1509,6 +1548,7 @@ window.addEventListener("scroll", () => {
 });
 </script>
 
+<script src="../scripts/entrega.js"></script>
 <script>
 /* ---------- Autoevaluación: opción múltiple ---------- */
 const PREGUNTAS = [
@@ -1589,16 +1629,16 @@ function reiniciarQuiz(){
 
 /* ---------- Evaluación: los botones dibujan el símbolo ---------- */
 const SIMBOLOS = [
-  { etiqueta:'Rectángulo', icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
-  { etiqueta:'Rombo', icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
-  { etiqueta:'Óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
-  { etiqueta:'Óvalo clave', icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
-  { etiqueta:'Doble óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
-  { etiqueta:'Óvalo punteado', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
-  { etiqueta:'1:N', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
-  { etiqueta:'N:M', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
-  { etiqueta:'PK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
-  { etiqueta:'FK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
+  { tipo:'rect',     etiqueta:'Rectángulo', icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
+  { tipo:'rombo',    etiqueta:'Rombo', icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
+  { tipo:'ovalo',    etiqueta:'Óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
+  { tipo:'clave',    etiqueta:'Óvalo clave', icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
+  { tipo:'doble',    etiqueta:'Doble óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
+  { tipo:'punteado', etiqueta:'Óvalo punteado', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
+  { tipo:'1:N',      etiqueta:'1:N', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
+  { tipo:'N:M',      etiqueta:'N:M', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
+  { tipo:'PK',       etiqueta:'PK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
+  { tipo:'FK',       etiqueta:'FK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
 ];
 
 /* Inserta el dibujo en el área de respuesta, donde esté el cursor. */
@@ -1645,13 +1685,219 @@ function insertarDibujo(area, html){
     b.title = 'Dibujar ' + s.etiqueta + ' en el área de respuesta';
     b.addEventListener('click', function(){
       insertarDibujo(area,
-        '<span class="ins-simbolo"><svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
+        '<span class="ins-simbolo" data-forma="' + s.tipo + '"><svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
         s.icona + '</svg>&nbsp;</span>');
     });
     wrap.appendChild(b);
   });
   area.parentNode.insertBefore(wrap, area);
 });
+
+/* ---------- Parte 7: corrección y envío cifrado al repo inform ---------- */
+const CLAVE_ENVIO_PARTE7 = 'modelos-sistemas-parte7-enviada-v1';
+
+function normalizarEval(s){
+  return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/\s+/g,' ').trim();
+}
+
+function formasEval(n){
+  const area = document.getElementById('in-eval' + n);
+  if (!area) return [];
+  return Array.from(area.querySelectorAll('[data-forma]')).map(x => x.dataset.forma || '');
+}
+
+function textoEval(n){
+  const area = document.getElementById('in-eval' + n);
+  if (!area) return '';
+  let crudo = (typeof area.value === 'string') ? area.value : (area.innerText || '');
+  if (area.tagName !== 'TEXTAREA') crudo += ' ' + formasEval(n).join(' ');
+  return normalizarEval(crudo);
+}
+
+function crudoEval(n){
+  const area = document.getElementById('in-eval' + n);
+  if (!area) return { texto:'', html:'' };
+  const texto = (typeof area.value === 'string') ? area.value : (area.innerText || '');
+  const html = area.tagName === 'TEXTAREA' ? area.value : area.innerHTML;
+  return { texto:texto.trim(), html:html };
+}
+
+function panelEval(n){
+  const ejes = document.querySelectorAll('#evaluacion .eval-ej');
+  const ej = ejes[n - 1];
+  let panel = document.getElementById('res-eval' + n);
+  if (!panel && ej){
+    panel = document.createElement('div');
+    panel.className = 'checklist';
+    panel.id = 'res-eval' + n;
+    panel.setAttribute('aria-live', 'polite');
+    ej.appendChild(panel);
+  }
+  return panel;
+}
+
+function corregirTodoEval(){
+  const textos = {};
+  const respuestas = {};
+  for (let n = 1; n <= 7; n++){
+    textos[n] = textoEval(n);
+    respuestas['ej' + n] = n === 4
+      ? { texto:'Solo enunciado (sin respuesta escribible)', html:'' }
+      : crudoEval(n);
+  }
+  const f1 = formasEval(1);
+  const f2 = formasEval(2);
+  const t1 = textos[1], t2 = textos[2], t3 = textos[3];
+  const t5 = textos[5], t6 = textos[6], t7 = textos[7];
+
+  const criterios = [
+    { n:1, d:'Dibujó la entidad con rectángulo', f:() => f1.includes('rect') },
+    { n:1, d:'Dibujó la relación con rombo', f:() => f1.includes('rombo') },
+    { n:1, d:'Dibujó un atributo con óvalo', f:() => f1.some(x => ['ovalo','clave','doble','punteado'].includes(x)) },
+    { n:1, d:'Explicó el óvalo subrayado o la clave', f:() => /subrayad|clave|primary key/.test(t1) },
+
+    { n:2, d:'Nombró la entidad intermedia PEDIDO', f:() => /pedid/.test(t2) },
+    { n:2, d:'Indicó la tabla pedidos', f:() => /pedidos/.test(t2) },
+    { n:2, d:'Mencionó clientes, pizzas y pedidos', f:() => ['clientes','pizzas','pedidos'].every(x => t2.includes(x)) },
+    { n:2, d:'Incluyó fecha y cantidad', f:() => t2.includes('fecha') && t2.includes('cantidad') },
+    { n:2, d:'Indicó dos FK hacia clientes y pizzas', f:() => /fk|foreign key|clave foranea/.test(t2) && /id_cliente/.test(t2) && /id_pizza/.test(t2) },
+
+    { n:3, d:'Usó CREATE TABLE clientes', f:() => /create\s+table\s+clientes/.test(t3) },
+    { n:3, d:'Puso dni como PRIMARY KEY', f:() => t3.includes('dni') && /primary key/.test(t3) },
+    { n:3, d:'Incluyó nombre y telefono', f:() => ['nombre','telefono'].every(x => t3.includes(x)) },
+    { n:3, d:'Cerró la sentencia con ;', f:() => /;\s*$/.test(t3) },
+
+    { n:5, d:'Definió entidad como objeto o elemento', f:() => t5.includes('entidad') && /objeto|cosa|persona|elemento|sujeto/.test(t5) },
+    { n:5, d:'Nombró una entidad de la tienda', f:() => /cliente|producto|compra|pedido/.test(t5) },
+
+    { n:6, d:'Explicó PK como clave primaria', f:() => /clave primaria|primary key|\bpk\b/.test(t6) },
+    { n:6, d:'Explicó que identifica cada fila', f:() => /identific|unica|registro|fila/.test(t6) },
+
+    { n:7, d:'Explicó FK como clave foránea', f:() => /clave foranea|foreign key|\bfk\b/.test(t7) },
+    { n:7, d:'Explicó que referencia otra tabla', f:() => /otra tabla|referencia|apunta|relacion/.test(t7) }
+  ];
+
+  const puntos = { A:0, B:0, C:0 };
+  const totales = { A:0, B:0, C:0 };
+  const detalle = [];
+  const fallos = [];
+
+  criterios.forEach(function(c){
+    const grupo = c.n === 3 ? 'C' : ((c.n === 1 || c.n === 2) ? 'A' : 'B');
+    const ok = !!c.f();
+    if (ok) puntos[grupo]++;
+    totales[grupo]++;
+    detalle.push('Ej' + c.n + ' · ' + c.d + ': ' + (ok ? 'OK' : 'FALTA'));
+    if (!ok) fallos.push('Ej' + c.n + ': ' + c.d);
+  });
+
+  /* Se muestra el resultado por ejercicio, sin revelar una respuesta completa. */
+  criterios.forEach(function(c){
+    const panel = panelEval(c.n);
+    if (!panel) return;
+    const mismos = criterios.filter(x => x.n === c.n);
+    const ya = panel.dataset.listo === '1';
+    if (!ya){
+      const bien = mismos.filter(x => criterios.indexOf(x) >= 0 && x.f()).length;
+      panel.innerHTML = '<div class="fila"><strong>' + bien + ' de ' + mismos.length + ' criterios</strong></div>' +
+        mismos.map(x => {
+          const ok = !!x.f();
+          return '<div class="fila ' + (ok ? 'ok' : 'falta') + '">' +
+            (ok ? '✔ ' : '✘ ') + x.d + '</div>';
+        }).join('');
+      panel.dataset.listo = '1';
+      const ej = document.querySelectorAll('#evaluacion .eval-ej')[c.n - 1];
+      if (ej) ej.classList.toggle('correcto', bien === mismos.length);
+    }
+  });
+
+  const bien = puntos.A + puntos.B + puntos.C;
+  const total = totales.A + totales.B + totales.C;
+  const nota = Math.round((bien / total) * 100) / 10;
+  detalle.unshift('Nota: ' + String(nota).replace('.', ',') + ' de 10 (' + bien + ' de ' + total + ' criterios)');
+  detalle.push('Ej4: solo enunciado, sin respuesta escribible.');
+
+  return {
+    nota:nota,
+    puntosA:puntos.A,
+    puntosB:puntos.B,
+    puntosC:puntos.C,
+    total:total,
+    fallos:fallos,
+    detalle:detalle.join('\n'),
+    respuestas:respuestas
+  };
+}
+
+function bloquearEvaluacionParte7(estado){
+  const form = document.getElementById('form-evaluacion');
+  if (form) form.querySelectorAll('input, button').forEach(function(el){ el.disabled = true; });
+  document.querySelectorAll('#evaluacion textarea').forEach(function(t){ t.disabled = true; });
+  document.querySelectorAll('#evaluacion .area-dibujo').forEach(function(a){ a.setAttribute('contenteditable', 'false'); });
+  document.querySelectorAll('#evaluacion .ex-sym').forEach(function(b){ b.disabled = true; });
+  const boton = document.getElementById('btn-enviar-eval7');
+  if (boton) boton.textContent = '✅ Evaluación enviada';
+  if (estado) estado.textContent = '✅ Evaluación enviada. Ya no se puede modificar.';
+}
+
+(function configurarEnvioParte7(){
+  const form = document.getElementById('form-evaluacion');
+  if (!form) return;
+  const estado = document.getElementById('estado-eval7');
+
+  try {
+    if (localStorage.getItem(CLAVE_ENVIO_PARTE7)){
+      bloquearEvaluacionParte7(estado);
+      return;
+    }
+  } catch (e) { /* sin almacenamiento local */ }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const nombre = form.elements.nombre.value.trim();
+    const apellido = form.elements.apellido.value.trim();
+    const curso = form.elements.curso.value.trim();
+    if (!nombre || !apellido || !curso){
+      estado.className = 'estado-eval error';
+      estado.textContent = '❌ Completá nombre, apellido y curso.';
+      return;
+    }
+
+    estado.className = 'estado-eval';
+    estado.textContent = 'Corrigiendo y enviando…';
+
+    const correccion = corregirTodoEval();
+    const payload = {
+      examen: form.dataset.examen,
+      titulo: form.dataset.titulo,
+      materia: window.ENTREGA_MATERIA || 'Modelos y sistemas',
+      apellido: apellido,
+      nombre: nombre,
+      curso: curso,
+      nota: correccion.nota,
+      puntosA: correccion.puntosA,
+      puntosB: correccion.puntosB,
+      puntosC: correccion.puntosC,
+      errores: correccion.fallos.join(' · ').slice(0, 300) || 'Sin errores',
+      detalle: correccion.detalle.slice(0, 20000),
+      respuestas: correccion.respuestas,
+      momento: new Date().toISOString(),
+      origen: location.href
+    };
+
+    window.enviarEntrega(payload).then(function(){
+      try { localStorage.setItem(CLAVE_ENVIO_PARTE7, new Date().toISOString()); } catch (e) {}
+      bloquearEvaluacionParte7(estado);
+      estado.className = 'estado-eval ok';
+      estado.textContent = '✅ Evaluación enviada. Nota: ' +
+        String(correccion.nota).replace('.', ',') + ' de 10. Se guardó en el repositorio inform.';
+    }).catch(function(error){
+      estado.className = 'estado-eval error';
+      estado.textContent = '❌ No se pudo enviar: ' + error.message;
+    });
+  });
+})();
 
 dibujarQuiz();
 </script>

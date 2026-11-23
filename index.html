@@ -80,6 +80,32 @@ textarea.respuesta{
   resize:vertical;
 }
 textarea.respuesta::placeholder{color:#94a3b8}
+.paleta button{
+  display:inline-flex; align-items:center; gap:.35rem;
+}
+.paleta button .boton-icono{width:25px; height:18px; flex:0 0 auto}
+.ins-simbolo{display:inline-block; vertical-align:middle; line-height:1}
+.ins-simbolo-svg{width:34px; height:24px; vertical-align:middle}
+.form-eval{
+  display:grid; gap:.55rem; max-width:560px;
+  border:1px solid var(--borde); border-radius:10px;
+  padding:.8rem; background:#fff;
+}
+.form-eval label{font-weight:700; font-size:.9rem; color:#334155}
+.form-eval input{
+  border:1px solid var(--borde); border-radius:8px;
+  padding:.5rem .65rem; font:inherit; font-size:.95rem;
+}
+.form-eval button{
+  border:0; border-radius:8px; padding:.55rem .9rem;
+  background:var(--verde); color:#fff; font-weight:700;
+  cursor:pointer;
+}
+.form-eval button:hover{background:#09551d}
+.form-eval button:disabled{background:#94a3b8; cursor:not-allowed}
+.estado-eval{margin:.6rem 0 0; font-size:.92rem; font-weight:700; min-height:1.2em}
+.estado-eval.ok{color:#15803d}
+.estado-eval.error{color:var(--rojo)}
 .forma{
   display:inline-flex; align-items:center; justify-content:center;
   min-width:92px; min-height:36px; margin:.12rem .25rem;
@@ -173,7 +199,7 @@ footer p{margin:.2rem 0}
 <header class="hero">
   <h1>Ejercitación con corrección · DER · MER · BD</h1>
   <p>En <strong>DER</strong> tocás símbolos y escribís dentro. En <strong>MER</strong> respondés un cuestionario y en <strong>BD</strong> escribís SQL. Después presionás <strong>✅ Corregir</strong>.</p>
-  <p class="pista">Tres partes: <strong>1 · DER</strong>, <strong>2 · MER</strong>, <strong>3 · BD</strong>. Cada respuesta se corrige acá mismo.</p>
+  <p class="pista">Cuatro partes: <strong>1 · DER</strong>, <strong>2 · MER</strong>, <strong>3 · BD</strong> y <strong>4 · Entrega</strong>. Podés corregir acá mismo y enviar tu evaluación al docente.</p>
   <p class="volver"><a href="unamasdesistemas/">← Volver a Unamas de Sistemas</a></p>
 </header>
 
@@ -181,6 +207,7 @@ footer p{margin:.2rem 0}
   <a href="#der">1 · DER</a>
   <a href="#mer">2 · MER</a>
   <a href="#bd">3 · BD</a>
+  <a href="#entrega">4 · Entrega</a>
 </nav>
 
 <nav class="nav-guias" aria-label="Guías del repositorio">
@@ -369,6 +396,32 @@ footer p{margin:.2rem 0}
   </article>
 </section>
 
+<!-- ============================ ENTREGA ============================ -->
+<section id="entrega">
+  <h2 class="seccion">4 · Entrega de la evaluación</h2>
+
+  <article class="ejercicio entrega-eval">
+    <h3>✍️ Corregir y enviar la evaluación</h3>
+    <p>Completá tus datos, presioná <strong>✅ Corregir y enviar</strong> y se guardarán en el repositorio <code>inform</code> tus respuestas, la nota y el detalle de la corrección. Después de enviar no se puede modificar.</p>
+    <form class="form-eval" id="form-evaluacion"
+          data-examen="modelos-sistemas-portada"
+          data-titulo="Evaluación DER · MER · BD (portada)">
+      <label for="ev-nombre">Nombre:</label>
+      <input id="ev-nombre" name="nombre" type="text" placeholder="Tu nombre" required>
+
+      <label for="ev-apellido">Apellido:</label>
+      <input id="ev-apellido" name="apellido" type="text" placeholder="Tu apellido" required>
+
+      <label for="ev-curso">Curso:</label>
+      <input id="ev-curso" name="curso" type="text" placeholder="Ej.: 3º A" required>
+
+      <button id="btn-enviar-eval" type="submit">✅ Corregir y enviar</button>
+    </form>
+    <div class="estado-eval" id="estado-eval" role="status" aria-live="polite"></div>
+    <p class="nota"><strong>Privacidad:</strong> guardamos nombre, apellido, curso, respuestas, nota y fecha de envío. El contenido viaja cifrado por un canal público; no pedimos contraseñas ni datos sensibles.</p>
+  </article>
+</section>
+
 </main>
 
 <footer>
@@ -376,14 +429,20 @@ footer p{margin:.2rem 0}
   <p>Diseñado por la profesora Alejandra Moreira</p>
 </footer>
 
+<script src="scripts/entrega.js"></script>
 <script>
-const SHAPES = {
-  rect:      { clase:'forma-rect',      placeholder:'entidad' },
-  rombo:     { clase:'forma-rombo',     placeholder:'relación' },
-  ovalo:     { clase:'forma-ovalo',     placeholder:'atributo' },
-  clave:     { clase:'forma-ovalo forma-clave',     placeholder:'clave' },
-  doble:     { clase:'forma-ovalo forma-multivalor', placeholder:'multivaluado' },
-  punteado:  { clase:'forma-ovalo forma-derivado',   placeholder:'derivado' }
+/* Los mismos SVG de la Parte 7: el botón dibuja, no escribe el nombre. */
+const SIMBOLOS = {
+  rect:     { etiqueta:'Rectángulo',      icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
+  rombo:    { etiqueta:'Rombo',           icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
+  ovalo:    { etiqueta:'Óvalo',           icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
+  clave:    { etiqueta:'Óvalo clave',     icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
+  doble:    { etiqueta:'Doble óvalo',     icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
+  punteado: { etiqueta:'Óvalo punteado',  icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
+  '1:N':    { etiqueta:'1:N',             icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
+  'N:M':    { etiqueta:'N:M',             icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
+  PK:       { etiqueta:'PK',              icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
+  FK:       { etiqueta:'FK',              icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
 };
 
 function normalizar(s){
@@ -394,19 +453,19 @@ function normalizar(s){
 
 function contexto(articulo){
   const caja = articulo.querySelector('.respuesta');
-  const crudo = (caja && typeof caja.value === 'string')
+  let crudo = (caja && typeof caja.value === 'string')
     ? caja.value
     : (caja ? (caja.innerText || '') : '');
-  const t = normalizar(crudo);
   const formas = caja
-    ? Array.from(caja.querySelectorAll('.forma')).map(f => f.dataset.tipo || '')
+    ? Array.from(caja.querySelectorAll('[data-forma]')).map(f => f.dataset.forma || '')
     : [];
+  if (caja && caja.tagName !== 'TEXTAREA') crudo += ' ' + formas.join(' ');
   return {
     caja: caja,
-    crudo: crudo,
-    t: t,
-    formas: formas,
-    n: function(patron){ return (crudo.match(new RegExp(patron,'gi')) || []).length; }
+    crudo: crudo.trim(),
+    html: caja ? (caja.tagName === 'TEXTAREA' ? caja.value : caja.innerHTML) : '',
+    t: normalizar(crudo),
+    formas: formas
   };
 }
 
@@ -422,14 +481,14 @@ const EJERCICIOS = {
     { d:'Dibuja la entidad CLIENTE', f:c => c.t.includes('cliente') && c.formas.includes('rect') },
     { d:'Dibuja la entidad PEDIDO', f:c => c.t.includes('pedido') && c.formas.includes('rect') },
     { d:'Dibuja la relación con rombo', f:c => c.formas.includes('rombo') },
-    { d:'Marca la cardinalidad 1:N', f:c => /1\s*:\s*n/.test(c.t) },
-    { d:'No usa cardinalidad N:M', f:c => !/n\s*:\s*m/.test(c.t) }
+    { d:'Marca la cardinalidad 1:N', f:c => c.formas.includes('1:N') || /1\s*:\s*n/.test(c.t) },
+    { d:'No usa cardinalidad N:M', f:c => !c.formas.includes('N:M') && !/n\s*:\s*m/.test(c.t) }
   ]},
   der3: { requisitos: [
     { d:'Dibuja la entidad CLIENTE', f:c => c.t.includes('cliente') && c.formas.includes('rect') },
     { d:'Dibuja la entidad PRODUCTO', f:c => c.t.includes('producto') && c.formas.includes('rect') },
     { d:'Dibuja la entidad intermedia COMPRA', f:c => c.t.includes('compra') },
-    { d:'Marca la cardinalidad N:M', f:c => /n\s*:\s*m/.test(c.t) },
+    { d:'Marca la cardinalidad N:M', f:c => c.formas.includes('N:M') || /n\s*:\s*m/.test(c.t) },
     { d:'Incluye fecha y cantidad en COMPRA', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
   ]},
   bd1: { requisitos: [
@@ -453,124 +512,93 @@ const EJERCICIOS = {
   ]}
 };
 
-let ultimoRango = null;
-document.addEventListener('selectionchange', function(){
-  const sel = window.getSelection();
-  if (!sel || !sel.rangeCount) return;
-  const nodo = sel.anchorNode;
-  const caja = nodo && nodo.nodeType === 1
-    ? nodo.closest('.respuesta')
-    : (nodo && nodo.parentElement ? nodo.parentElement.closest('.respuesta') : null);
-  if (caja && caja.tagName !== 'TEXTAREA') ultimoRango = sel.getRangeAt(0).cloneRange();
-});
-
-function rangoEn(caja){
-  const sel = window.getSelection();
-  if (ultimoRango && caja.contains(ultimoRango.commonAncestorContainer)) return ultimoRango.cloneRange();
-  if (sel && sel.rangeCount && caja.contains(sel.anchorNode)) return sel.getRangeAt(0).cloneRange();
-  const r = document.createRange();
-  r.selectNodeContents(caja);
-  r.collapse(false);
-  return r;
-}
-
-function rangoParaInsertar(caja){
-  const r = rangoEn(caja);
-  const nodo = r.startContainer;
-  const elemento = nodo && nodo.nodeType === 1 ? nodo : (nodo ? nodo.parentElement : null);
-  const forma = elemento ? elemento.closest('.forma') : null;
-  if (forma && caja.contains(forma)){
-    const fuera = document.createRange();
-    fuera.setStartAfter(forma);
-    fuera.collapse(true);
-    return fuera;
-  }
-  return r;
-}
-
-function ponerNode(caja, node, enfocarDentro){
+/* Inserta el dibujo real en el área de respuesta, donde esté el cursor. */
+function insertarDibujo(caja, html){
+  if(!caja || caja.tagName === 'TEXTAREA') return;
   caja.focus();
-  const r = rangoParaInsertar(caja);
-  r.deleteContents();
-  r.insertNode(node);
-  const espacio = document.createTextNode('\u00a0');
-  node.after(espacio);
-  const despues = document.createRange();
-  despues.setStart(espacio, 1);
-  despues.collapse(true);
   const sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(despues);
-  ultimoRango = despues.cloneRange();
-
-  if (enfocarDentro){
-    const interior = node.querySelector('.contenido');
-    if (interior){
-      const r2 = document.createRange();
-      r2.selectNodeContents(interior);
-      r2.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(r2);
-      ultimoRango = r2.cloneRange();
-    }
+  let rango;
+  if(sel.rangeCount && caja.contains(sel.anchorNode)){
+    rango = sel.getRangeAt(0);
+    rango.deleteContents();
+  } else {
+    rango = document.createRange();
+    rango.selectNodeContents(caja);
+    rango.collapse(false);
   }
+  const plantilla = document.createElement('template');
+  plantilla.innerHTML = html;
+  const nodo = plantilla.content.firstChild;
+  rango.insertNode(nodo);
+  rango.setStartAfter(nodo);
+  rango.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(rango);
 }
 
-function insertarForma(tipo, articulo){
-  const conf = SHAPES[tipo];
-  if (!conf) return;
-  const caja = articulo.querySelector('.respuesta');
-  if (!caja || caja.tagName === 'TEXTAREA') return;
-  const forma = document.createElement('span');
-  forma.className = 'forma ' + conf.clase;
-  forma.dataset.tipo = tipo;
-  forma.contentEditable = 'true';
-  forma.innerHTML = '<span class="contenido" contenteditable="true" data-placeholder="' + conf.placeholder + '"></span>';
-  ponerNode(caja, forma, true);
+function tipoDeBoton(boton){
+  return boton.dataset.shape || boton.dataset.token || '';
 }
 
-function insertarToken(texto, articulo){
-  const caja = articulo.querySelector('.respuesta');
-  if (!caja || caja.tagName === 'TEXTAREA') return;
-  const token = document.createElement('span');
-  token.className = 'token';
-  token.textContent = texto;
-  ponerNode(caja, token, false);
-}
-
-document.querySelectorAll('.paleta').forEach(function(paleta){
-  paleta.addEventListener('mousedown', function(e){
-    if (e.target.closest('button')) e.preventDefault();
+function prepararPaletas(){
+  document.querySelectorAll('.paleta').forEach(function(paleta){
+    paleta.addEventListener('mousedown', function(e){
+      if (e.target.closest('button')) e.preventDefault();
+    });
+    paleta.querySelectorAll('button').forEach(function(boton){
+      const tipo = tipoDeBoton(boton);
+      const sim = SIMBOLOS[tipo];
+      if (!sim) return;
+      const texto = boton.textContent.trim();
+      boton.innerHTML = '<svg class="boton-icono" viewBox="0 0 28 20" aria-hidden="true">' +
+        sim.icona + '</svg><span>' + texto + '</span>';
+      boton.title = 'Dibujar ' + sim.etiqueta + ' en el área de respuesta';
+    });
+    paleta.addEventListener('click', function(e){
+      const boton = e.target.closest('button');
+      if (!boton) return;
+      const tipo = tipoDeBoton(boton);
+      const sim = SIMBOLOS[tipo];
+      if (!sim) return;
+      const caja = boton.closest('.ejercicio').querySelector('.respuesta');
+      insertarDibujo(caja,
+        '<span class="ins-simbolo" data-forma="' + tipo + '">' +
+        '<svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
+        sim.icona + '</svg>&nbsp;</span>');
+    });
   });
-  paleta.addEventListener('click', function(e){
-    const boton = e.target.closest('button');
-    if (!boton) return;
-    const articulo = boton.closest('.ejercicio');
-    if (boton.dataset.shape) insertarForma(boton.dataset.shape, articulo);
-    if (boton.dataset.token) insertarToken(boton.dataset.token, articulo);
+}
+
+prepararPaletas();
+
+function resultadosArticulo(articulo){
+  const c = contexto(articulo);
+  const datos = EJERCICIOS[articulo.dataset.id];
+  return datos.requisitos.map(function(r){
+    return { texto:r.d, ok: !!r.f(c) };
   });
-});
+}
+
+function mostrarResultado(articulo, resultados){
+  const bien = resultados.filter(function(r){ return r.ok; }).length;
+  const total = resultados.length;
+  const todoBien = bien === total;
+  articulo.classList.toggle('correcto', todoBien);
+  articulo.querySelector('.resultado').innerHTML =
+    '<div class="resumen' + (todoBien ? '' : ' parcial') + '">' +
+      (todoBien ? '✅ ' : '✍️ ') + bien + ' de ' + total + ' requisitos cumplidos' +
+    '</div><ul>' +
+    resultados.map(function(r){
+      return '<li class="' + (r.ok ? 'si' : 'no') + '">' + (r.ok ? '✅' : '❌') + ' ' + r.texto + '</li>';
+    }).join('') +
+    '</ul>';
+  return { bien:bien, total:total, resultados:resultados };
+}
 
 document.querySelectorAll('.corregir').forEach(function(boton){
   boton.addEventListener('click', function(){
     const articulo = boton.closest('.ejercicio');
-    const c = contexto(articulo);
-    const datos = EJERCICIOS[articulo.dataset.id];
-    const resultados = datos.requisitos.map(function(r){
-      return { texto:r.d, ok: !!r.f(c) };
-    });
-    const bien = resultados.filter(function(r){ return r.ok; }).length;
-    const total = resultados.length;
-    const todoBien = bien === total;
-    articulo.classList.toggle('correcto', todoBien);
-    articulo.querySelector('.resultado').innerHTML =
-      '<div class="resumen' + (todoBien ? '' : ' parcial') + '">' +
-        (todoBien ? '✅ ' : '✍️ ') + bien + ' de ' + total + ' requisitos cumplidos' +
-      '</div><ul>' +
-      resultados.map(function(r){
-        return '<li class="' + (r.ok ? 'si' : 'no') + '">' + (r.ok ? '✅' : '❌') + ' ' + r.texto + '</li>';
-      }).join('') +
-      '</ul>';
+    mostrarResultado(articulo, resultadosArticulo(articulo));
   });
 });
 
@@ -582,41 +610,50 @@ document.querySelectorAll('.limpiar').forEach(function(boton){
     else if (caja) caja.innerHTML = '';
     articulo.querySelector('.resultado').innerHTML = '';
     articulo.classList.remove('correcto');
-    ultimoRango = null;
   });
 });
 
-const botonQuiz = document.querySelector('.corregir-quiz');
-if (botonQuiz){
-  botonQuiz.addEventListener('click', function(){
-    const preguntas = Array.from(document.querySelectorAll('#quiz-mer .quiz-pregunta'));
-    let bien = 0;
-    preguntas.forEach(function(p){
-      const elegida = p.querySelector('input:checked');
-      const correcta = p.dataset.correcta;
-      const pista = p.dataset.pista || '';
-      const feedback = p.querySelector('.quiz-feedback');
-      p.querySelectorAll('label').forEach(function(l){ l.classList.remove('bien','mal'); });
-      if (!elegida){
-        feedback.className = 'quiz-feedback mal';
-        feedback.textContent = '❌ Elegí una opción.';
-        return;
-      }
-      const ok = elegida.value === correcta;
+function evaluarQuiz(mostrar){
+  const preguntas = Array.from(document.querySelectorAll('#quiz-mer .quiz-pregunta'));
+  let bien = 0;
+  const detalles = [];
+  preguntas.forEach(function(p, i){
+    const elegida = p.querySelector('input:checked');
+    const correcta = p.dataset.correcta;
+    const pista = p.dataset.pista || '';
+    const feedback = p.querySelector('.quiz-feedback');
+    let ok = false;
+    let mensaje = '❌ Elegí una opción.';
+
+    if (elegida){
+      ok = elegida.value === correcta;
       if (ok) bien++;
+      mensaje = (ok ? '✅ Correcto. ' : '❌ Revisá: ') + pista;
+    }
+
+    p.querySelectorAll('label').forEach(function(l){ l.classList.remove('bien','mal'); });
+    if (mostrar){
       feedback.className = 'quiz-feedback ' + (ok ? 'si' : 'mal');
-      feedback.textContent = (ok ? '✅ Correcto. ' : '❌ Revisá: ') + pista;
+      feedback.textContent = mensaje;
       const correctaLabel = p.querySelector('input[value="' + correcta + '"]').closest('label');
       correctaLabel.classList.add('bien');
-      if (!ok) elegida.closest('label').classList.add('mal');
-    });
-    const total = preguntas.length;
+      if (elegida && !ok) elegida.closest('label').classList.add('mal');
+    }
+    detalles.push({ texto:'Pregunta ' + (i + 1), ok:ok, feedback:mensaje });
+  });
+
+  const total = preguntas.length;
+  if (mostrar){
     document.getElementById('res-quiz').innerHTML =
       '<div class="resumen' + (bien === total ? '' : ' parcial') + '">' +
       (bien === total ? '✅ ' : '✍️ ') + bien + ' de ' + total + ' respuestas correctas' +
       '</div>';
-  });
+  }
+  return { bien:bien, total:total, detalles:detalles };
 }
+
+const botonQuiz = document.querySelector('.corregir-quiz');
+if (botonQuiz) botonQuiz.addEventListener('click', function(){ evaluarQuiz(true); });
 
 const botonLimpiarQuiz = document.querySelector('.limpiar-quiz');
 if (botonLimpiarQuiz){
@@ -630,6 +667,142 @@ if (botonLimpiarQuiz){
     document.getElementById('res-quiz').innerHTML = '';
   });
 }
+
+/* ---------- Corrección completa y envío cifrado al repo inform ---------- */
+const CLAVE_ENVIO_PORTADA = 'modelos-sistemas-portada-enviada-v1';
+
+function corregirTodo(){
+  const detalle = [];
+  const fallos = [];
+  const respuestas = {};
+  let puntosA = 0, totalA = 0;
+  let puntosC = 0, totalC = 0;
+
+  ['der1','der2','der3'].forEach(function(id){
+    const articulo = document.querySelector('.ejercicio[data-id="' + id + '"]');
+    const c = contexto(articulo);
+    const r = mostrarResultado(articulo, resultadosArticulo(articulo));
+    puntosA += r.bien;
+    totalA += r.total;
+    respuestas[id] = { texto:c.crudo, html:c.html };
+    r.resultados.forEach(function(x){
+      detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
+      if (!x.ok) fallos.push(id.toUpperCase() + ': ' + x.texto);
+    });
+  });
+
+  ['bd1','bd2','bd3'].forEach(function(id){
+    const articulo = document.querySelector('.ejercicio[data-id="' + id + '"]');
+    const c = contexto(articulo);
+    const r = mostrarResultado(articulo, resultadosArticulo(articulo));
+    puntosC += r.bien;
+    totalC += r.total;
+    respuestas[id] = { texto:c.crudo, html:c.html };
+    r.resultados.forEach(function(x){
+      detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
+      if (!x.ok) fallos.push(id.toUpperCase() + ': ' + x.texto);
+    });
+  });
+
+  const quiz = evaluarQuiz(true);
+  respuestas.quiz = Array.from(document.querySelectorAll('#quiz-mer .quiz-pregunta')).map(function(p, i){
+    const elegida = p.querySelector('input:checked');
+    return { pregunta:i + 1, respuesta:elegida ? elegida.value : 'sin responder' };
+  });
+  quiz.detalles.forEach(function(x){
+    detalle.push('MER · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
+    if (!x.ok) fallos.push('MER · ' + x.texto);
+  });
+
+  const bien = puntosA + quiz.bien + puntosC;
+  const total = totalA + quiz.total + totalC;
+  const nota = Math.round((bien / total) * 100) / 10;
+
+  detalle.unshift('Nota: ' + String(nota).replace('.', ',') + ' de 10 (' + bien + ' de ' + total + ' requisitos)');
+
+  return {
+    nota:nota,
+    puntosA:puntosA,
+    puntosB:quiz.bien,
+    puntosC:puntosC,
+    total:total,
+    fallos:fallos,
+    detalle:detalle.join('\n'),
+    respuestas:respuestas
+  };
+}
+
+function bloquearEvaluacionPortada(estado){
+  const form = document.getElementById('form-evaluacion');
+  if (form) form.querySelectorAll('input, button').forEach(function(el){ el.disabled = true; });
+  document.querySelectorAll('#der button, #mer button, #bd button').forEach(function(b){ b.disabled = true; });
+  document.querySelectorAll('#quiz-mer input').forEach(function(i){ i.disabled = true; });
+  document.querySelectorAll('.respuesta').forEach(function(caja){
+    if (caja.tagName === 'TEXTAREA') caja.disabled = true;
+    else caja.setAttribute('contenteditable', 'false');
+  });
+  const boton = document.getElementById('btn-enviar-eval');
+  if (boton) boton.textContent = '✅ Evaluación enviada';
+  if (estado) estado.textContent = '✅ Evaluación enviada. Ya no se puede modificar.';
+}
+
+(function configurarEnvioPortada(){
+  const form = document.getElementById('form-evaluacion');
+  if (!form) return;
+  const estado = document.getElementById('estado-eval');
+
+  try {
+    if (localStorage.getItem(CLAVE_ENVIO_PORTADA)){
+      bloquearEvaluacionPortada(estado);
+      return;
+    }
+  } catch (e) { /* sin almacenamiento local */ }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const nombre = form.elements.nombre.value.trim();
+    const apellido = form.elements.apellido.value.trim();
+    const curso = form.elements.curso.value.trim();
+    if (!nombre || !apellido || !curso){
+      estado.className = 'estado-eval error';
+      estado.textContent = '❌ Completá nombre, apellido y curso.';
+      return;
+    }
+
+    estado.className = 'estado-eval';
+    estado.textContent = 'Corrigiendo y enviando…';
+
+    const correccion = corregirTodo();
+    const payload = {
+      examen: form.dataset.examen,
+      titulo: form.dataset.titulo,
+      materia: window.ENTREGA_MATERIA || 'Modelos y sistemas',
+      apellido: apellido,
+      nombre: nombre,
+      curso: curso,
+      nota: correccion.nota,
+      puntosA: correccion.puntosA,
+      puntosB: correccion.puntosB,
+      puntosC: correccion.puntosC,
+      errores: correccion.fallos.join(' · ').slice(0, 300) || 'Sin errores',
+      detalle: correccion.detalle.slice(0, 20000),
+      respuestas: correccion.respuestas,
+      momento: new Date().toISOString(),
+      origen: location.href
+    };
+
+    window.enviarEntrega(payload).then(function(){
+      try { localStorage.setItem(CLAVE_ENVIO_PORTADA, new Date().toISOString()); } catch (e) {}
+      bloquearEvaluacionPortada(estado);
+      estado.className = 'estado-eval ok';
+      estado.textContent = '✅ Evaluación enviada. Nota: ' +
+        String(correccion.nota).replace('.', ',') + ' de 10. Se guardó en el repositorio inform.';
+    }).catch(function(error){
+      estado.className = 'estado-eval error';
+      estado.textContent = '❌ No se pudo enviar: ' + error.message;
+    });
+  });
+})();
 </script>
 </body>
 </html>
