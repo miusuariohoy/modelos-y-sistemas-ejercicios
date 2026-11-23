@@ -297,6 +297,24 @@ footer p{margin:.2rem 0}
 <section id="mer">
   <h2 class="seccion">2 · MER</h2>
 
+  <article class="ejercicio" data-id="mer1">
+    <h3>✍️ Ejercicio 2.1: de N:M a las FK <span class="nivel">Medio</span></h3>
+    <p class="consigna">
+      Muchos <strong>clientes</strong> compran muchos <strong>productos</strong>. Escribí las tablas
+      <code>clientes</code>, <code>productos</code> y <code>compras</code> con el
+      <strong>tipo de cada columna</strong> (<code>INT</code>, <code>VARCHAR</code>, <code>DATE</code>),
+      la <strong>PK</strong> de cada tabla y las <strong>dos FK</strong> en <code>compras</code>
+      que apuntan a <code>clientes</code> y <code>productos</code>. <code>fecha</code> va como
+      <code>DATE</code> y <code>cantidad</code> como <code>INT</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="clientes&#10;  id_cliente PK INT&#10;  ...&#10;&#10;compras&#10;  id_compra PK INT&#10;  id_cliente FK INT&#10;  ..."></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
   <article class="ejercicio">
     <h3>✍️ Cuestionario evaluativo: tipos, claves y relaciones</h3>
     <p class="consigna">Elegí una opción en cada pregunta y presioná <strong>✅ Corregir</strong>.</p>
@@ -500,6 +518,15 @@ const EJERCICIOS = {
     { d:'Dibuja la entidad intermedia COMPRA', f:c => c.t.includes('compra') },
     { d:'Marca la cardinalidad N:M', f:c => c.formas.includes('N:M') || /n\s*:\s*m/.test(c.t) },
     { d:'Incluye fecha y cantidad en COMPRA', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
+  ]},
+  mer1: { requisitos: [
+    { d:'Escribe la tabla clientes', f:c => c.t.includes('clientes') },
+    { d:'Escribe la tabla productos', f:c => c.t.includes('productos') },
+    { d:'Escribe la tabla intermedia compras', f:c => c.t.includes('compras') },
+    { d:'Indica una PK', f:c => /primary key|\bpk\b/.test(c.t) },
+    { d:'Indica dos FK', f:c => (c.t.match(/\bfk\b|foreign key/g) || []).length >= 2 },
+    { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) },
+    { d:'Pone fecha y cantidad en compras', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
   ]},
   bd1: { requisitos: [
     { d:'Usa CREATE TABLE', f:c => /create\s+table/.test(c.t) },
@@ -732,6 +759,7 @@ function corregirTodo(){
   const fallos = [];
   const respuestas = {};
   let puntosA = 0, totalA = 0;
+  let puntosB = 0, totalB = 0;
   let puntosC = 0, totalC = 0;
 
   ['der1','der2','der3'].forEach(function(id){
@@ -740,6 +768,19 @@ function corregirTodo(){
     const r = mostrarResultado(articulo, resultadosArticulo(articulo));
     puntosA += r.bien;
     totalA += r.total;
+    respuestas[id] = { texto:c.crudo, html:c.html };
+    r.resultados.forEach(function(x){
+      detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
+      if (!x.ok) fallos.push(id.toUpperCase() + ': ' + x.texto);
+    });
+  });
+
+  ['mer1'].forEach(function(id){
+    const articulo = document.querySelector('.ejercicio[data-id="' + id + '"]');
+    const c = contexto(articulo);
+    const r = mostrarResultado(articulo, resultadosArticulo(articulo));
+    puntosB += r.bien;
+    totalB += r.total;
     respuestas[id] = { texto:c.crudo, html:c.html };
     r.resultados.forEach(function(x){
       detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
@@ -770,8 +811,8 @@ function corregirTodo(){
     if (!x.ok) fallos.push('MER · ' + x.texto);
   });
 
-  const bien = puntosA + quiz.bien + puntosC;
-  const total = totalA + quiz.total + totalC;
+  const bien = puntosA + puntosB + quiz.bien + puntosC;
+  const total = totalA + totalB + quiz.total + totalC;
   const nota = Math.round((bien / total) * 100) / 10;
 
   detalle.unshift('Nota: ' + String(nota).replace('.', ',') + ' de 10 (' + bien + ' de ' + total + ' requisitos)');
@@ -779,7 +820,7 @@ function corregirTodo(){
   return {
     nota:nota,
     puntosA:puntosA,
-    puntosB:quiz.bien,
+    puntosB:puntosB + quiz.bien,
     puntosC:puntosC,
     total:total,
     fallos:fallos,
