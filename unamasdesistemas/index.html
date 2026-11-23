@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Guía de Unamas de Sistemas: Diagrama DER, Modelo MER y MySQL con ejemplos, simuladores, actividades y soluciones guiadas.">
 <title>Guía interactiva: Diagrama DER · Modelo MER · Base de Datos</title>
 <style>
 :root{
@@ -114,6 +115,43 @@ summary{cursor:pointer; font-weight:600; color:var(--verde); font-size:.92rem}
 ol.pasos{padding-left:1.4rem}
 ol.pasos li{margin-bottom:.45rem; font-size:.95rem}
 ol.pasos li strong{color:var(--verde)}
+/* ---------- Explicaciones y simuladores migrados ---------- */
+.sub{font-weight:700; color:var(--verde); margin-top:1rem}
+.okbox{
+  background:var(--verde-claro); border-left:4px solid var(--verde);
+  padding:.55rem .8rem; border-radius:0 8px 8px 0;
+  font-size:.92rem; margin:.8rem 0;
+}
+.sim{padding:1rem}
+.sim h3{color:var(--verde)}
+.sim-row{display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin:.6rem 0}
+.sim select{
+  padding:.45rem .6rem; border:1px solid var(--borde); border-radius:8px;
+  font-size:.9rem; font-family:inherit; background:#fff; color:var(--texto);
+}
+.num-btns{display:flex; gap:.4rem; flex-wrap:wrap; margin:.2rem 0 .4rem}
+.num-btns button{
+  border:1px solid var(--borde); background:#fff; color:var(--texto);
+  font-weight:700; font-size:.85rem; padding:.4rem .75rem;
+  border-radius:8px; cursor:pointer;
+}
+.num-btns button:hover{border-color:var(--verde); background:var(--verde-claro)}
+.num-btns button.active{background:var(--verde); border-color:var(--verde); color:#fff}
+.sim-panel{
+  border:1px solid var(--borde); border-radius:10px; background:#f8fafc;
+  padding:.8rem; margin-top:.6rem; overflow-x:auto;
+}
+.sim-panel .der-wrap{margin:.4rem 0}
+.sim-panel .tblbox{min-width:130px; font-size:.72rem}
+.sim-msg{
+  display:none; margin-top:.6rem; padding:.6rem .8rem;
+  border-radius:0 8px 8px 0; font-size:.9rem; font-weight:600;
+}
+.sim-msg.ok{display:block; background:var(--verde-claro); border-left:4px solid var(--verde); color:#0b6623}
+.tabla-resultados{width:100%; border-collapse:collapse; font-size:.84rem; margin:.5rem 0}
+.tabla-resultados th,.tabla-resultados td{border:1px solid var(--borde); padding:.35rem .5rem; text-align:left}
+.tabla-resultados th{background:var(--celeste)}
+.tabla-resultados tfoot td{font-weight:700; background:var(--gris)}
 @media (max-width:600px){ .conector{width:100%} }
 
 /* ---------- Actividades, autoevaluación y evaluación ---------- */
@@ -176,6 +214,7 @@ ol.pasos li strong{color:var(--verde)}
   <a href="#der">Diagrama DER</a>
   <a href="#mer">Modelo MER</a>
   <a href="#bd">BD</a>
+  <a href="#simuladores">Simuladores</a>
   <a href="BD_intensificacion.pdf" target="_blank" rel="noopener">INTENSIFICACION</a>
   <a href="#actividades">Actividades</a>
   <a href="#autoevaluacion">Autoevaluación</a>
@@ -305,6 +344,51 @@ ol.pasos li strong{color:var(--verde)}
     <tr><td>1:1 / 1:N / N:M</td><td>Cardinalidades sobre la linea</td></tr>
   </table>
 
+  <h2>Cardinalidades y atributos de la relación</h2>
+  <p>La <strong>cardinalidad</strong> indica <strong>cuántas instancias</strong> de una entidad
+  pueden relacionarse con cuántas de la otra. Se escribe <strong>sobre la línea</strong> y se lee
+  desde cada extremo: no es lo mismo <strong>1:N</strong> que <strong>N:1</strong>.</p>
+  <div class="nota"><strong>Se lee así:</strong> CLIENTE 1 ──── N COMPRA → un cliente realiza
+  MUCHAS compras; cada compra pertenece a UN cliente.</div>
+  <div class="sub">Los tres tipos</div>
+  <table class="datos">
+    <tr><th>Cardinalidad</th><th>Ejemplo</th><th>Lectura</th><th>En el DER</th></tr>
+    <tr><td><strong>1 : 1</strong></td><td>PERSONA – DNI</td>
+        <td>Una persona tiene un solo DNI y un DNI pertenece a una sola persona.</td>
+        <td>Una de las dos tablas lleva la FK (con UNIQUE). No hay intermedia.</td></tr>
+    <tr><td><strong>1 : N</strong></td><td>CLIENTE – COMPRA</td>
+        <td>Un cliente realiza muchas compras; cada compra es de un solo cliente.</td>
+        <td>La FK va en la tabla del lado <strong>N</strong> (compras → cliente_dni).</td></tr>
+    <tr><td><strong>N : M</strong></td><td>CLIENTE – PRODUCTO</td>
+        <td>Muchos clientes compran muchos productos.</td>
+        <td>Se crea una <strong>tabla intermedia</strong> con dos FK. No se resuelve con una sola FK.</td></tr>
+  </table>
+  <div class="sub">Atributos de la relación</div>
+  <p>Una relación también puede tener <strong>atributos propios</strong>. En la compra,
+  <code>fecha</code> y <code>cantidad</code> no son del cliente ni del producto por separado:
+  son <strong>del hecho de comprar</strong>.</p>
+<pre class="codigo"><span class="cm">-- En el MER: el rombo COMPRA tiene colgando fecha y cantidad.</span>
+<span class="cm">-- En el DER: esos atributos pasan a la tabla intermedia compras.</span>
+compras
+  id_compra    PK
+  cliente_dni  FK  -&gt; clientes
+  producto_cod FK  -&gt; productos
+  fecha
+  cantidad</pre>
+  <div class="okbox"><strong>Regla de oro:</strong> si la relación es <strong>N:M</strong>, se convierte
+  en una <strong>entidad intermedia</strong>. Sus atributos (fecha, cantidad) se mudan con ella y
+  quedan como columnas de esa tabla.</div>
+  <div class="nota"><strong>Error clásico:</strong> intentar resolver un N:M con una sola clave
+  foránea. Una compra puede tener varios productos y un producto aparece en varias compras: hace
+  falta la intermedia.</div>
+  <div class="sub">¿La relación tiene datos propios?</div>
+  <table class="datos">
+    <tr><th>Situación</th><th>Qué hacer</th></tr>
+    <tr><td>Relación 1:N sin atributos</td><td>Solo la FK en el lado N.</td></tr>
+    <tr><td>Relación 1:N con atributos</td><td>Los atributos pueden ir en la tabla del lado N, junto a la FK.</td></tr>
+    <tr><td>Relación N:M (con o sin atributos)</td><td>Tabla intermedia con dos FK; sus atributos van ahí.</td></tr>
+  </table>
+
   <h2>Ejemplo completo de Diagrama DER (vertical)</h2>
   <figure>
       <svg viewBox="0 0 280 470" role="img" aria-label="Diagrama DER completo de la tienda" style="max-width:300px">
@@ -349,6 +433,30 @@ ol.pasos li strong{color:var(--verde)}
       intermedia COMPRA con fecha y cantidad colgando de ella (nunca del
       rombo), rombo INCLUYE (N:1) y PRODUCTO abajo.</figcaption>
   </figure>
+
+  <h2>Cómo se lee el diagrama de la tienda</h2>
+  <table class="datos">
+    <tr><th>Tramo</th><th>Cardinalidad</th><th>Qué significa</th></tr>
+    <tr><td>CLIENTE — REALIZA — COMPRA</td><td>1 : N</td><td>Un cliente tiene muchas compras; cada compra es de un cliente.</td></tr>
+    <tr><td>COMPRA — INCLUYE — PRODUCTO</td><td>N : 1</td><td>Muchas compras incluyen el mismo producto; cada compra incluye un producto.</td></tr>
+    <tr><td>COMPRA (intermedia)</td><td>—</td><td>Guarda las dos FK y sus atributos propios: fecha y cantidad.</td></tr>
+  </table>
+  <h2>El método en 7 pasos</h2>
+  <ol class="pasos">
+    <li><strong>Entidades:</strong> ¿de quién o de qué guardo datos? → CLIENTE, PRODUCTO.</li>
+    <li><strong>Atributos:</strong> nombre, id_cliente, precio, nombre del producto.</li>
+    <li><strong>Claves:</strong> lo que identifica cada entidad → id_cliente, código de producto.</li>
+    <li><strong>Relación:</strong> la acción que las une → COMPRA.</li>
+    <li><strong>Cardinalidad:</strong> releé el enunciado → N:M.</li>
+    <li><strong>Intermedia:</strong> si es N:M, insertá COMPRA como entidad.</li>
+    <li><strong>Atributos del hecho:</strong> fecha y cantidad cuelgan de COMPRA, nunca de las entidades.</li>
+  </ol>
+  <div class="okbox"><strong>Fijate en el dibujo:</strong> COMPRA aparece como <strong>rectángulo</strong>
+  (entidad intermedia) y ya no como rombo. Los rombos que quedan son REALIZA e INCLUYE,
+  cada uno con cardinalidad 1:N o N:1.</div>
+  <div class="nota"><strong>No confundas:</strong> el rombo representa la relación; la entidad intermedia
+  representa la <strong>tabla que resuelve</strong> un N:M. Al pasar al DER, COMPRA se convierte
+  en la tabla <code>compras</code>.</div>
 
   <div class="ejercicio" data-ej="prac_mer">
     <h2>Practica guiada: arm&aacute; tu primer Diagrama DER</h2>
@@ -880,10 +988,84 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
   phpMyAdmin o MySQL Workbench. Si insertás una compra con un
   <code>cliente_dni</code> inexistente, la <code>FOREIGN KEY</code> debe
   rechazarla: eso confirma que la relación está funcionando.</div>
+
+  <h2>La boleta con JOIN, línea por línea</h2>
+  <div class="sub">Qué hace cada línea</div>
+  <table class="datos">
+    <tr><th>Parte</th><th>Qué hace</th></tr>
+    <tr><td><code>SELECT ...</code></td><td>Elige las columnas que querés ver, incluso una cuenta como <code>precio * cantidad</code>.</td></tr>
+    <tr><td><code>AS total</code></td><td>Le pone un nombre a la columna calculada.</td></tr>
+    <tr><td><code>FROM compras co</code></td><td>Tabla base, con el alias <code>co</code>.</td></tr>
+    <tr><td><code>JOIN clientes c</code></td><td>Trae los datos del cliente de cada compra (alias <code>c</code>).</td></tr>
+    <tr><td><code>JOIN productos p</code></td><td>Trae el nombre y el precio del producto comprado (alias <code>p</code>).</td></tr>
+    <tr><td><code>ON c.dni = co.cliente_dni</code></td><td>Condición de unión: la PK de clientes con la FK de compras.</td></tr>
+  </table>
+  <div class="sub">Resultado de la consulta</div>
+  <table class="tabla-resultados">
+    <thead><tr><th>apellido</th><th>producto</th><th>fecha</th><th>cantidad</th><th>total</th></tr></thead>
+    <tbody>
+      <tr><td>Gomez</td><td>Teclado</td><td>2026-08-20</td><td>2</td><td>17000.00</td></tr>
+      <tr><td>Gomez</td><td>Mouse</td><td>2026-08-21</td><td>1</td><td>4200.50</td></tr>
+      <tr><td>Perez</td><td>Teclado</td><td>2026-08-21</td><td>3</td><td>25500.00</td></tr>
+    </tbody>
+    <tfoot><tr><td colspan="4">Total de la boleta</td><td>46700.50</td></tr></tfoot>
+  </table>
+  <div class="okbox"><strong>Cómo pensar un JOIN:</strong> seguí el camino de las claves.
+  <code>compras.cliente_dni</code> guarda el DNI; <code>clientes.dni</code> es la PK que lo identifica.
+  Lo mismo pasa con <code>producto_codigo</code> y <code>productos.codigo</code>.</div>
+  <div class="nota"><strong>Error clásico:</strong> olvidar el <code>ON</code>. Sin condición,
+  MySQL combina <strong>todas las filas con todas</strong> (producto cartesiano) y la boleta
+  queda con datos que no corresponden.</div>
 </section>
+
+<!-- ====================== SIMULADORES ====================== -->
+<section id="simuladores">
+  <h1>Parte 4 &middot; Simuladores</h1>
+  <p>Dos herramientas para “ver” lo que el diagrama y el JOIN hacen por dentro. No ejecutan SQL:
+  muestran el resultado que produciría la base con esos datos.</p>
+
+  <div class="card sim">
+    <h3>🔗 Simulador: cardinalidad y claves foráneas</h3>
+    <p>Elegí una cardinalidad y mirá cómo cambia el DER: dónde aparece la FK y cuándo hace
+    falta una tabla intermedia.</p>
+    <div class="num-btns" id="card-btns">
+      <button type="button" data-card="1:1">1 : 1</button>
+      <button type="button" data-card="1:N">1 : N</button>
+      <button type="button" data-card="N:M">N : M</button>
+    </div>
+    <div class="sim-panel" id="card-out"></div>
+    <div class="sim-msg" id="card-msg"></div>
+  </div>
+
+  <div class="card sim">
+    <h3>🧾 Simulador: la boleta con JOIN</h3>
+    <p>Los datos viven en tres tablas. Elegí un cliente y un producto: el simulador cruza las
+    tablas como lo haría el <code>JOIN</code> y calcula el total.</p>
+    <div class="sim-row">
+      <label for="join-cliente" style="font-size:.88rem;font-weight:600;">Cliente:</label>
+      <select id="join-cliente">
+        <option value="">Todos</option>
+        <option value="Gomez">Ana Gomez</option>
+        <option value="Perez">Luis Perez</option>
+      </select>
+      <label for="join-producto" style="font-size:.88rem;font-weight:600;">Producto:</label>
+      <select id="join-producto">
+        <option value="">Todos</option>
+        <option value="Teclado">Teclado</option>
+        <option value="Mouse">Mouse</option>
+      </select>
+    </div>
+    <div class="sim-panel">
+      <table class="tabla-resultados" id="join-tabla"></table>
+    </div>
+    <pre class="codigo" id="join-sql"></pre>
+    <div class="sim-msg ok" id="join-msg"></div>
+  </div>
+</section>
+
 <!-- ======================= ACTIVIDADES ======================== -->
 <section id="actividades">
-  <h1>Parte 4 &middot; Actividades</h1>
+  <h1>Parte 5 &middot; Actividades</h1>
   <p>Resolv&eacute; cada actividad siguiendo siempre los mismos pasos:
   <strong>a)</strong> Diagrama DER en papel, con los s&iacute;mbolos &middot;
   <strong>b)</strong> Modelo MER con las tablas, PK y FK &middot;
@@ -893,7 +1075,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 
   <div class="next-topic">
     <p><strong>Actividades guiadas y autocorregibles</strong><br>
-    Practic&aacute; los mismos casos con ejercicios, quiz y simuladores en el curso interactivo.</p>
+    Practic&aacute; los mismos casos con ejercicios, quiz y simuladores en esta misma gu&iacute;a.</p>
     <a class="btn" href="../index.html">← Volver a la portada de actividades</a>
   </div>
 
@@ -909,6 +1091,76 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     cardinalidad? Donde aparece un atributo multivaluado?<br>
     Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
+  <details class="pista">
+                      <summary>Pista: dos relaciones especiales</summary>
+                      <ol>
+                          <li>LECTOR – LIBRO es <strong>N:M</strong> → tabla intermedia <code >prestamos</code>.</li>
+                          <li>Los teléfonos son <strong>multivaluados</strong> → tabla <code >lectores_telefonos</code>.</li>
+                          <li>Las fechas del préstamo son atributos del rombo: van en <code >prestamos</code>.</li>
+                      </ol>
+                  </details>
+  <details class="pista">
+                      <summary>Ver la solución del anexo (biblioteca.sql)</summary>
+                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS biblioteca;
+  <span class="kw">USE</span> biblioteca;
+  
+  <span class="kw">CREATE TABLE</span> lectores (
+      id_lector INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
+      apellido VARCHAR(50) <span class="kw">NOT NULL</span>
+  );
+  
+  <span class="cm">-- ATRIBUTO MULTIVALUADO -> tabla propia</span>
+  <span class="kw">CREATE TABLE</span> lectores_telefonos (
+      id_telefono INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      id_lector INT <span class="kw">NOT NULL</span>,
+      telefono VARCHAR(20) <span class="kw">NOT NULL</span>,
+      <span class="kw">FOREIGN KEY</span> (id_lector)
+          <span class="kw">REFERENCES</span> lectores(id_lector)
+  );
+  
+  <span class="kw">CREATE TABLE</span> libros (
+      id_libro INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      titulo VARCHAR(60) <span class="kw">NOT NULL</span>,
+      autor VARCHAR(50) <span class="kw">NOT NULL</span>,
+      anio INT
+  );
+  
+  <span class="cm">-- RELACIÓN N:M PRESTA -> tabla intermedia</span>
+  <span class="kw">CREATE TABLE</span> prestamos (
+      id_prestamo INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      id_lector INT <span class="kw">NOT NULL</span>,
+      id_libro INT <span class="kw">NOT NULL</span>,
+      fecha_prestamo DATE <span class="kw">NOT NULL</span>,
+      fecha_devolucion DATE,
+      <span class="kw">FOREIGN KEY</span> (id_lector)
+          <span class="kw">REFERENCES</span> lectores(id_lector),
+      <span class="kw">FOREIGN KEY</span> (id_libro)
+          <span class="kw">REFERENCES</span> libros(id_libro)
+  );
+  
+  <span class="kw">INSERT INTO</span> lectores (nombre, apellido) <span class="kw">VALUES</span>
+      (<span class="str">'Ana'</span>, <span class="str">'Gomez'</span>), (<span class="str">'Luis'</span>, <span class="str">'Perez'</span>);
+  
+  <span class="kw">INSERT INTO</span> lectores_telefonos (id_lector, telefono) <span class="kw">VALUES</span>
+      (1, <span class="str">'11-1234-5678'</span>),
+      (1, <span class="str">'11-4567-8901'</span>);
+  
+  <span class="kw">INSERT INTO</span> libros (titulo, autor, anio) <span class="kw">VALUES</span>
+      (<span class="str">'El principito'</span>, <span class="str">'Saint-Exupery'</span>, 1943),
+      (<span class="str">'Rayuela'</span>, <span class="str">'Cortazar'</span>, 1963);
+  
+  <span class="kw">INSERT INTO</span> prestamos (id_lector, id_libro,
+                         fecha_prestamo, fecha_devolucion)
+  <span class="kw">VALUES</span> (1, 1, <span class="str">'2026-08-01'</span>, <span class="str">'2026-08-15'</span>),
+         (2, 2, <span class="str">'2026-08-10'</span>, <span class="kw">NULL</span>);
+  
+  <span class="kw">SELECT</span> l.apellido, b.titulo,
+         p.fecha_prestamo, p.fecha_devolucion
+  <span class="kw">FROM</span> prestamos p
+  <span class="kw">JOIN</span> lectores l <span class="kw">ON</span> l.id_lector = p.id_lector
+  <span class="kw">JOIN</span> libros   b <span class="kw">ON</span> b.id_libro  = p.id_libro;</code></pre>
+                  </details>
 
   <div class="ejercicio">
     <h2>Ejercicio 2 - La Veterinaria</h2>
@@ -919,6 +1171,64 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     Pensa donde va la FK.</p>
     <p><em>Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
+  <details class="pista">
+                      <summary>Pista: pensá dónde va la FK</summary>
+                      <ol>
+                          <li>Al ser <strong>1:N</strong>, la FK <code >id_dueno</code> va en <code >mascotas</code> (lado N).</li>
+                          <li>No hace falta tabla intermedia.</li>
+                          <li>La edad se calcula con <code >TIMESTAMPDIFF(YEAR, ...)</code> en el SELECT.</li>
+                      </ol>
+                  </details>
+  <details class="pista">
+                      <summary>Ver la solución del anexo (veterinaria.sql)</summary>
+                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS veterinaria;
+  <span class="kw">USE</span> veterinaria;
+  
+  <span class="kw">CREATE TABLE</span> duenos (
+      id_dueno INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
+      fecha_nacimiento DATE <span class="kw">NOT NULL</span>
+  );
+  
+  <span class="cm">-- ATRIBUTO MULTIVALUADO -> tabla propia</span>
+  <span class="kw">CREATE TABLE</span> duenos_telefonos (
+      id_telefono INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      id_dueno INT <span class="kw">NOT NULL</span>,
+      telefono VARCHAR(20) <span class="kw">NOT NULL</span>,
+      <span class="kw">FOREIGN KEY</span> (id_dueno)
+          <span class="kw">REFERENCES</span> duenos(id_dueno)
+  );
+  
+  <span class="cm">-- RELACIÓN 1:N -> FOREIGN KEY en la tabla del lado N</span>
+  <span class="kw">CREATE TABLE</span> mascotas (
+      id_mascota INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      nombre VARCHAR(40) <span class="kw">NOT NULL</span>,
+      especie VARCHAR(30) <span class="kw">NOT NULL</span>,
+      id_dueno INT <span class="kw">NOT NULL</span>,
+      <span class="kw">FOREIGN KEY</span> (id_dueno)
+          <span class="kw">REFERENCES</span> duenos(id_dueno)
+  );
+  
+  <span class="kw">INSERT INTO</span> duenos (nombre, fecha_nacimiento) <span class="kw">VALUES</span>
+      (<span class="str">'Ana Gomez'</span>, <span class="str">'1990-05-12'</span>),
+      (<span class="str">'Luis Perez'</span>, <span class="str">'1985-11-30'</span>);
+  
+  <span class="kw">INSERT INTO</span> duenos_telefonos (id_dueno, telefono) <span class="kw">VALUES</span>
+      (1, <span class="str">'2664-111111'</span>),
+      (1, <span class="str">'2664-222222'</span>);
+  
+  <span class="kw">INSERT INTO</span> mascotas (nombre, especie, id_dueno) <span class="kw">VALUES</span>
+      (<span class="str">'Rocco'</span>, <span class="str">'perro'</span>, 1),
+      (<span class="str">'Misu'</span>, <span class="str">'gato'</span>, 1),
+      (<span class="str">'Pepa'</span>, <span class="str">'coneja'</span>, 2);
+  
+  <span class="cm">-- La EDAD es DERIVADA: no se guarda, se calcula</span>
+  <span class="kw">SELECT</span> m.nombre, d.nombre <span class="kw">AS</span> dueno,
+         <span class="fn">TIMESTAMPDIFF</span>(YEAR, d.fecha_nacimiento, <span class="fn">CURDATE</span>())
+             <span class="kw">AS</span> edad_dueno
+  <span class="kw">FROM</span> mascotas m
+  <span class="kw">JOIN</span> duenos d <span class="kw">ON</span> d.id_dueno = m.id_dueno;</code></pre>
+                  </details>
 
   <div class="ejercicio">
     <h2>Ejercicio 3 - La Escuela (espejo del Boletin Digital)</h2>
@@ -929,6 +1239,63 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     tu base     bdescuela.</p>
     <p><em>Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
+  <details class="pista">
+                      <summary>Pista: relación N:M con notas</summary>
+                      <ol>
+                          <li>CURSA es N:M → tabla intermedia <code >cursadas</code>.</li>
+                          <li><code >nota_1co</code> y <code >nota_2co</code> son atributos del rombo: columnas de <code >cursadas</code>.</li>
+                          <li>El promedio es derivado: <code >(nota_1co + nota_2co) / 2 AS promedio</code>.</li>
+                      </ol>
+                  </details>
+  <details class="pista">
+                      <summary>Ver la solución del anexo (escuela_der.sql)</summary>
+                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS escuela_der;
+  <span class="kw">USE</span> escuela_der;
+  
+  <span class="kw">CREATE TABLE</span> alumnos (
+      dni INT <span class="kw">PRIMARY KEY</span>,
+      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
+      apellido VARCHAR(50) <span class="kw">NOT NULL</span>
+  );
+  
+  <span class="kw">CREATE TABLE</span> materias (
+      id_materia INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      nombre VARCHAR(50) <span class="kw">NOT NULL</span>
+  );
+  
+  <span class="cm">-- RELACIÓN N:M CURSA -> tabla intermedia</span>
+  <span class="kw">CREATE TABLE</span> cursadas (
+      id_cursada INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      alumno_dni INT <span class="kw">NOT NULL</span>,
+      materia_id INT <span class="kw">NOT NULL</span>,
+      nota_1co DECIMAL(4,2),
+      nota_2co DECIMAL(4,2),
+      <span class="kw">FOREIGN KEY</span> (alumno_dni)
+          <span class="kw">REFERENCES</span> alumnos(dni),
+      <span class="kw">FOREIGN KEY</span> (materia_id)
+          <span class="kw">REFERENCES</span> materias(id_materia)
+  );
+  
+  <span class="kw">INSERT INTO</span> alumnos <span class="kw">VALUES</span>
+      (30111222, <span class="str">'Ana'</span>,  <span class="str">'Gomez'</span>),
+      (28333444, <span class="str">'Luis'</span>, <span class="str">'Perez'</span>);
+  
+  <span class="kw">INSERT INTO</span> materias (nombre) <span class="kw">VALUES</span>
+      (<span class="str">'Programacion'</span>), (<span class="str">'Base de Datos'</span>);
+  
+  <span class="kw">INSERT INTO</span> cursadas (alumno_dni, materia_id, nota_1co, nota_2co)
+  <span class="kw">VALUES</span> (30111222, 1, 8.00, 9.00),
+         (30111222, 2, 6.00, 7.50),
+         (28333444, 1, 4.00, 6.00);
+  
+  <span class="cm">-- El PROMEDIO es DERIVADO: se calcula en la consulta</span>
+  <span class="kw">SELECT</span> a.apellido, m.nombre,
+         c.nota_1co, c.nota_2co,
+         (c.nota_1co + c.nota_2co) / 2 <span class="kw">AS</span> promedio
+  <span class="kw">FROM</span> cursadas c
+  <span class="kw">JOIN</span> alumnos  a <span class="kw">ON</span> a.dni        = c.alumno_dni
+  <span class="kw">JOIN</span> materias m <span class="kw">ON</span> m.id_materia = c.materia_id;</code></pre>
+                  </details>
 
   <div class="ejercicio">
     <h2>Ejercicio 4 - El Gimnasio</h2>
@@ -946,13 +1313,90 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     guardar&iacute;as la fecha de alta y el turno?<br>
     Entrega: Diagrama DER + Modelo MER + BD</em></p>
   </div>
+  <details class="pista">
+                      <summary>Ver la solución del anexo (gimnasio.sql)</summary>
+                      <pre class="codigo"><code><span class="kw">CREATE DATABASE</span> IF NOT EXISTS gimnasio;
+  <span class="kw">USE</span> gimnasio;
+  
+  <span class="kw">CREATE TABLE</span> socios (
+      nro_socio INT <span class="kw">PRIMARY KEY</span>,
+      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
+      apellido VARCHAR(50) <span class="kw">NOT NULL</span>
+  );
+  
+  <span class="cm">-- ATRIBUTO MULTIVALUADO -> tabla propia</span>
+  <span class="kw">CREATE TABLE</span> socios_telefonos (
+      id_telefono INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      nro_socio INT <span class="kw">NOT NULL</span>,
+      telefono VARCHAR(20) <span class="kw">NOT NULL</span>,
+      <span class="kw">FOREIGN KEY</span> (nro_socio)
+          <span class="kw">REFERENCES</span> socios(nro_socio)
+  );
+  
+  <span class="kw">CREATE TABLE</span> entrenadores (
+      legajo INT <span class="kw">PRIMARY KEY</span>,
+      nombre VARCHAR(60) <span class="kw">NOT NULL</span>,
+      especialidad VARCHAR(50) <span class="kw">NOT NULL</span>
+  );
+  
+  <span class="cm">-- RELACIÓN 1:N -> FOREIGN KEY en la tabla del lado N</span>
+  <span class="kw">CREATE TABLE</span> actividades (
+      cod_actividad INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      nombre VARCHAR(50) <span class="kw">NOT NULL</span>,
+      horario VARCHAR(40) <span class="kw">NOT NULL</span>,
+      cupo INT <span class="kw">NOT NULL</span>,
+      legajo_entrenador INT <span class="kw">NOT NULL</span>,
+      <span class="kw">FOREIGN KEY</span> (legajo_entrenador)
+          <span class="kw">REFERENCES</span> entrenadores(legajo)
+  );
+  
+  <span class="cm">-- RELACIÓN N:M SOCIO-ACTIVIDAD -> tabla intermedia</span>
+  <span class="kw">CREATE TABLE</span> inscripciones (
+      id_inscripcion INT <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+      nro_socio INT <span class="kw">NOT NULL</span>,
+      cod_actividad INT <span class="kw">NOT NULL</span>,
+      fecha_alta DATE <span class="kw">NOT NULL</span>,
+      turno VARCHAR(20) <span class="kw">NOT NULL</span>,
+      <span class="kw">FOREIGN KEY</span> (nro_socio)
+          <span class="kw">REFERENCES</span> socios(nro_socio),
+      <span class="kw">FOREIGN KEY</span> (cod_actividad)
+          <span class="kw">REFERENCES</span> actividades(cod_actividad)
+  );
+  
+  <span class="kw">INSERT INTO</span> socios <span class="kw">VALUES</span>
+      (1, <span class="str">'Ana'</span>,  <span class="str">'Gomez'</span>),
+      (2, <span class="str">'Luis'</span>, <span class="str">'Perez'</span>);
+  
+  <span class="kw">INSERT INTO</span> socios_telefonos (nro_socio, telefono) <span class="kw">VALUES</span>
+      (1, <span class="str">'2664-111111'</span>),
+      (1, <span class="str">'2664-222222'</span>);
+  
+  <span class="kw">INSERT INTO</span> entrenadores <span class="kw">VALUES</span>
+      (101, <span class="str">'Carla Diaz'</span>,  <span class="str">'Musculacion'</span>),
+      (102, <span class="str">'Marcos Ruiz'</span>, <span class="str">'Yoga'</span>);
+  
+  <span class="kw">INSERT INTO</span> actividades (nombre, horario, cupo, legajo_entrenador)
+  <span class="kw">VALUES</span> (<span class="str">'Musculacion'</span>, <span class="str">'Lun y Mie 18:00'</span>, 20, 101),
+         (<span class="str">'Yoga'</span>,        <span class="str">'Mar y Jue 19:00'</span>, 15, 102);
+  
+  <span class="kw">INSERT INTO</span> inscripciones (nro_socio, cod_actividad, fecha_alta, turno)
+  <span class="kw">VALUES</span> (1, 1, <span class="str">'2026-08-01'</span>, <span class="str">'Mañana'</span>),
+         (1, 2, <span class="str">'2026-08-03'</span>, <span class="str">'Tarde'</span>),
+         (2, 1, <span class="str">'2026-08-05'</span>, <span class="str">'Tarde'</span>);
+  
+  <span class="kw">SELECT</span> s.apellido, a.nombre <span class="kw">AS</span> actividad,
+         e.nombre <span class="kw">AS</span> entrenador, i.fecha_alta, i.turno
+  <span class="kw">FROM</span> inscripciones i
+  <span class="kw">JOIN</span> socios       s <span class="kw">ON</span> s.nro_socio     = i.nro_socio
+  <span class="kw">JOIN</span> actividades  a <span class="kw">ON</span> a.cod_actividad = i.cod_actividad
+  <span class="kw">JOIN</span> entrenadores e <span class="kw">ON</span> e.legajo        = a.legajo_entrenador;</code></pre>
+                  </details>
 </section>
 
-<footer>Gu&iacute;a interactiva &middot; Diagrama DER &middot; Modelo MER &middot; Base de Datos<br>Diseñado por la profesora Alejandra Moreira</footer>
 
 <!-- ======================= AUTOEVALUACIÓN ====================== -->
 <section id="autoevaluacion">
-  <h1>Parte 5 &middot; Autoevaluación</h1>
+  <h1>Parte 6 &middot; Autoevaluación</h1>
   <p>Elegí una respuesta por pregunta y presioná <strong>Calificar</strong>. Podés repetirla las veces que necesites.</p>
   <div id="quiz"></div>
   <p>
@@ -964,7 +1408,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 
 <!-- ========================= EVALUACIÓN ======================== -->
 <section id="evaluacion">
-  <h1>Parte 6 &middot; Evaluación con corrección</h1>
+  <h1>Parte 7 &middot; Evaluación con corrección</h1>
   <p>Escribí tus respuestas y presioná <strong>Corregir</strong>. Los botones de símbolos insertan el término en el cuadro que estés usando. El corrector revisa la estructura, no reemplaza la corrección del docente.</p>
 
   <div class="paleta" aria-label="Paleta de símbolos del Diagrama DER">
@@ -1034,6 +1478,8 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 </section>
 
 </main>
+
+<footer>Gu&iacute;a interactiva &middot; Diagrama DER &middot; Modelo MER &middot; Base de Datos<br>Diseñado por la profesora Alejandra Moreira</footer>
 
 <script>
 /* Resalta el link activo de la barra al scrollear */
@@ -1216,6 +1662,128 @@ function actualizarProgreso(){
 }
 
 dibujarQuiz();
+</script>
+
+<script>
+/* ================= SIMULADOR: CARDINALIDADES ================= */
+(function () {
+    var out = document.getElementById('card-out');
+    var msg = document.getElementById('card-msg');
+    var btns = document.getElementById('card-btns');
+    if (!out || !msg || !btns) return;
+
+    function tabla(nombre, filas) {
+        return '<div class="tblbox"><h4>' + nombre + '</h4>' +
+            filas.map(function (f) { return '<div>' + f + '</div>'; }).join('') + '</div>';
+    }
+
+    var casos = {
+        '1:1': {
+            html: tabla('personas', ['<span class="pk">id_persona</span> PK INT', 'nombre VARCHAR(50)']) +
+                '<div class="conector">1──1</div>' +
+                tabla('dnis', ['<span class="pk">id_dni</span> PK INT', '<span class="fk">id_persona</span> FK INT UNIQUE', 'numero VARCHAR(10)']),
+            texto: 'Relación 1:1: una persona tiene un solo DNI y un DNI pertenece a una sola persona. Una de las dos tablas lleva la FK con UNIQUE; no hace falta tabla intermedia.'
+        },
+        '1:N': {
+            html: tabla('clientes', ['<span class="pk">dni</span> PK INT', 'nombre VARCHAR(50)']) +
+                '<div class="conector">1──N</div>' +
+                tabla('compras', ['<span class="pk">id_compra</span> PK AI INT', '<span class="fk">cliente_dni</span> FK INT', 'fecha DATE', 'cantidad INT']),
+            texto: 'Relación 1:N: un cliente tiene muchas compras y cada compra es de un cliente. La FK va en la tabla del lado N (compras) y apunta a la PK de clientes.'
+        },
+        'N:M': {
+            html: tabla('clientes', ['<span class="pk">dni</span> PK INT', 'nombre VARCHAR(50)']) +
+                '<div class="conector">1──N</div>' +
+                tabla('compras (intermedia)', ['<span class="pk">id_compra</span> PK AI INT', '<span class="fk">cliente_dni</span> FK INT', '<span class="fk">producto_codigo</span> FK INT', 'fecha DATE', 'cantidad INT']) +
+                '<div class="conector">N──1</div>' +
+                tabla('productos', ['<span class="pk">codigo</span> PK AI INT', 'nombre VARCHAR(50)', 'precio DECIMAL(10,2)']),
+            texto: 'Relación N:M: muchos clientes compran muchos productos. Se resuelve con una tabla intermedia (compras) que tiene dos FK, una hacia cada entidad.'
+        }
+    };
+
+    function mostrar(clave) {
+        var caso = casos[clave];
+        if (!caso) return;
+        out.innerHTML = '<div class="der-wrap">' + caso.html + '</div>';
+        msg.className = 'sim-msg ok';
+        msg.textContent = caso.texto;
+        btns.querySelectorAll('button').forEach(function (b) {
+            b.classList.toggle('active', b.dataset.card === clave);
+        });
+    }
+
+    btns.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-card]');
+        if (b) mostrar(b.dataset.card);
+    });
+
+    mostrar('1:N');
+})();
+
+/* ================= SIMULADOR: BOLETA JOIN ================= */
+(function () {
+    var tabla = document.getElementById('join-tabla');
+    var selCliente = document.getElementById('join-cliente');
+    var selProducto = document.getElementById('join-producto');
+    var sql = document.getElementById('join-sql');
+    var msg = document.getElementById('join-msg');
+    if (!tabla || !selCliente || !selProducto) return;
+
+    var compras = [
+        { apellido: 'Gomez', nombre: 'Ana Gomez', producto: 'Teclado', fecha: '2026-08-20', cantidad: 2, precio: 8500.00 },
+        { apellido: 'Gomez', nombre: 'Ana Gomez', producto: 'Mouse', fecha: '2026-08-21', cantidad: 1, precio: 4200.50 },
+        { apellido: 'Perez', nombre: 'Luis Perez', producto: 'Teclado', fecha: '2026-08-21', cantidad: 3, precio: 8500.00 }
+    ];
+
+    function money(n) {
+        return '$' + n.toFixed(2);
+    }
+
+    function pintar() {
+        var cli = selCliente.value;
+        var pro = selProducto.value;
+        var filas = compras.filter(function (c) {
+            return (!cli || c.apellido === cli) && (!pro || c.producto === pro);
+        });
+
+        var total = 0;
+        var cuerpo = filas.map(function (c) {
+            var sub = c.precio * c.cantidad;
+            total += sub;
+            return '<tr><td>' + c.nombre + '</td><td>' + c.producto + '</td><td>' +
+                c.fecha + '</td><td>' + c.cantidad + '</td><td>' + money(c.precio) +
+                '</td><td>' + money(sub) + '</td></tr>';
+        }).join('');
+
+        if (!filas.length) {
+            cuerpo = '<tr><td colspan="6">No hay compras con esos filtros.</td></tr>';
+        }
+
+        tabla.innerHTML =
+            '<thead><tr><th>cliente</th><th>producto</th><th>fecha</th><th>cantidad</th><th>precio</th><th>total</th></tr></thead>' +
+            '<tbody>' + cuerpo + '</tbody>' +
+            '<tfoot><tr><td colspan="5">Total de la boleta (' + filas.length + ' fila' + (filas.length === 1 ? '' : 's') + ')</td><td>' + money(total) + '</td></tr></tfoot>';
+
+        var condiciones = [];
+        if (cli) condiciones.push("c.apellido = '" + cli + "'");
+        if (pro) condiciones.push("p.nombre = '" + pro + "'");
+
+        sql.textContent =
+            'SELECT c.apellido, p.nombre, co.fecha, co.cantidad,\n' +
+            '       p.precio * co.cantidad AS total\n' +
+            'FROM compras co\n' +
+            'JOIN clientes  c ON c.dni    = co.cliente_dni\n' +
+            'JOIN productos p ON p.codigo = co.producto_codigo' +
+            (condiciones.length ? '\nWHERE ' + condiciones.join('\n  AND ') : '') + ';';
+
+        msg.className = 'sim-msg ok';
+        msg.textContent = 'El JOIN cruza las tres tablas y devuelve ' + filas.length +
+            ' fila' + (filas.length === 1 ? '' : 's') + '. El total se calcula con precio × cantidad.';
+    }
+
+    selCliente.addEventListener('change', pintar);
+    selProducto.addEventListener('change', pintar);
+    pintar();
+})();
 </script>
 </body>
 </html>

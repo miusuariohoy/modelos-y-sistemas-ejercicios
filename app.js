@@ -1,5 +1,5 @@
 /* ============================================================
-   Motor compartido del curso MER · DER · MySQL · Dia
+   Motor compartido del curso MER · DER · MySQL
    - Acordeón de temas + pestañas Teoría / Ejercitación
    - Autoevaluación (opción múltiple)
    - Corrector de ejercicios (revisa estructura, no ejecuta SQL)
