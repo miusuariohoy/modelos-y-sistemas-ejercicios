@@ -58,13 +58,13 @@ h2.seccion{
   font-size:.8rem; font-weight:700; text-transform:uppercase;
   letter-spacing:.04em; color:#475569; margin:.6rem 0 .3rem;
 }
-.paleta{display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.65rem}
-.paleta button{
+.paleta, .menu-mer{display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.65rem}
+.paleta button, .menu-mer button{
   border:1px solid #94a3b8; background:#fff; color:#0f172a;
   border-radius:8px; padding:.35rem .65rem; cursor:pointer;
   font-size:.86rem; font-weight:600;
 }
-.paleta button:hover{background:#eff6ff; border-color:#2563eb}
+.paleta button:hover, .menu-mer button:hover{background:#eff6ff; border-color:#2563eb}
 .respuesta{
   min-height:160px; border:2px dashed #94a3b8; border-radius:10px;
   padding:.75rem; background:#fff; line-height:2.25;
@@ -98,17 +98,19 @@ textarea.respuesta::placeholder{color:#94a3b8}
   border-top:1px dashed var(--borde);
   font-family:Consolas,"Courier New",monospace; font-size:.85rem;
 }
-.campo:empty::before{content:attr(data-placeholder); color:#94a3b8}
-.campo:focus{background:#f8fbff}
+.campo:empty::before,
+.mer-tabla h4:empty::before,
+.mer-linea:empty::before{content:attr(data-placeholder); color:#94a3b8}
+.campo:focus, .mer-tabla h4:focus, .mer-linea:focus{background:#f8fbff}
 .mer-linea{font-weight:700; color:var(--verde); white-space:nowrap; text-align:center}
 @media (max-width:640px){
   .mer-diagrama{flex-direction:column}
   .mer-linea{font-size:.85rem}
 }
-.paleta button{
+.paleta button, .menu-mer button{
   display:inline-flex; align-items:center; gap:.35rem;
 }
-.paleta button .boton-icono{width:25px; height:18px; flex:0 0 auto}
+.paleta button .boton-icono, .menu-mer button .boton-icono{width:25px; height:18px; flex:0 0 auto}
 .ins-simbolo{display:inline-block; vertical-align:middle; line-height:1}
 .ins-simbolo-svg{width:34px; height:24px; vertical-align:middle}
 .form-eval{
@@ -331,32 +333,18 @@ footer p{margin:.2rem 0}
       la <strong>PK</strong> de cada tabla y las <strong>dos FK</strong> en <code>compras</code>
       que apuntan a <code>clientes</code> y <code>productos</code>. <code>fecha</code> va como
       <code>DATE</code> y <code>cantidad</code> como <code>INT</code>.
+      Usá el menú para insertar las tablas, los atributos, las marcas PK/FK y las líneas.
     </p>
-    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Completá las columnas de cada tabla…">
-      <div class="mer-diagrama">
-        <div class="mer-tabla">
-          <h4>clientes</h4>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="columna PK INT"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="VARCHAR(50)"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="VARCHAR(50)"></div>
-        </div>
-        <div class="mer-linea" contenteditable="false">1──N</div>
-        <div class="mer-tabla">
-          <h4>compras (intermedia)</h4>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="columna PK INT"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="FK INT a clientes"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="FK INT a productos"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="DATE"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="INT"></div>
-        </div>
-        <div class="mer-linea" contenteditable="false">N──1</div>
-        <div class="mer-tabla">
-          <h4>productos</h4>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="columna PK INT"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="VARCHAR(50)"></div>
-          <div class="campo" data-respuesta contenteditable="true" data-placeholder="DECIMAL(10,2)"></div>
-        </div>
-      </div>
+    <div class="paleta-titulo">Menú para armar el MER</div>
+    <div class="menu-mer">
+      <button type="button" data-mer="tabla">Tabla</button>
+      <button type="button" data-mer="atributo">Atributo</button>
+      <button type="button" data-mer="pk">PK</button>
+      <button type="button" data-mer="fk">FK</button>
+      <button type="button" data-mer="linea">Línea de relación</button>
+    </div>
+    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las tablas y sus relaciones…">
+      <div class="mer-diagrama"></div>
     </div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
@@ -557,7 +545,7 @@ function contexto(articulo){
 function camposTabla(c, indice){
   const tabla = c.caja && c.caja.querySelectorAll('.mer-tabla')[indice];
   if (!tabla) return [];
-  return Array.from(tabla.querySelectorAll('[data-respuesta]'))
+  return Array.from(tabla.querySelectorAll('.campo[data-respuesta]'))
     .map(function(x){ return (x.innerText || '').trim(); })
     .filter(Boolean);
 }
@@ -585,9 +573,13 @@ const EJERCICIOS = {
     { d:'Incluye fecha y cantidad en COMPRA', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
   ]},
   mer1: { requisitos: [
-    { d:'Completa la tabla clientes', f:c => camposTabla(c, 0).length >= 2 },
-    { d:'Completa la tabla productos', f:c => camposTabla(c, 2).length >= 2 },
-    { d:'Completa la tabla intermedia compras', f:c => camposTabla(c, 1).length >= 4 },
+    { d:'Arma tres tablas con el menú', f:c => !!c.caja && c.caja.querySelectorAll('.mer-tabla').length >= 3 },
+    { d:'Escribe la cardinalidad en las dos líneas de relación', f:c => {
+        const lineas = c.caja ? c.caja.querySelectorAll('.mer-linea') : [];
+        return lineas.length >= 2 && Array.from(lineas).every(x => (x.innerText || '').trim() !== '');
+      } },
+    { d:'Nombra clientes, productos y compras', f:c => ['clientes','productos','compras'].every(n => c.t.includes(n)) },
+    { d:'Completa al menos dos atributos por tabla', f:c => [0,1,2].every(i => camposTabla(c, i).length >= 2) },
     { d:'Indica una PK', f:c => /primary key|\bpk\b/.test(c.t) },
     { d:'Indica dos FK', f:c => (c.t.match(/\bfk\b|foreign key/g) || []).length >= 2 },
     { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) },
@@ -718,6 +710,113 @@ function prepararPaletas(){
 }
 
 prepararPaletas();
+
+/* Menú del ejercicio de MER: el alumno arma las tablas, los atributos y las líneas. */
+const ICONOS_MER = {
+  tabla:'<rect x="2" y="3" width="24" height="14" fill="#e8f5ec" stroke="#0b6623"/><line x1="2" y1="8" x2="26" y2="8" stroke="#0b6623"/>',
+  atributo:'<rect x="5" y="6" width="18" height="8" fill="#fff" stroke="#0b6623"/><line x1="5" y1="10" x2="23" y2="10" stroke="#0b6623" stroke-dasharray="2 2"/>',
+  pk:'<text x="14" y="14" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b6623">PK</text>',
+  fk:'<text x="14" y="14" text-anchor="middle" font-size="11" font-weight="bold" fill="#0b6623">FK</text>',
+  linea:'<line x1="2" y1="10" x2="26" y2="10" stroke="#0b6623" stroke-width="2"/><text x="14" y="7" text-anchor="middle" font-size="8" fill="#0b6623">1:N</text>'
+};
+
+function nuevoCampoMer(){
+  const campo = document.createElement('div');
+  campo.className = 'campo';
+  campo.dataset.respuesta = '';
+  campo.contentEditable = 'true';
+  campo.setAttribute('data-placeholder', 'columna y tipo');
+  return campo;
+}
+
+function nuevaTablaMer(){
+  const tabla = document.createElement('div');
+  tabla.className = 'mer-tabla';
+  const titulo = document.createElement('h4');
+  titulo.dataset.respuesta = '';
+  titulo.contentEditable = 'true';
+  titulo.setAttribute('data-placeholder', 'nombre_tabla');
+  tabla.appendChild(titulo);
+  for (let i = 0; i < 3; i++) tabla.appendChild(nuevoCampoMer());
+  return tabla;
+}
+
+function nuevaLineaMer(){
+  const linea = document.createElement('div');
+  linea.className = 'mer-linea';
+  linea.dataset.respuesta = '';
+  linea.contentEditable = 'true';
+  linea.setAttribute('data-placeholder', '1──N');
+  return linea;
+}
+
+function escribirMarcaMer(marca, caja, diagrama){
+  const sel = window.getSelection();
+  const nodo = sel && sel.anchorNode;
+  let campo = nodo
+    ? (nodo.nodeType === 1 ? nodo.closest('.campo') : nodo.parentElement.closest('.campo'))
+    : null;
+  if (!campo || !caja.contains(campo)){
+    const campos = diagrama.querySelectorAll('.campo');
+    campo = campos[campos.length - 1];
+    if (!campo){
+      campo = nuevoCampoMer();
+      const tablas = diagrama.querySelectorAll('.mer-tabla');
+      (tablas[tablas.length - 1] || diagrama).appendChild(campo);
+    }
+  }
+  campo.focus();
+  const rango = document.createRange();
+  rango.selectNodeContents(campo);
+  rango.collapse(false);
+  const seleccion = window.getSelection();
+  seleccion.removeAllRanges();
+  seleccion.addRange(rango);
+  const texto = (campo.innerText || '').trim();
+  const separador = texto && !/\s$/.test(campo.innerText) ? ' ' : '';
+  document.execCommand('insertText', false, separador + marca);
+}
+
+function prepararMenuMer(){
+  const menu = document.querySelector('.menu-mer');
+  const caja = document.querySelector('.ejercicio[data-id="mer1"] .respuesta');
+  if (!menu || !caja) return;
+  const diagrama = caja.querySelector('.mer-diagrama');
+  menu.querySelectorAll('button').forEach(function(boton){
+    const icono = ICONOS_MER[boton.dataset.mer];
+    if (!icono) return;
+    const texto = boton.textContent.trim();
+    boton.innerHTML = '<svg class="boton-icono" viewBox="0 0 28 20" aria-hidden="true">' +
+      icono + '</svg><span>' + texto + '</span>';
+    boton.title = 'Insertar ' + texto.toLowerCase() + ' en el área de respuesta';
+  });
+  menu.addEventListener('mousedown', function(e){
+    if (e.target.closest('button')) e.preventDefault();
+  });
+  menu.addEventListener('click', function(e){
+    const boton = e.target.closest('button');
+    if (!boton || !diagrama) return;
+    const accion = boton.dataset.mer;
+    if (accion === 'tabla'){
+      if (diagrama.lastElementChild && diagrama.lastElementChild.classList.contains('mer-tabla')){
+        diagrama.appendChild(nuevaLineaMer());
+      }
+      diagrama.appendChild(nuevaTablaMer());
+    }
+    else if (accion === 'atributo'){
+      const tablas = diagrama.querySelectorAll('.mer-tabla');
+      let tabla = tablas[tablas.length - 1];
+      if (!tabla){ tabla = nuevaTablaMer(); diagrama.appendChild(tabla); }
+      tabla.appendChild(nuevoCampoMer());
+    } else if (accion === 'linea'){
+      diagrama.appendChild(nuevaLineaMer());
+    } else if (accion === 'pk' || accion === 'fk'){
+      escribirMarcaMer(accion.toUpperCase(), caja, diagrama);
+    }
+  });
+}
+
+prepararMenuMer();
 
 const PLANTILLA_MER1 = (function(){
   const caja = document.querySelector('.ejercicio[data-id="mer1"] .respuesta');
@@ -909,7 +1008,7 @@ function bloquearEvaluacionPortada(estado){
     if (caja.tagName === 'TEXTAREA') caja.disabled = true;
     else caja.setAttribute('contenteditable', 'false');
   });
-  document.querySelectorAll('.campo').forEach(function(c){
+  document.querySelectorAll('[data-respuesta]').forEach(function(c){
     c.setAttribute('contenteditable', 'false');
   });
   const boton = document.getElementById('btn-enviar-eval');
