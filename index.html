@@ -348,6 +348,8 @@ footer p{margin:.2rem 0}
       líneas no se agregan solas: insertalas con <strong>Línea de relación</strong>. Primero hacé
       clic en la entidad o línea que quieras dejar atrás y después apretá el botón: la línea nueva
       aparece justo ahí. En cada línea escribí la cardinalidad: <code>1──N</code> o <code>N──1</code>.
+      También podés usar los botones <strong>1 a N</strong> y <strong>N a 1</strong> del menú: escriben
+      la cardinalidad en la línea que tengas seleccionada o agregan otra línea con esa cardinalidad.
     </p>
     <div class="paleta-titulo">Menú para armar el MER</div>
     <div class="menu-mer">
@@ -356,6 +358,8 @@ footer p{margin:.2rem 0}
       <button type="button" data-mer="pk">PK</button>
       <button type="button" data-mer="fk">FK</button>
       <button type="button" data-mer="linea">Línea de relación</button>
+      <button type="button" data-mer="card1n">1 a N</button>
+      <button type="button" data-mer="cardn1">N a 1</button>
     </div>
     <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las entidades y sus relaciones…">
       <div class="mer-diagrama"></div>
@@ -746,7 +750,9 @@ const ICONOS_MER = {
   atributo:'<rect x="5" y="6" width="18" height="8" fill="#fff" stroke="#0b6623"/><line x1="5" y1="10" x2="23" y2="10" stroke="#0b6623" stroke-dasharray="2 2"/>',
   pk:'<circle cx="9" cy="10" r="4" fill="#e8f5ec" stroke="#0b6623"/><line x1="12" y1="13" x2="24" y2="18" stroke="#0b6623" stroke-width="2"/>',
   fk:'<circle cx="9" cy="10" r="4" fill="#fff" stroke="#0b6623"/><line x1="12" y1="13" x2="24" y2="18" stroke="#0b6623" stroke-width="2"/><line x1="20" y1="14" x2="24" y2="10" stroke="#0b6623" stroke-width="2"/>',
-  linea:'<line x1="2" y1="10" x2="26" y2="10" stroke="#0b6623" stroke-width="2"/>'
+  linea:'<line x1="2" y1="10" x2="26" y2="10" stroke="#0b6623" stroke-width="2"/>',
+  card1n:'<circle cx="3" cy="10" r="2" fill="#0b6623"/><line x1="5" y1="10" x2="20" y2="10" stroke="#0b6623" stroke-width="2"/><circle cx="24" cy="4" r="1.6" fill="#0b6623"/><circle cx="24" cy="10" r="1.6" fill="#0b6623"/><circle cx="24" cy="16" r="1.6" fill="#0b6623"/>',
+  cardn1:'<circle cx="4" cy="4" r="1.6" fill="#0b6623"/><circle cx="4" cy="10" r="1.6" fill="#0b6623"/><circle cx="4" cy="16" r="1.6" fill="#0b6623"/><line x1="8" y1="10" x2="23" y2="10" stroke="#0b6623" stroke-width="2"/><circle cx="25" cy="10" r="2" fill="#0b6623"/>'
 };
 
 function nuevoCampoMer(){
@@ -784,6 +790,25 @@ function nuevaLineaMer(){
   trazo.setAttribute('aria-hidden', 'true');
   trazo.textContent = '────';
   linea.appendChild(trazo);
+  return linea;
+}
+
+function escribirCardinalidadMer(diagrama, valor){
+  const sel = window.getSelection();
+  const nodo = sel && sel.anchorNode;
+  let linea = nodo
+    ? (nodo.nodeType === 1
+        ? nodo.closest('.mer-linea')
+        : nodo.parentElement && nodo.parentElement.closest('.mer-linea'))
+    : null;
+  if (!linea || !diagrama.contains(linea)){
+    linea = nuevaLineaMer();
+    const ultima = diagrama.lastElementChild;
+    if (ultima && ultima.nextSibling) diagrama.insertBefore(linea, ultima.nextSibling);
+    else diagrama.appendChild(linea);
+  }
+  const card = linea.querySelector('.mer-card');
+  if (card) card.textContent = valor;
   return linea;
 }
 
@@ -825,7 +850,9 @@ function prepararMenuMer(){
     const texto = boton.textContent.trim();
     boton.innerHTML = '<svg class="boton-icono" viewBox="0 0 28 20" aria-hidden="true">' +
       icono + '</svg><span>' + texto + '</span>';
-    boton.title = 'Insertar ' + texto.toLowerCase() + ' en el área de respuesta';
+    boton.title = boton.dataset.mer === 'card1n' || boton.dataset.mer === 'cardn1'
+      ? 'Poner cardinalidad ' + texto + ' en la línea seleccionada o crear una nueva'
+      : 'Insertar ' + texto.toLowerCase() + ' en el área de respuesta';
   });
   menu.addEventListener('mousedown', function(e){
     if (e.target.closest('button')) e.preventDefault();
@@ -854,6 +881,10 @@ function prepararMenuMer(){
       const linea = nuevaLineaMer();
       if (ancla && ancla.nextSibling) diagrama.insertBefore(linea, ancla.nextSibling);
       else diagrama.appendChild(linea);
+    } else if (accion === 'card1n'){
+      escribirCardinalidadMer(diagrama, '1──N');
+    } else if (accion === 'cardn1'){
+      escribirCardinalidadMer(diagrama, 'N──1');
     } else if (accion === 'pk' || accion === 'fk'){
       escribirMarcaMer(accion.toUpperCase(), caja, diagrama);
     }
