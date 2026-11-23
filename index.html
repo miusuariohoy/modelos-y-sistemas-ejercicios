@@ -235,7 +235,7 @@ footer p{margin:.2rem 0}
 <header class="hero">
   <h1>Ejercitación con corrección · DER · MER · BD</h1>
   <p>En <strong>DER</strong> tocás símbolos y escribís dentro. En <strong>MER</strong> elegís los tipos de atributo y las FK de cada relación. En <strong>BD</strong> escribís SQL. Después presionás <strong>✅ Corregir</strong>.</p>
-  <p class="pista">Cuatro partes: <strong>1 · DER</strong>, <strong>2 · MER</strong>, <strong>3 · BD</strong> y <strong>4 · Entrega</strong>. Podés corregir acá mismo y enviar tu evaluación al docente.</p>
+  <p class="pista">Siete partes: <strong>1 · DER</strong>, <strong>2 · MER</strong>, <strong>3 · BD</strong>, <strong>4 · Consultas</strong>, <strong>5 · Entrega de la ejercitación</strong>, <strong>6 · Evaluación general</strong> y <strong>7 · Evaluación solo BD</strong>. Las cuatro primeras se corrigen acá mismo; las dos evaluaciones finales se envían sin corrección visible.</p>
   <p class="volver"><a href="unamasdesistemas/">← Volver a Teoría</a></p>
 </header>
 
@@ -243,7 +243,10 @@ footer p{margin:.2rem 0}
   <a href="#der">1 · DER</a>
   <a href="#mer">2 · MER</a>
   <a href="#bd">3 · BD</a>
-  <a href="#entrega">4 · Entrega</a>
+  <a href="#consultas">4 · Consultas</a>
+  <a href="#entrega">5 · Entrega</a>
+  <a href="#evaluacion-general">6 · Eval. general</a>
+  <a href="#evaluacion-bd">7 · Eval. BD</a>
 </nav>
 
 <nav class="nav-guias" aria-label="Guías del repositorio">
@@ -327,6 +330,34 @@ footer p{margin:.2rem 0}
     </div>
     <div class="resultado"></div>
   </article>
+
+  <article class="ejercicio" data-id="der4">
+    <h3>✍️ Ejercicio 1.4: 1:N, multivaluado y derivado <span class="nivel">Medio</span></h3>
+    <p class="consigna">
+      Leé con calma: <strong>«Un médico atiende muchos pacientes y cada paciente es atendido por un solo médico»</strong>.
+      Dibujá las entidades <code>MEDICO</code> y <code>PACIENTE</code> con rectángulos, la relación
+      <code>ATIENDE</code> con rombo y marcá la cardinalidad <strong>1:N</strong>. El médico tiene
+      <strong>varios teléfonos</strong>: marcá <code>telefonos</code> con doble óvalo, porque un atributo
+      no puede guardar varios valores en la misma celda. Además, la <strong>edad</strong> del paciente
+      se calcula a partir de <code>fecha_nacimiento</code>: dibujá esa fecha con óvalo simple y la
+      edad con óvalo punteado. Acá todavía no escribas PK ni FK: eso es del MER.
+    </p>
+    <div class="paleta-titulo">Símbolos</div>
+    <div class="paleta">
+      <button type="button" data-shape="rect">Rectángulo</button>
+      <button type="button" data-shape="rombo">Rombo</button>
+      <button type="button" data-shape="ovalo">Óvalo</button>
+      <button type="button" data-shape="doble">Doble óvalo</button>
+      <button type="button" data-shape="punteado">Óvalo punteado</button>
+      <button type="button" data-token="1:N">1:N</button>
+    </div>
+    <div class="respuesta" contenteditable="true" data-placeholder="MEDICO, PACIENTE, ATIENDE y 1:N…"></div>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
 </section>
 
 <!-- ============================== MER ============================== -->
@@ -363,6 +394,63 @@ footer p{margin:.2rem 0}
     <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las entidades y sus relaciones…">
       <div class="mer-diagrama"></div>
     </div>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="mer2">
+    <h3>✍️ Ejercicio 2.2: una relación 1:N en tablas <span class="nivel">Medio</span></h3>
+    <p class="consigna">
+      Un <strong>cliente</strong> hace muchos <strong>pedidos</strong> y cada pedido pertenece a un solo
+      cliente. Escribí las dos entidades del MER en singular, con el tipo de cada columna:
+      <code>cliente(id_cliente PK INT, nombre VARCHAR(50))</code> y
+      <code>pedido(id_pedido PK AI INT, fecha DATE, id_cliente FK INT)</code>.
+      La FK <code>id_cliente</code> va en <code>pedido</code> porque es el lado N: es quien tiene que
+      recordar a su cliente. Escribí también la cardinalidad <code>1──N</code> entre las dos entidades.
+      No hace falta crear tablas todavía: esto es el MER.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="cliente(...)\n1──N\npedido(...)"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="mer3">
+    <h3>✍️ Ejercicio 2.3: multivaluado y derivado <span class="nivel">Difícil</span></h3>
+    <p class="consigna">
+      Un <strong>cliente</strong> tiene <strong>varios teléfonos</strong> y queremos mostrar su
+      <strong>total de compras</strong>, que se calcula sumando los importes. Explicá y escribí cómo
+      queda el MER: el cliente con <code>id_cliente PK INT</code> y <code>nombre VARCHAR(50)</code>;
+      una tabla <code>telefono</code> con <code>id_telefono PK INT</code>, <code>numero VARCHAR(20)</code>
+      y <code>id_cliente FK INT</code> (un teléfono por fila); y una aclaración de que el total
+      <strong>no se guarda</strong> porque es un atributo derivado que se calculará con
+      <code>SELECT</code>. Escribí la cardinalidad <code>1──N</code> entre cliente y teléfono.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="cliente(...)\n1──N\ntelefono(...)\ntotal: derivado..."></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="mer4">
+    <h3>✍️ Ejercicio 2.4: relación 1:1 con UNIQUE <span class="nivel">Difícil</span></h3>
+    <p class="consigna">
+      Un <strong>alumno</strong> tiene una sola <strong>libreta</strong> y cada libreta pertenece a un
+      solo alumno. En el MER, la FK va en la tabla que depende de la otra y lleva <code>UNIQUE</code>
+      para que un alumno no pueda tener dos libretas. Escribí:
+      <code>alumno(id_alumno PK INT, nombre VARCHAR(50))</code> y
+      <code>libreta(id_libreta PK INT, id_alumno FK INT UNIQUE, fecha DATE)</code>, más la
+      cardinalidad <code>1──1</code>. Explicá con tus palabras por qué la FK está en
+      <code>libreta</code> y no en <code>alumno</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="alumno(...)\n1──1\nlibreta(...)\nPorque..."></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -467,15 +555,166 @@ footer p{margin:.2rem 0}
     </div>
     <div class="resultado"></div>
   </article>
+
+  <article class="ejercicio" data-id="bd4">
+    <h3>✍️ Ejercicio 3.4: crear tablas relacionadas <span class="nivel">Difícil</span></h3>
+    <p class="consigna">
+      Escribí el <code>CREATE TABLE</code> de <strong>clientes</strong> y <strong>pedidos</strong> para
+      este MER: <code>cliente(id_cliente PK INT, nombre VARCHAR(50))</code> y
+      <code>pedido(id_pedido PK AI INT, fecha DATE, id_cliente FK INT)</code>.
+      Primero creá <code>clientes</code> y después <code>pedidos</code>, porque la tabla con la FK
+      necesita que la otra ya exista. Usá <code>PRIMARY KEY</code>, <code>AUTO_INCREMENT</code> y
+      <code>FOREIGN KEY ... REFERENCES clientes(id_cliente)</code>. Recordá que en SQL los nombres
+      de tabla van en plural.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE clientes (...);\nCREATE TABLE pedidos (...);"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+</section>
+
+<!-- =========================== CONSULTAS =========================== -->
+<section id="consultas">
+  <h2 class="seccion">4 · Consultas (SELECT)</h2>
+  <p>Todas las consultas de este apartado se hacen sobre una sola tabla llamada
+  <code>productos(id_producto, nombre, precio, stock)</code>. No hace falta JOIN.
+  Escribí la consulta completa y presioná <strong>✅ Corregir</strong> en cada ejercicio.</p>
+
+  <article class="ejercicio" data-id="con1">
+    <h3>✍️ Ejercicio 4.1: filtrar con WHERE <span class="nivel">Fácil</span></h3>
+    <p class="consigna">
+      <strong>WHERE</strong> deja pasar solo las filas que cumplen una condición. Escribí un
+      <code>SELECT</code> que muestre <code>nombre</code> y <code>precio</code> de los productos
+      cuyo <code>nombre</code> sea exactamente <code>'Cuaderno'</code>. Usá
+      <code>WHERE nombre = 'Cuaderno'</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE ...;"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="con2">
+    <h3>✍️ Ejercicio 4.2: ordenar con ORDER BY <span class="nivel">Fácil</span></h3>
+    <p class="consigna">
+      <strong>ORDER BY</strong> ordena el resultado. Por defecto es de menor a mayor
+      (<code>ASC</code>); para de mayor a menor se agrega <code>DESC</code>. Mostrá
+      <code>nombre</code> y <code>precio</code> de todos los productos, ordenados de
+      <strong>mayor a menor precio</strong>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos ORDER BY precio DESC;"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="con3">
+    <h3>✍️ Ejercicio 4.3: comparar con &gt; <span class="nivel">Fácil</span></h3>
+    <p class="consigna">
+      El signo <strong>&gt;</strong> compara valores numéricos o fechas. Escribí una consulta que
+      devuelva <code>nombre</code> y <code>stock</code> de los productos con
+      <strong>más de 10 unidades</strong> en stock: <code>WHERE stock &gt; 10</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, stock FROM productos WHERE stock > 10;"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="con4">
+    <h3>✍️ Ejercicio 4.4: comparar con &lt; <span class="nivel">Fácil</span></h3>
+    <p class="consigna">
+      El signo <strong>&lt;</strong> es el contrario. Mostrá <code>nombre</code> y
+      <code>precio</code> de los productos que cuestan <strong>menos de 1000</strong>:
+      <code>WHERE precio &lt; 1000</code>. No incluyas los que cuestan exactamente 1000.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE precio < 1000;"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="con5">
+    <h3>✍️ Ejercicio 4.5: limitar con LIMIT <span class="nivel">Medio</span></h3>
+    <p class="consigna">
+      <strong>LIMIT</strong> corta la cantidad de filas que devuelve la consulta. Escribí una
+      consulta que muestre <code>nombre</code> de los <strong>5 primeros productos ordenados
+      alfabéticamente</strong>. Necesitás <code>ORDER BY nombre</code> y, al final,
+      <code>LIMIT 5</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre FROM productos ORDER BY nombre LIMIT 5;"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="con6">
+    <h3>✍️ Ejercicio 4.6: buscar con LIKE <span class="nivel">Medio</span></h3>
+    <p class="consigna">
+      <strong>LIKE</strong> busca patrones de texto. El símbolo <code>%</code> significa
+      «cualquier cantidad de caracteres». Mostrá <code>nombre</code> y <code>precio</code> de los
+      productos cuyo nombre <strong>empieza con «Cu»</strong>: <code>WHERE nombre LIKE 'Cu%'</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE nombre LIKE 'Cu%';"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="con7">
+    <h3>✍️ Ejercicio 4.7: contar con COUNT <span class="nivel">Medio</span></h3>
+    <p class="consigna">
+      <strong>COUNT(*)</strong> cuenta filas. Escribí una consulta que devuelva una sola columna
+      con el nombre <code>cantidad_productos</code> y el total de productos de la tabla:
+      <code>SELECT COUNT(*) AS cantidad_productos FROM productos;</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT COUNT(*) AS cantidad_productos FROM productos;"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
+
+  <article class="ejercicio" data-id="con8">
+    <h3>✍️ Ejercicio 4.8: evitar repetidos con DISTINCT <span class="nivel">Medio</span></h3>
+    <p class="consigna">
+      <strong>DISTINCT</strong> saca los valores repetidos del resultado. Muchos productos pueden
+      tener el mismo <code>stock</code>. Mostrá la lista de <strong>stocks distintos</strong> sin
+      repetir: <code>SELECT DISTINCT stock FROM productos;</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT DISTINCT stock FROM productos;"></textarea>
+    <div class="acciones">
+      <button type="button" class="accion corregir">✅ Corregir</button>
+      <button type="button" class="accion limpiar">Limpiar</button>
+    </div>
+    <div class="resultado"></div>
+  </article>
 </section>
 
 <!-- ============================ ENTREGA ============================ -->
 <section id="entrega">
-  <h2 class="seccion">4 · Entrega de la evaluación</h2>
+  <h2 class="seccion">5 · Entrega de la ejercitación</h2>
 
   <article class="ejercicio entrega-eval">
-    <h3>✍️ Corregir y enviar la evaluación</h3>
-    <p>Completá tus datos, presioná <strong>✅ Corregir y enviar</strong> y se guardarán en el repositorio <code>inform</code> tus respuestas, la nota y el detalle de la corrección. Después de enviar no se puede modificar.</p>
+    <h3>✍️ Corregir y enviar la ejercitación</h3>
+    <p>Esta entrega corresponde a los cuatro bloques anteriores (DER, MER, BD y Consultas).
+    Completá tus datos, presioná <strong>✅ Corregir y enviar</strong> y se guardarán en el repositorio <code>inform</code> tus respuestas, la nota y el detalle de la corrección. Después de enviar no se puede modificar. Las dos evaluaciones de abajo son independientes y no muestran la corrección.</p>
     <form class="form-eval" id="form-evaluacion"
           data-examen="modelos-sistemas-portada"
           data-titulo="Evaluación DER · MER · BD (portada)">
@@ -491,6 +730,314 @@ footer p{margin:.2rem 0}
       <button id="btn-enviar-eval" type="submit">✅ Corregir y enviar</button>
     </form>
     <div class="estado-eval" id="estado-eval" role="status" aria-live="polite"></div>
+    <p class="nota"><strong>Privacidad:</strong> guardamos nombre, apellido, curso, respuestas, nota y fecha de envío. El contenido viaja cifrado por un canal público; no pedimos contraseñas ni datos sensibles.</p>
+  </article>
+</section>
+
+<!-- ======================= EVALUACIÓN GENERAL ======================= -->
+<section id="evaluacion-general">
+  <h2 class="seccion">6 · Evaluación general (sin corrección visible)</h2>
+  <p>Respondé las dos actividades de DER, las dos de MER, las dos de BD y las seis preguntas de
+  opción múltiple. <strong>Acá no hay botón «Corregir»</strong>: al enviar, el docente recibe tus
+  respuestas y la nota calculada internamente, pero vos no ves cuáles están bien ni el puntaje.
+  Después de enviar no se puede modificar.</p>
+
+  <article class="ejercicio" data-id="evg-der1">
+    <h3>Evaluación · Actividad 1: 1:N con atributo simple</h3>
+    <p class="consigna">
+      <strong>«Un autor escribe muchos libros y cada libro fue escrito por un solo autor»</strong>.
+      Dibujá las entidades <code>AUTOR</code> y <code>LIBRO</code> con rectángulos, la relación
+      <code>ESCRIBE</code> con rombo y la cardinalidad <strong>1:N</strong>. El atributo
+      <code>nacionalidad</code> del autor es simple: marcálo con óvalo. No escribas PK ni FK.
+    </p>
+    <div class="paleta-titulo">Símbolos</div>
+    <div class="paleta">
+      <button type="button" data-shape="rect">Rectángulo</button>
+      <button type="button" data-shape="rombo">Rombo</button>
+      <button type="button" data-shape="ovalo">Óvalo</button>
+      <button type="button" data-token="1:N">1:N</button>
+    </div>
+    <div class="respuesta" contenteditable="true" data-placeholder="Dibujá acá el DER…"></div>
+  </article>
+
+  <article class="ejercicio" data-id="evg-der2">
+    <h3>Evaluación · Actividad 2: N:M con entidad intermedia</h3>
+    <p class="consigna">
+      Muchos <strong>alumnos</strong> cursan muchas <strong>materias</strong> y de cada cursada
+      interesan la <strong>nota</strong> y la <strong>fecha</strong>. Dibujá las entidades
+      <code>ALUMNO</code> y <code>MATERIA</code> con rectángulos, la relación <code>CURSA</code>
+      con rombo, la cardinalidad <strong>N:M</strong> y la entidad intermedia
+      <code>INSCRIPCION</code> con sus atributos <code>nota</code> y <code>fecha</code> unidos
+      con óvalos. Los atributos de la relación cuelgan de la entidad intermedia, no del rombo.
+    </p>
+    <div class="paleta-titulo">Símbolos</div>
+    <div class="paleta">
+      <button type="button" data-shape="rect">Rectángulo</button>
+      <button type="button" data-shape="rombo">Rombo</button>
+      <button type="button" data-shape="ovalo">Óvalo</button>
+      <button type="button" data-token="N:M">N:M</button>
+    </div>
+    <div class="respuesta" contenteditable="true" data-placeholder="Dibujá acá el DER…"></div>
+  </article>
+
+  <article class="ejercicio" data-id="evg-mer1">
+    <h3>Evaluación · Actividad 3: pasar el 1:N a tablas</h3>
+    <p class="consigna">
+      Convertí el caso del autor y los libros al MER. Escribí <code>autor(id_autor PK INT,
+      nombre VARCHAR(50))</code> y <code>libro(id_libro PK AI INT, titulo VARCHAR(80),
+      id_autor FK INT)</code>, la cardinalidad <code>1──N</code> y una explicación de por qué la FK
+      va en <code>libro</code> y no en <code>autor</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="autor(...)\n1──N\nlibro(...)\nPorque..."></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evg-mer2">
+    <h3>Evaluación · Actividad 4: N:M con atributos de la relación</h3>
+    <p class="consigna">
+      Convertí el caso alumno–materia al MER: <code>alumno(id_alumno PK INT, nombre VARCHAR(50))</code>,
+      <code>materia(id_materia PK INT, nombre VARCHAR(50))</code> y la intermedia
+      <code>inscripcion(id_inscripcion PK AI INT, id_alumno FK INT, id_materia FK INT,
+      nota DECIMAL(3,1), fecha DATE)</code>. Escribí las dos cardinalidades <code>1──N</code> y
+      <code>N──1</code> y aclaró que las dos FK están en la intermedia.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="alumno(...)\nmateria(...)\ninscripcion(...)"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evg-bd1">
+    <h3>Evaluación · Actividad 5: crear las tablas relacionadas</h3>
+    <p class="consigna">
+      Escribí el SQL para crear <code>autores</code> y <code>libros</code> con sus PK, tipos y la
+      <code>FOREIGN KEY (id_autor) REFERENCES autores(id_autor)</code> dentro de
+      <code>libros</code>. Creá primero la tabla referenciada.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE autores (...);\nCREATE TABLE libros (...);"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evg-bd2">
+    <h3>Evaluación · Actividad 6: insertar datos relacionados</h3>
+    <p class="consigna">
+      Usando las tablas anteriores, escribí un <code>INSERT INTO autores</code> y un
+      <code>INSERT INTO libros</code> con <code>VALUES</code>. El libro debe cargar
+      <code>id_autor</code> con un valor que exista en <code>autores</code> para respetar la
+      integridad referencial.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="INSERT INTO autores ...;\nINSERT INTO libros ...;"></textarea>
+  </article>
+
+  <article class="ejercicio">
+    <h3>Evaluación · Preguntas de opción múltiple</h3>
+    <p class="consigna">Elegí una opción por pregunta. No vas a ver la corrección.</p>
+    <div id="quiz-eval-general">
+      <div class="quiz-pregunta" data-correcta="b" data-pista="La FK se pone en el lado N.">
+        <p><strong>1.</strong> En una relación 1:N, ¿dónde se escribe la FK?</p>
+        <label><input type="radio" name="evg-q1" value="a"> En la tabla del lado 1</label>
+        <label><input type="radio" name="evg-q1" value="b"> En la tabla del lado N</label>
+        <label><input type="radio" name="evg-q1" value="c"> En las dos tablas</label>
+        <label><input type="radio" name="evg-q1" value="d"> No se escribe una FK</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="a" data-pista="Un atributo derivado se calcula, no se guarda.">
+        <p><strong>2.</strong> Un total que se obtiene multiplicando precio por cantidad es:</p>
+        <label><input type="radio" name="evg-q2" value="a"> Un atributo derivado: no se guarda</label>
+        <label><input type="radio" name="evg-q2" value="b"> Un atributo multivaluado</label>
+        <label><input type="radio" name="evg-q2" value="c"> Una clave foránea</label>
+        <label><input type="radio" name="evg-q2" value="d"> Una tabla intermedia</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="c" data-pista="La intermedia lleva dos FK, una hacia cada entidad.">
+        <p><strong>3.</strong> Para resolver una relación N:M se crea una tabla intermedia con:</p>
+        <label><input type="radio" name="evg-q3" value="a"> Una sola FK</label>
+        <label><input type="radio" name="evg-q3" value="b"> Dos PK</label>
+        <label><input type="radio" name="evg-q3" value="c"> Dos FK hacia las entidades originales</label>
+        <label><input type="radio" name="evg-q3" value="d"> Solo atributos derivados</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="a" data-pista="VARCHAR se usa para texto; DECIMAL para importes.">
+        <p><strong>4.</strong> ¿Qué tipo conviene para <code>nombre</code> y para <code>precio</code>?</p>
+        <label><input type="radio" name="evg-q4" value="a"> VARCHAR y DECIMAL</label>
+        <label><input type="radio" name="evg-q4" value="b"> INT y VARCHAR</label>
+        <label><input type="radio" name="evg-q4" value="c"> DATE y INT</label>
+        <label><input type="radio" name="evg-q4" value="d"> DECIMAL y DATE</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="d" data-pista="AUTO_INCREMENT numeración automática de claves enteras.">
+        <p><strong>5.</strong> <code>AUTO_INCREMENT</code> se usa normalmente en:</p>
+        <label><input type="radio" name="evg-q5" value="a"> Un nombre VARCHAR</label>
+        <label><input type="radio" name="evg-q5" value="b"> Una fecha DATE</label>
+        <label><input type="radio" name="evg-q5" value="c"> Un atributo derivado</label>
+        <label><input type="radio" name="evg-q5" value="d"> Una clave entera PK</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="b" data-pista="En 1:1 la FK lleva UNIQUE para no repetir la otra entidad.">
+        <p><strong>6.</strong> En una relación 1:1, la FK del lado dependiente debe llevar:</p>
+        <label><input type="radio" name="evg-q6" value="a"> AUTO_INCREMENT</label>
+        <label><input type="radio" name="evg-q6" value="b"> UNIQUE</label>
+        <label><input type="radio" name="evg-q6" value="c"> LIKE</label>
+        <label><input type="radio" name="evg-q6" value="d"> ORDER BY</label>
+        <div class="quiz-feedback"></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="ejercicio entrega-eval">
+    <h3>Datos para guardar la evaluación general</h3>
+    <form class="form-eval" id="form-eval-general"
+          data-examen="modelos-sistemas-general"
+          data-titulo="Evaluación DER · MER · BD (general)">
+      <label for="evg-nombre">Nombre:</label>
+      <input id="evg-nombre" name="nombre" type="text" placeholder="Tu nombre" required>
+      <label for="evg-apellido">Apellido:</label>
+      <input id="evg-apellido" name="apellido" type="text" placeholder="Tu apellido" required>
+      <label for="evg-curso">Curso:</label>
+      <input id="evg-curso" name="curso" type="text" placeholder="Ej.: 3º A" required>
+      <button type="submit">Enviar evaluación</button>
+    </form>
+    <div class="estado-eval" id="estado-eval-general" role="status" aria-live="polite"></div>
+    <p class="nota"><strong>Privacidad:</strong> guardamos nombre, apellido, curso, respuestas, nota y fecha de envío. El contenido viaja cifrado por un canal público; no pedimos contraseñas ni datos sensibles.</p>
+  </article>
+</section>
+
+<!-- ========================= EVALUACIÓN BD ========================= -->
+<section id="evaluacion-bd">
+  <h2 class="seccion">7 · Evaluación solo BD (sin corrección visible)</h2>
+  <p>Esta evaluación cubre solamente base de datos: crear tablas, insertar datos y consultar
+  con <code>WHERE</code>, <code>ORDER BY</code>, <code>&gt;</code>, <code>&lt;</code>,
+  <code>LIMIT</code>, <code>LIKE</code>, <code>COUNT</code> y <code>DISTINCT</code>. Al enviar no
+  verás corrección ni nota; el docente sí la recibe. Después de enviar no se puede modificar.</p>
+
+  <article class="ejercicio" data-id="evbd-crear">
+    <h3>Evaluación BD · Actividad 1: crear tablas relacionadas</h3>
+    <p class="consigna">
+      Escribí el SQL para crear <code>clientes(id_cliente PK INT, nombre VARCHAR(50))</code>,
+      <code>productos(id_producto PK AI INT, nombre VARCHAR(50), precio DECIMAL(10,2))</code> y
+      <code>compras(id_compra PK AI INT, id_cliente FK INT, id_producto FK INT, fecha DATE,
+      cantidad INT)</code>. Usá <code>CREATE TABLE</code>, <code>PRIMARY KEY</code>,
+      <code>AUTO_INCREMENT</code> y los dos <code>FOREIGN KEY ... REFERENCES</code>. El orden
+      de creación importa: primero las tablas referenciadas.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="CREATE TABLE clientes (...);\nCREATE TABLE productos (...);\nCREATE TABLE compras (...);"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-insertar">
+    <h3>Evaluación BD · Actividad 2: insertar datos relacionados</h3>
+    <p class="consigna">
+      Con las tablas anteriores, escribí tres <code>INSERT INTO</code>: uno para
+      <code>clientes</code> (nombre), uno para <code>productos</code> (nombre y precio) y uno para
+      <code>compras</code> (id_cliente, id_producto, fecha y cantidad). Usá <code>VALUES</code>
+      y cargá en <code>compras</code> claves que ya existan en las otras dos tablas.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="INSERT INTO clientes ...;\nINSERT INTO productos ...;\nINSERT INTO compras ...;"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-where">
+    <h3>Evaluación BD · Actividad 3: filtrar con WHERE</h3>
+    <p class="consigna">
+      Mostrá <code>nombre</code> y <code>precio</code> de los productos cuyo precio sea
+      <strong>mayor o igual que 500</strong> y menor que 2000. Necesitás dos condiciones con
+      <code>WHERE</code> unidas por <code>AND</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE ...;"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-orden">
+    <h3>Evaluación BD · Actividad 4: ordenar y limitar</h3>
+    <p class="consigna">
+      Mostrá <code>nombre</code> y <code>stock</code> de los productos con stock <strong>mayor
+      que 0</strong>, ordenados de <strong>menor a mayor stock</strong>, y quedate solo con los
+      <strong>3 primeros</strong>. Usá <code>WHERE</code>, <code>ORDER BY</code> y <code>LIMIT</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, stock FROM productos WHERE stock > 0 ORDER BY stock LIMIT 3;"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-like">
+    <h3>Evaluación BD · Actividad 5: buscar con LIKE</h3>
+    <p class="consigna">
+      Buscá los productos cuyo nombre <strong>contenga «papel»</strong> en cualquier posición.
+      El patrón con <code>%</code> a los dos lados es <code>'%papel%'</code>. Mostrá
+      <code>nombre</code> y <code>precio</code>.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio FROM productos WHERE nombre LIKE ...;"></textarea>
+  </article>
+
+  <article class="ejercicio" data-id="evbd-count">
+    <h3>Evaluación BD · Actividad 6: contar y evitar repetidos</h3>
+    <p class="consigna">
+      Escribí dos consultas: una con <code>COUNT(*) AS total_compras</code> sobre
+      <code>compras</code>, y otra con <code>SELECT DISTINCT id_cliente FROM compras</code> para
+      listar los clientes que compraron, sin repetirlos.
+    </p>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT COUNT(*) AS total_compras FROM compras;\nSELECT DISTINCT ...;"></textarea>
+  </article>
+
+  <article class="ejercicio">
+    <h3>Evaluación BD · Preguntas de opción múltiple</h3>
+    <p class="consigna">Elegí una opción por pregunta. No vas a ver la corrección.</p>
+    <div id="quiz-eval-bd">
+      <div class="quiz-pregunta" data-correcta="b" data-pista="FOREIGN KEY ... REFERENCES apunta a la PK de otra tabla.">
+        <p><strong>1.</strong> ¿Cómo se declara una clave foránea en MySQL?</p>
+        <label><input type="radio" name="evbd-q1" value="a"> PRIMARY KEY (id) REFERENCES otra(id)</label>
+        <label><input type="radio" name="evbd-q1" value="b"> FOREIGN KEY (id) REFERENCES otra(id)</label>
+        <label><input type="radio" name="evbd-q1" value="c"> UNIQUE KEY (id) LIKE otra(id)</label>
+        <label><input type="radio" name="evbd-q1" value="d"> COUNT (id) FROM otra</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="a" data-pista="WHERE filtra filas antes de ordenar o limitar.">
+        <p><strong>2.</strong> ¿Para qué sirve <code>WHERE</code>?</p>
+        <label><input type="radio" name="evbd-q2" value="a"> Para filtrar filas según una condición</label>
+        <label><input type="radio" name="evbd-q2" value="b"> Para crear una tabla</label>
+        <label><input type="radio" name="evbd-q2" value="c"> Para contar filas</label>
+        <label><input type="radio" name="evbd-q2" value="d"> Para ordenar el resultado</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="c" data-pista="DESC ordena de mayor a menor.">
+        <p><strong>3.</strong> ¿Cómo ordenás de mayor a menor precio?</p>
+        <label><input type="radio" name="evbd-q3" value="a"> ORDER BY precio ASC</label>
+        <label><input type="radio" name="evbd-q3" value="b"> ORDER BY precio</label>
+        <label><input type="radio" name="evbd-q3" value="c"> ORDER BY precio DESC</label>
+        <label><input type="radio" name="evbd-q3" value="d"> LIMIT precio DESC</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="d" data-pista="El % reemplaza cualquier cantidad de caracteres.">
+        <p><strong>4.</strong> En <code>LIKE 'Cu%'</code>, el símbolo <code>%</code> significa:</p>
+        <label><input type="radio" name="evbd-q4" value="a"> Un solo carácter</label>
+        <label><input type="radio" name="evbd-q4" value="b"> El final de la tabla</label>
+        <label><input type="radio" name="evbd-q4" value="c"> Un valor numérico</label>
+        <label><input type="radio" name="evbd-q4" value="d"> Cualquier cantidad de caracteres</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="a" data-pista="COUNT(*) cuenta las filas que cumplen la condición.">
+        <p><strong>5.</strong> ¿Qué función cuenta filas?</p>
+        <label><input type="radio" name="evbd-q5" value="a"> COUNT(*)</label>
+        <label><input type="radio" name="evbd-q5" value="b"> LIMIT(*)</label>
+        <label><input type="radio" name="evbd-q5" value="c"> DISTINCT(*)</label>
+        <label><input type="radio" name="evbd-q5" value="d"> INSERT(*)</label>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-pregunta" data-correcta="b" data-pista="LIMIT va al final y no admite valores negativos.">
+        <p><strong>6.</strong> ¿Dónde se escribe <code>LIMIT 5</code> en una consulta?</p>
+        <label><input type="radio" name="evbd-q6" value="a"> Antes de SELECT</label>
+        <label><input type="radio" name="evbd-q6" value="b"> Al final, después de ORDER BY si lo hay</label>
+        <label><input type="radio" name="evbd-q6" value="c"> Dentro de VALUES</label>
+        <label><input type="radio" name="evbd-q6" value="d"> En el CREATE TABLE</label>
+        <div class="quiz-feedback"></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="ejercicio entrega-eval">
+    <h3>Datos para guardar la evaluación de BD</h3>
+    <form class="form-eval" id="form-eval-bd"
+          data-examen="modelos-sistemas-bd"
+          data-titulo="Evaluación solo BD">
+      <label for="evbd-nombre">Nombre:</label>
+      <input id="evbd-nombre" name="nombre" type="text" placeholder="Tu nombre" required>
+      <label for="evbd-apellido">Apellido:</label>
+      <input id="evbd-apellido" name="apellido" type="text" placeholder="Tu apellido" required>
+      <label for="evbd-curso">Curso:</label>
+      <input id="evbd-curso" name="curso" type="text" placeholder="Ej.: 3º A" required>
+      <button type="submit">Enviar evaluación</button>
+    </form>
+    <div class="estado-eval" id="estado-eval-bd" role="status" aria-live="polite"></div>
     <p class="nota"><strong>Privacidad:</strong> guardamos nombre, apellido, curso, respuestas, nota y fecha de envío. El contenido viaja cifrado por un canal público; no pedimos contraseñas ni datos sensibles.</p>
   </article>
 </section>
@@ -536,7 +1083,7 @@ function normalizar(s){
 
 function contexto(articulo){
   const caja = articulo.querySelector('.respuesta');
-  const esTablas = articulo.dataset.id === 'mer1';
+  const esTablas = !!articulo.querySelector('.tablas-mer');
   let crudo = (caja && typeof caja.value === 'string')
     ? caja.value
     : (caja ? (caja.innerText || '') : '');
@@ -575,6 +1122,16 @@ function titulosMer(c){
   }).filter(Boolean);
 }
 
+const hayCard1n = c => /1\s*(──|[:\-]{1,2})\s*n/i.test(c.t) || c.formas.includes('1:N');
+const hayCardN1 = c => /n\s*(──|[:\-]{1,2})\s*1/i.test(c.t) || c.formas.includes('N:1');
+const hayCardNM = c => /n\s*[:\-]\s*m/i.test(c.t) || c.formas.includes('N:M');
+const hayFK = (c, nombre) => new RegExp(nombre + '[^\\n;]*\\bfk\\b').test(c.t) ||
+  new RegExp(nombre + '[^\\n;]*foreign key').test(c.t) ||
+  new RegExp('foreign key\\s*\\([^)]*' + nombre + '[^)]*\\)').test(c.t);
+const hayPK = (c, nombre) => new RegExp(nombre + '[^\\n;]*(\\bpk\\b|\\bprimary key\\b)').test(c.t) ||
+  new RegExp('(\\bpk\\b|\\bprimary key\\b)[^\\n;]*' + nombre).test(c.t) ||
+  new RegExp('primary key\\s*\\([^)]*' + nombre).test(c.t);
+
 const EJERCICIOS = {
   der1: { requisitos: [
     { d:'Dibuja una entidad (CLIENTE o PRODUCTO)', f:c => /cliente|producto/.test(c.t) && c.formas.includes('rect') },
@@ -597,6 +1154,14 @@ const EJERCICIOS = {
     { d:'Marca la cardinalidad N:M', f:c => c.formas.includes('N:M') || /n\s*:\s*m/.test(c.t) },
     { d:'Incluye fecha y cantidad en COMPRA', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
   ]},
+  der4: { requisitos: [
+    { d:'Dibuja MEDICO y PACIENTE con rectángulos', f:c => c.t.includes('medico') && c.t.includes('paciente') && c.formas.includes('rect') },
+    { d:'Dibuja la relación ATIENDE con rombo', f:c => c.t.includes('atiende') && c.formas.includes('rombo') },
+    { d:'Marca la cardinalidad 1:N', f:c => hayCard1n(c) },
+    { d:'Marca telefonos como atributo multivaluado', f:c => c.formas.includes('doble') && c.t.includes('telefonos') },
+    { d:'Dibuja fecha_nacimiento con óvalo simple', f:c => c.formas.includes('ovalo') && c.t.includes('fecha_nacimiento') },
+    { d:'Marca edad como atributo derivado', f:c => c.formas.includes('punteado') && c.t.includes('edad') }
+  ]},
   mer1: { requisitos: [
     { d:'Arma tres entidades con el menú', f:c => !!c.caja && c.caja.querySelectorAll('.mer-tabla').length >= 3 },
     { d:'Une las entidades con dos líneas', f:c => !!c.caja && c.caja.querySelectorAll('.mer-linea').length >= 2 },
@@ -617,6 +1182,30 @@ const EJERCICIOS = {
     { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) },
     { d:'Pone fecha y cantidad en compra', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
   ]},
+  mer2: { requisitos: [
+    { d:'Nombra cliente y pedido en singular', f:c => c.t.includes('cliente') && c.t.includes('pedido') },
+    { d:'Marca las PK de id_cliente e id_pedido', f:c => hayPK(c, 'id_cliente') && hayPK(c, 'id_pedido') },
+    { d:'Pone id_cliente como FK en pedido', f:c => hayFK(c, 'id_cliente') },
+    { d:'Escribe la cardinalidad 1──N', f:c => hayCard1n(c) },
+    { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) },
+    { d:'Usa AUTO_INCREMENT en id_pedido', f:c => /id_pedido[^\n;]*ai\b|auto_increment/.test(c.t) }
+  ]},
+  mer3: { requisitos: [
+    { d:'Mantiene cliente con su PK', f:c => c.t.includes('cliente') && hayPK(c, 'id_cliente') },
+    { d:'Crea la tabla telefono con su PK', f:c => c.t.includes('telefono') && hayPK(c, 'id_telefono') },
+    { d:'Pone id_cliente como FK en telefono', f:c => hayFK(c, 'id_cliente') },
+    { d:'Usa VARCHAR para el número de teléfono', f:c => c.t.includes('numero') && c.t.includes('varchar') },
+    { d:'Explica que el total no se guarda por derivado', f:c => c.t.includes('total') && c.t.includes('derivado') && /no se guarda|no guarda|no se almacena|no se guarde/.test(c.t) },
+    { d:'Escribe la cardinalidad 1──N', f:c => hayCard1n(c) }
+  ]},
+  mer4: { requisitos: [
+    { d:'Nombra alumno y libreta', f:c => c.t.includes('alumno') && c.t.includes('libreta') },
+    { d:'Marca la PK de id_alumno', f:c => hayPK(c, 'id_alumno') },
+    { d:'Marca la PK de id_libreta', f:c => hayPK(c, 'id_libreta') },
+    { d:'Pone id_alumno como FK UNIQUE en libreta', f:c => hayFK(c, 'id_alumno') && /unique/.test(c.t) },
+    { d:'Escribe la cardinalidad 1──1', f:c => /1\s*(──|[:\-]{1,2})\s*1/.test(c.t) },
+    { d:'Explica por qué la FK va en libreta', f:c => /porque|ya que|debido|puesto que/.test(c.t) && c.t.includes('libreta') }
+  ]},
   bd1: { requisitos: [
     { d:'Usa CREATE TABLE', f:c => /create\s+table/.test(c.t) },
     { d:'Crea la tabla productos', f:c => c.t.includes('productos') },
@@ -635,6 +1224,139 @@ const EJERCICIOS = {
     { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
     { d:'Ordena por precio', f:c => /order\s+by\s+precio/.test(c.t) },
     { d:'No usa JOIN ni relaciones', f:c => !/\bjoin\b/.test(c.t) }
+  ]},
+  bd4: { requisitos: [
+    { d:'Crea las tablas clientes y pedidos', f:c => (c.t.match(/create\s+table/g) || []).length >= 2 && c.t.includes('clientes') && c.t.includes('pedidos') },
+    { d:'Define PRIMARY KEY en ambas', f:c => hayPK(c, 'id_cliente') && hayPK(c, 'id_pedido') },
+    { d:'Usa AUTO_INCREMENT en id_pedido', f:c => /id_pedido[^\n;]*auto_increment|auto_increment/.test(c.t) },
+    { d:'Declara la FK en pedidos', f:c => hayFK(c, 'id_cliente') },
+    { d:'Referencia a clientes(id_cliente)', f:c => /references\s+clientes\s*\(\s*id_cliente\s*\)/.test(c.t) },
+    { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) }
+  ]},
+  con1: { requisitos: [
+    { d:'Usa SELECT', f:c => /\bselect\b/.test(c.t) },
+    { d:'Consulta la tabla productos', f:c => /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Filtra con WHERE nombre =', f:c => /\bwhere\s+nombre\s*=/.test(c.t) },
+    { d:'Busca exactamente Cuaderno', f:c => c.t.includes('cuaderno') }
+  ]},
+  con2: { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
+    { d:'Ordena con ORDER BY precio', f:c => /order\s+by\s+precio/.test(c.t) },
+    { d:'Ordena de mayor a menor con DESC', f:c => /\bdesc\b/.test(c.t) }
+  ]},
+  con3: { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Muestra nombre y stock', f:c => c.t.includes('nombre') && c.t.includes('stock') },
+    { d:'Filtra con WHERE stock', f:c => /\bwhere\s+stock/.test(c.t) },
+    { d:'Usa el operador > con 10', f:c => />\s*10/.test(c.t) }
+  ]},
+  con4: { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
+    { d:'Filtra con WHERE precio', f:c => /\bwhere\s+precio/.test(c.t) },
+    { d:'Usa el operador < con 1000', f:c => /<\s*1000/.test(c.t) }
+  ]},
+  con5: { requisitos: [
+    { d:'Muestra nombre de productos', f:c => /\bselect\s+nombre\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Ordena alfabéticamente por nombre', f:c => /order\s+by\s+nombre/.test(c.t) },
+    { d:'Límite con LIMIT 5', f:c => /\blimit\s+5\b/.test(c.t) },
+    { d:'No usa WHERE en esta consulta', f:c => !/\bwhere\b/.test(c.t) }
+  ]},
+  con6: { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Filtra con LIKE', f:c => /\blike\b/.test(c.t) },
+    { d:'Usa el patrón Cu%', f:c => /'cu\s*%'/i.test(c.t) || /"cu\s*%"/i.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') }
+  ]},
+  con7: { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Cuenta con COUNT(*)', f:c => /count\s*\(\s*\*\s*\)/.test(c.t) },
+    { d:'Pone el alias cantidad_productos', f:c => /\bas\s+cantidad_productos\b/.test(c.t) }
+  ]},
+  con8: { requisitos: [
+    { d:'Usa SELECT DISTINCT', f:c => /\bselect\s+distinct\b/.test(c.t) },
+    { d:'Consulta la columna stock', f:c => /\bstock\b/.test(c.t) },
+    { d:'Consulta la tabla productos', f:c => /\bfrom\s+productos\b/.test(c.t) }
+  ]},
+  'evg-der1': { requisitos: [
+    { d:'Dibuja AUTOR y LIBRO con rectángulos', f:c => c.t.includes('autor') && c.t.includes('libro') && c.formas.includes('rect') },
+    { d:'Dibuja la relación ESCRIBE con rombo', f:c => c.t.includes('escribe') && c.formas.includes('rombo') },
+    { d:'Marca la cardinalidad 1:N', f:c => hayCard1n(c) },
+    { d:'Marca nacionalidad con óvalo simple', f:c => c.formas.includes('ovalo') && c.t.includes('nacionalidad') }
+  ]},
+  'evg-der2': { requisitos: [
+    { d:'Dibuja ALUMNO y MATERIA con rectángulos', f:c => c.t.includes('alumno') && c.t.includes('materia') && c.formas.includes('rect') },
+    { d:'Dibuja la relación con rombo', f:c => c.formas.includes('rombo') && /cursa/.test(c.t) },
+    { d:'Marca la cardinalidad N:M', f:c => hayCardNM(c) },
+    { d:'Dibuja la entidad intermedia INSCRIPCION', f:c => c.t.includes('inscripcion') },
+    { d:'Une nota y fecha con óvalos', f:c => c.formas.includes('ovalo') && c.t.includes('nota') && c.t.includes('fecha') }
+  ]},
+  'evg-mer1': { requisitos: [
+    { d:'Nombra autor y libro', f:c => c.t.includes('autor') && c.t.includes('libro') },
+    { d:'Marca las PK id_autor e id_libro', f:c => hayPK(c, 'id_autor') && hayPK(c, 'id_libro') },
+    { d:'Pone id_autor como FK en libro', f:c => hayFK(c, 'id_autor') },
+    { d:'Escribe la cardinalidad 1──N', f:c => hayCard1n(c) },
+    { d:'Usa los tipos INT y VARCHAR', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') },
+    { d:'Explica por qué la FK va en libro', f:c => /porque|ya que|debido|puesto que/.test(c.t) && c.t.includes('libro') }
+  ]},
+  'evg-mer2': { requisitos: [
+    { d:'Nombra alumno, materia e inscripcion', f:c => ['alumno','materia','inscripcion'].every(x => c.t.includes(x)) },
+    { d:'Pone id_alumno e id_materia como FK', f:c => hayFK(c, 'id_alumno') && hayFK(c, 'id_materia') },
+    { d:'Incluye nota y fecha en la intermedia', f:c => c.t.includes('nota') && c.t.includes('fecha') },
+    { d:'Usa DECIMAL y DATE', f:c => c.t.includes('decimal') && /\bdate\b/.test(c.t) },
+    { d:'Escribe las dos cardinalidades', f:c => hayCard1n(c) && hayCardN1(c) }
+  ]},
+  'evg-bd1': { requisitos: [
+    { d:'Crea autores y libros', f:c => (c.t.match(/create\s+table/g) || []).length >= 2 && c.t.includes('autores') && c.t.includes('libros') },
+    { d:'Define PRIMARY KEY', f:c => /primary\s+key/.test(c.t) },
+    { d:'Declara la FK en libros', f:c => hayFK(c, 'id_autor') },
+    { d:'Referencia a autores(id_autor)', f:c => /references\s+autores\s*\(\s*id_autor\s*\)/.test(c.t) },
+    { d:'Usa INT y VARCHAR', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') }
+  ]},
+  'evg-bd2': { requisitos: [
+    { d:'Inserta en autores y libros', f:c => (c.t.match(/insert\s+into/g) || []).length >= 2 && c.t.includes('autores') && c.t.includes('libros') },
+    { d:'Usa VALUES', f:c => /\bvalues\b/.test(c.t) },
+    { d:'Carga nombre de autor y título de libro', f:c => c.t.includes('nombre') && c.t.includes('titulo') },
+    { d:'Carga id_autor en el libro', f:c => c.t.includes('id_autor') }
+  ]},
+  'evbd-crear': { requisitos: [
+    { d:'Crea las tres tablas', f:c => (c.t.match(/create\s+table/g) || []).length >= 3 && ['clientes','productos','compras'].every(x => c.t.includes(x)) },
+    { d:'Define PRIMARY KEY en las tres', f:c => hayPK(c, 'id_cliente') && hayPK(c, 'id_producto') && hayPK(c, 'id_compra') },
+    { d:'Usa AUTO_INCREMENT', f:c => /auto_increment/.test(c.t) },
+    { d:'Declara dos FOREIGN KEY', f:c => (c.t.match(/foreign\s+key/g) || []).length >= 2 },
+    { d:'Referencia a clientes y productos', f:c => /references\s+clientes\s*\(\s*id_cliente\s*\)/.test(c.t) && /references\s+productos\s*\(\s*id_producto\s*\)/.test(c.t) },
+    { d:'Usa INT, VARCHAR, DECIMAL y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && c.t.includes('decimal') && /\bdate\b/.test(c.t) }
+  ]},
+  'evbd-insertar': { requisitos: [
+    { d:'Inserta en las tres tablas', f:c => (c.t.match(/insert\s+into/g) || []).length >= 3 && ['clientes','productos','compras'].every(x => c.t.includes(x)) },
+    { d:'Usa VALUES', f:c => /\bvalues\b/.test(c.t) },
+    { d:'Carga nombre y precio de producto', f:c => c.t.includes('nombre') && c.t.includes('precio') },
+    { d:'Carga las FK en compras', f:c => c.t.includes('id_cliente') && c.t.includes('id_producto') },
+    { d:'Carga fecha y cantidad en compras', f:c => /\bfecha\b/.test(c.t) && c.t.includes('cantidad') }
+  ]},
+  'evbd-where': { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
+    { d:'Usa dos condiciones con AND', f:c => /\band\b/.test(c.t) },
+    { d:'Usa >= 500 y < 2000', f:c => />=\s*500/.test(c.t) && /<\s*2000/.test(c.t) }
+  ]},
+  'evbd-orden': { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Filtra con WHERE stock > 0', f:c => /\bwhere\s+stock\s*>\s*0/.test(c.t) },
+    { d:'Ordena por stock', f:c => /order\s+by\s+stock/.test(c.t) },
+    { d:'Limita a 3 filas', f:c => /\blimit\s+3\b/.test(c.t) }
+  ]},
+  'evbd-like': { requisitos: [
+    { d:'Usa SELECT sobre productos', f:c => /\bselect\b/.test(c.t) && /\bfrom\s+productos\b/.test(c.t) },
+    { d:'Filtra con LIKE', f:c => /\blike\b/.test(c.t) },
+    { d:'Usa el patrón %papel%', f:c => /'%papel%'|"%papel%"/i.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') }
+  ]},
+  'evbd-count': { requisitos: [
+    { d:'Cuenta las compras con COUNT(*)', f:c => /count\s*\(\s*\*\s*\)/.test(c.t) && /\bfrom\s+compras\b/.test(c.t) },
+    { d:'Usa el alias total_compras', f:c => /\bas\s+total_compras\b/.test(c.t) },
+    { d:'Lista id_cliente sin repetir', f:c => /\bselect\s+distinct\s+id_cliente\b/.test(c.t) && /\bfrom\s+compras\b/.test(c.t) }
   ]}
 };
 
@@ -930,8 +1652,11 @@ document.querySelectorAll('.limpiar').forEach(function(boton){
   });
 });
 
-function evaluarQuiz(mostrar){
-  const preguntas = Array.from(document.querySelectorAll('#quiz-mer .quiz-pregunta'));
+function evaluarQuiz(mostrar, selector, resumenId){
+  const contenedor = document.querySelector(selector || '#quiz-mer');
+  const preguntas = contenedor
+    ? Array.from(contenedor.querySelectorAll('.quiz-pregunta'))
+    : [];
   let bien = 0;
   const detalles = [];
   preguntas.forEach(function(p, i){
@@ -961,10 +1686,13 @@ function evaluarQuiz(mostrar){
 
   const total = preguntas.length;
   if (mostrar){
-    document.getElementById('res-quiz').innerHTML =
-      '<div class="resumen' + (bien === total ? '' : ' parcial') + '">' +
-      (bien === total ? '✅ ' : '✍️ ') + bien + ' de ' + total + ' respuestas correctas' +
-      '</div>';
+    const resumen = document.getElementById(resumenId || 'res-quiz');
+    if (resumen){
+      resumen.innerHTML =
+        '<div class="resumen' + (bien === total ? '' : ' parcial') + '">' +
+        (bien === total ? '✅ ' : '✍️ ') + bien + ' de ' + total + ' respuestas correctas' +
+        '</div>';
+    }
   }
   return { bien:bien, total:total, detalles:detalles };
 }
@@ -988,52 +1716,40 @@ if (botonLimpiarQuiz){
 /* ---------- Corrección completa y envío cifrado al repo inform ---------- */
 const CLAVE_ENVIO_PORTADA = 'modelos-sistemas-portada-enviada-v1';
 
+/* Corrige una lista de ejercicios. con mostrar=false se usa en las evaluaciones:
+   calcula nota y detalle para enviar, pero no pinta nada en la pantalla. */
+function corregirArticulos(ids, detalle, fallos, respuestas, mostrar){
+  let puntos = 0, total = 0;
+  ids.forEach(function(id){
+    const articulo = document.querySelector('.ejercicio[data-id="' + id + '"]');
+    if (!articulo || !EJERCICIOS[id]) return;
+    const c = contexto(articulo);
+    const resultados = resultadosArticulo(articulo);
+    const bien = resultados.filter(function(x){ return x.ok; }).length;
+    puntos += bien;
+    total += resultados.length;
+    if (mostrar !== false) mostrarResultado(articulo, resultados);
+    respuestas[id] = { texto:c.crudo, html:c.html };
+    resultados.forEach(function(x){
+      detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
+      if (!x.ok) fallos.push(id.toUpperCase() + ': ' + x.texto);
+    });
+  });
+  return { puntos:puntos, total:total };
+}
+
 function corregirTodo(){
   const detalle = [];
   const fallos = [];
   const respuestas = {};
-  let puntosA = 0, totalA = 0;
-  let puntosB = 0, totalB = 0;
-  let puntosC = 0, totalC = 0;
 
-  ['der1','der2','der3'].forEach(function(id){
-    const articulo = document.querySelector('.ejercicio[data-id="' + id + '"]');
-    const c = contexto(articulo);
-    const r = mostrarResultado(articulo, resultadosArticulo(articulo));
-    puntosA += r.bien;
-    totalA += r.total;
-    respuestas[id] = { texto:c.crudo, html:c.html };
-    r.resultados.forEach(function(x){
-      detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
-      if (!x.ok) fallos.push(id.toUpperCase() + ': ' + x.texto);
-    });
-  });
-
-  ['mer1'].forEach(function(id){
-    const articulo = document.querySelector('.ejercicio[data-id="' + id + '"]');
-    const c = contexto(articulo);
-    const r = mostrarResultado(articulo, resultadosArticulo(articulo));
-    puntosB += r.bien;
-    totalB += r.total;
-    respuestas[id] = { texto:c.crudo, html:c.html };
-    r.resultados.forEach(function(x){
-      detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
-      if (!x.ok) fallos.push(id.toUpperCase() + ': ' + x.texto);
-    });
-  });
-
-  ['bd1','bd2','bd3'].forEach(function(id){
-    const articulo = document.querySelector('.ejercicio[data-id="' + id + '"]');
-    const c = contexto(articulo);
-    const r = mostrarResultado(articulo, resultadosArticulo(articulo));
-    puntosC += r.bien;
-    totalC += r.total;
-    respuestas[id] = { texto:c.crudo, html:c.html };
-    r.resultados.forEach(function(x){
-      detalle.push(id.toUpperCase() + ' · ' + x.texto + ': ' + (x.ok ? 'OK' : 'FALTA'));
-      if (!x.ok) fallos.push(id.toUpperCase() + ': ' + x.texto);
-    });
-  });
+  const der = corregirArticulos(['der1','der2','der3','der4'], detalle, fallos, respuestas);
+  const mer = corregirArticulos(['mer1','mer2','mer3','mer4'], detalle, fallos, respuestas);
+  const bd = corregirArticulos(['bd1','bd2','bd3','bd4'], detalle, fallos, respuestas);
+  const consultas = corregirArticulos(
+    ['con1','con2','con3','con4','con5','con6','con7','con8'],
+    detalle, fallos, respuestas
+  );
 
   const quiz = evaluarQuiz(true);
   respuestas.quiz = Array.from(document.querySelectorAll('#quiz-mer .quiz-pregunta')).map(function(p, i){
@@ -1045,17 +1761,17 @@ function corregirTodo(){
     if (!x.ok) fallos.push('MER · ' + x.texto);
   });
 
-  const bien = puntosA + puntosB + quiz.bien + puntosC;
-  const total = totalA + totalB + quiz.total + totalC;
+  const bien = der.puntos + mer.puntos + quiz.bien + bd.puntos + consultas.puntos;
+  const total = der.total + mer.total + quiz.total + bd.total + consultas.total;
   const nota = Math.round((bien / total) * 100) / 10;
 
   detalle.unshift('Nota: ' + String(nota).replace('.', ',') + ' de 10 (' + bien + ' de ' + total + ' requisitos)');
 
   return {
     nota:nota,
-    puntosA:puntosA,
-    puntosB:puntosB + quiz.bien,
-    puntosC:puntosC,
+    puntosA:der.puntos,
+    puntosB:mer.puntos + quiz.bien,
+    puntosC:bd.puntos + consultas.puntos,
     total:total,
     fallos:fallos,
     detalle:detalle.join('\n'),
@@ -1066,13 +1782,14 @@ function corregirTodo(){
 function bloquearEvaluacionPortada(estado){
   const form = document.getElementById('form-evaluacion');
   if (form) form.querySelectorAll('input, button').forEach(function(el){ el.disabled = true; });
-  document.querySelectorAll('#der button, #mer button, #bd button').forEach(function(b){ b.disabled = true; });
+  const areas = '#der, #mer, #bd, #consultas';
+  document.querySelectorAll(areas + ' button').forEach(function(b){ b.disabled = true; });
   document.querySelectorAll('#quiz-mer input').forEach(function(i){ i.disabled = true; });
-  document.querySelectorAll('.respuesta').forEach(function(caja){
+  document.querySelectorAll(areas + ' .respuesta').forEach(function(caja){
     if (caja.tagName === 'TEXTAREA') caja.disabled = true;
     else caja.setAttribute('contenteditable', 'false');
   });
-  document.querySelectorAll('[data-respuesta]').forEach(function(c){
+  document.querySelectorAll(areas + ' [data-respuesta]').forEach(function(c){
     c.setAttribute('contenteditable', 'false');
   });
   const boton = document.getElementById('btn-enviar-eval');
@@ -1137,6 +1854,149 @@ function bloquearEvaluacionPortada(estado){
     });
   });
 })();
+
+/* ---------- Evaluaciones sin corrección visible ---------- */
+const EVALUACIONES = {
+  general: {
+    form:'form-eval-general',
+    estado:'estado-eval-general',
+    seccion:'evaluacion-general',
+    clave:'modelos-sistemas-general-enviada-v1',
+    quiz:'#quiz-eval-general',
+    grupos:{
+      A:['evg-der1','evg-der2'],
+      B:['evg-mer1','evg-mer2'],
+      C:['evg-bd1','evg-bd2']
+    }
+  },
+  bd: {
+    form:'form-eval-bd',
+    estado:'estado-eval-bd',
+    seccion:'evaluacion-bd',
+    clave:'modelos-sistemas-bd-enviada-v1',
+    quiz:'#quiz-eval-bd',
+    grupos:{
+      A:['evbd-crear','evbd-insertar'],
+      B:['evbd-where','evbd-orden','evbd-like','evbd-count'],
+      C:[]
+    }
+  }
+};
+
+function respuestasQuiz(selector){
+  return Array.from(document.querySelectorAll(selector + ' .quiz-pregunta')).map(function(p, i){
+    const elegida = p.querySelector('input:checked');
+    return { pregunta:i + 1, respuesta:elegida ? elegida.value : 'sin responder' };
+  });
+}
+
+function corregirEvaluacion(conf){
+  const detalle = [];
+  const fallos = [];
+  const respuestas = {};
+  const a = corregirArticulos(conf.grupos.A, detalle, fallos, respuestas, false);
+  const b = corregirArticulos(conf.grupos.B, detalle, fallos, respuestas, false);
+  const c = corregirArticulos(conf.grupos.C, detalle, fallos, respuestas, false);
+  const quiz = evaluarQuiz(false, conf.quiz);
+
+  respuestas.quiz = respuestasQuiz(conf.quiz);
+  quiz.detalles.forEach(function(x, i){
+    detalle.push('Opción múltiple ' + (i + 1) + ': ' + (x.ok ? 'OK' : 'FALTA'));
+    if (!x.ok) fallos.push('Opción múltiple ' + (i + 1));
+  });
+
+  const bien = a.puntos + b.puntos + c.puntos + quiz.bien;
+  const total = a.total + b.total + c.total + quiz.total;
+  const nota = Math.round((bien / total) * 100) / 10;
+  detalle.unshift('Nota: ' + String(nota).replace('.', ',') + ' de 10 (' + bien + ' de ' + total + ' requisitos)');
+
+  return {
+    nota:nota,
+    puntosA:a.puntos,
+    puntosB:b.puntos,
+    puntosC:c.puntos + quiz.bien,
+    total:total,
+    fallos:fallos,
+    detalle:detalle.join('\n'),
+    respuestas:respuestas
+  };
+}
+
+function bloquearEvaluacion(conf){
+  const seccion = document.getElementById(conf.seccion);
+  if (seccion){
+    seccion.querySelectorAll('input, button, textarea').forEach(function(el){ el.disabled = true; });
+    seccion.querySelectorAll('[contenteditable]').forEach(function(el){
+      el.setAttribute('contenteditable', 'false');
+    });
+  }
+  const estado = document.getElementById(conf.estado);
+  if (estado){
+    estado.className = 'estado-eval ok';
+    estado.textContent = '✅ Evaluación enviada. Ya no se puede modificar.';
+  }
+}
+
+function configurarEnvioEvaluacion(conf){
+  const form = document.getElementById(conf.form);
+  if (!form) return;
+  const estado = document.getElementById(conf.estado);
+
+  try {
+    if (localStorage.getItem(conf.clave)){
+      bloquearEvaluacion(conf);
+      return;
+    }
+  } catch (e) { /* sin almacenamiento local */ }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const nombre = form.elements.nombre.value.trim();
+    const apellido = form.elements.apellido.value.trim();
+    const curso = form.elements.curso.value.trim();
+    if (!nombre || !apellido || !curso){
+      estado.className = 'estado-eval error';
+      estado.textContent = '❌ Completá nombre, apellido y curso.';
+      return;
+    }
+
+    estado.className = 'estado-eval';
+    estado.textContent = 'Guardando…';
+
+    const correccion = corregirEvaluacion(conf);
+    const payload = {
+      examen: form.dataset.examen,
+      titulo: form.dataset.titulo,
+      materia: window.ENTREGA_MATERIA || 'Modelos y sistemas',
+      apellido: apellido,
+      nombre: nombre,
+      curso: curso,
+      nota: correccion.nota,
+      puntosA: correccion.puntosA,
+      puntosB: correccion.puntosB,
+      puntosC: correccion.puntosC,
+      errores: correccion.fallos.join(' · ').slice(0, 300) || 'Sin errores',
+      detalle: correccion.detalle.slice(0, 20000),
+      respuestas: correccion.respuestas,
+      momento: new Date().toISOString(),
+      origen: location.href
+    };
+
+    window.enviarEntrega(payload).then(function(){
+      try { localStorage.setItem(conf.clave, new Date().toISOString()); } catch (e) {}
+      bloquearEvaluacion(conf);
+      estado.className = 'estado-eval ok';
+      estado.textContent = '✅ Evaluación enviada. Se guardó en el repositorio inform.';
+    }).catch(function(error){
+      estado.className = 'estado-eval error';
+      estado.textContent = '❌ No se pudo enviar: ' + error.message;
+    });
+  });
+}
+
+Object.keys(EVALUACIONES).forEach(function(clave){
+  configurarEnvioEvaluacion(EVALUACIONES[clave]);
+});
 </script>
 </body>
 </html>
