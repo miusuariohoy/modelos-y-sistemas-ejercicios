@@ -210,6 +210,15 @@ ol.pasos li strong{color:var(--verde)}
 .ex-sym:hover{background:var(--verde-claro); border-color:#34d399}
 .ex-sym:active{transform:translateY(1px)}
 .ex-sym:focus-visible{outline:2px solid #2563eb; outline-offset:2px}
+.area-dibujo{
+  min-height:100px; border:1px solid var(--borde); border-radius:8px;
+  padding:.6rem; font-family:inherit; font-size:.92rem; background:#fff;
+  overflow:auto; outline:none;
+}
+.area-dibujo:focus{border-color:var(--verde); box-shadow:0 0 0 2px var(--verde-claro)}
+.area-dibujo:empty:before{content:attr(data-placeholder); color:#888}
+.ins-simbolo{display:inline-block; vertical-align:middle; line-height:1}
+.ins-simbolo-svg{width:34px; height:24px; vertical-align:middle}
 .eval-ej{
   border:1px solid var(--borde); border-radius:10px;
   padding:.8rem 1rem; margin:1rem 0; background:#fdfdfd;
@@ -1425,17 +1434,13 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 
 <!-- ========================= EVALUACIÓN ======================== -->
 <section id="evaluacion">
-  <h1>Parte 7 &middot; Evaluación con corrección</h1>
-  <p>Escribí tus respuestas y presioná <strong>Corregir</strong>. Debajo de cada cuadro hay botones de símbolos: al tocarlos, el término se inserta en <strong>ese cuadro</strong>. El corrector revisa la estructura, no reemplaza la corrección del docente.</p>
+  <h1>Parte 7 &middot; Evaluación</h1>
+  <p>Escribí tus respuestas en cada cuadro. En los ejercicios 1 y 2, los botones <strong>dibujan el símbolo</strong> dentro del área de respuesta: apretalos y el dibujo aparece donde está el cursor. Esta evaluación es para practicar: la corrección la hace el docente.</p>
 
   <div class="eval-ej">
     <h2>1. Los símbolos del Diagrama DER</h2>
-    <p>Explicá qué símbolo se usa para la entidad, la relación y el atributo, y qué significa el óvalo subrayado.</p>
-    <textarea id="in-eval1" rows="5" placeholder="Escribí acá tu respuesta…"></textarea>
-    <p><button class="btn btn-primary" type="button" onclick="corregirEval('eval1')">Corregir</button>
-       <button class="btn" type="button" onclick="limpiarEval('eval1')">Limpiar</button></p>
-    <div id="res-eval1" class="checklist" aria-live="polite"></div>
-    <details><summary>Ver una respuesta posible</summary><p>La entidad se dibuja con un <strong>rectángulo</strong>, la relación con un <strong>rombo</strong> y el atributo con un <strong>óvalo</strong>. El óvalo subrayado marca la clave (PRIMARY KEY); el doble óvalo es multivaluado y el punteado, derivado.</p></details>
+    <p>Dibujá con los botones el símbolo de la entidad, la relación y el atributo, y explicá con tus palabras qué significa el óvalo subrayado.</p>
+    <div class="area-dibujo" id="in-eval1" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Dibujá y escribí acá tu respuesta…"></div>
   </div>
 
   <div class="eval-ej">
@@ -1451,41 +1456,36 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     </ol>
     <div class="nota"><strong>Ayuda:</strong> la intermedia guarda la fecha y la cantidad del pedido,
     y sus dos FK apuntan a las claves de <code>clientes</code> y <code>pizzas</code>.</div>
-    <textarea id="in-eval2" rows="5" placeholder="Escribí acá tu respuesta…"></textarea>
-    <p><button class="btn btn-primary" type="button" onclick="corregirEval('eval2')">Corregir</button>
-       <button class="btn" type="button" onclick="limpiarEval('eval2')">Limpiar</button></p>
-    <div id="res-eval2" class="checklist" aria-live="polite"></div>
-    <details><summary>Ver una respuesta posible</summary>
-      <p>Como PIDE es <strong>N:M</strong>, se agrega la <strong>entidad intermedia PEDIDO</strong>,
-      que en el Modelo MER se llama <code>pedidos</code>.</p>
-      <p>Quedan tres tablas: <code>clientes</code>, <code>pizzas</code> y <code>pedidos</code>.
-      La tabla <code>pedidos</code> tiene <code>id_pedido</code> como PK, <code>fecha</code> y
-      <code>cantidad</code> como columnas, y <strong>dos FK</strong>: <code>id_cliente</code> apunta
-      a <code>clientes</code> y <code>id_pizza</code> apunta a <code>pizzas</code>.</p></details>
+    <div class="area-dibujo" id="in-eval2" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Dibujá y escribí acá tu respuesta…"></div>
   </div>
 
   <div class="eval-ej">
     <h2>3. SQL de la tabla clientes</h2>
-    <p>Escribí el <code>CREATE TABLE clientes</code> con <code>dni</code> como PRIMARY KEY, <code>nombre VARCHAR(50) NOT NULL</code> y <code>telefono VARCHAR(20)</code>.</p>
-    <textarea id="in-eval3" rows="6" placeholder="CREATE TABLE …"></textarea>
-    <p><button class="btn btn-primary" type="button" onclick="corregirEval('eval3')">Corregir</button>
-       <button class="btn" type="button" onclick="limpiarEval('eval3')">Limpiar</button></p>
-    <div id="res-eval3" class="checklist" aria-live="polite"></div>
-    <details><summary>Ver una respuesta posible</summary><pre class="codigo">CREATE TABLE clientes (
-    dni INT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    telefono VARCHAR(20)
-);</pre></details>
+    <p>Escribí la tabla clientes con dni, nombre y telefono.</p>
+    <textarea id="in-eval3" rows="6" placeholder="Escribí acá tu respuesta…"></textarea>
   </div>
 
   <div class="eval-ej">
     <h2>4. Diferencia entre Diagrama DER y Modelo MER</h2>
     <p>Explicá la diferencia usando las palabras <strong>símbolos</strong>, <strong>tablas</strong>, <strong>PK</strong> y <strong>FK</strong>.</p>
-    <textarea id="in-eval4" rows="5" placeholder="Escribí acá tu respuesta…"></textarea>
-    <p><button class="btn btn-primary" type="button" onclick="corregirEval('eval4')">Corregir</button>
-       <button class="btn" type="button" onclick="limpiarEval('eval4')">Limpiar</button></p>
-    <div id="res-eval4" class="checklist" aria-live="polite"></div>
-    <details><summary>Ver una respuesta posible</summary><p>El <strong>Diagrama DER</strong> es el dibujo conceptual: usa símbolos (rectángulo, rombo y óvalos) y cardinalidades. El <strong>Modelo MER</strong> es el paso a las tablas: cada entidad se vuelve una tabla, la clave pasa a ser PK y las relaciones 1:N se representan con FK. Después recién se escribe el SQL de la BD.</p></details>
+  </div>
+
+  <div class="eval-ej">
+    <h2>5. ¿Qué es una entidad?</h2>
+    <p>Escribí qué es una entidad y nombrá una del ejemplo de la tienda.</p>
+    <textarea rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
+  </div>
+
+  <div class="eval-ej">
+    <h2>6. ¿Qué es la PRIMARY KEY?</h2>
+    <p>Escribí qué significa PK y para qué sirve.</p>
+    <textarea rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
+  </div>
+
+  <div class="eval-ej">
+    <h2>7. ¿Qué es la FOREIGN KEY?</h2>
+    <p>Escribí qué significa FK y para qué sirve.</p>
+    <textarea rows="4" placeholder="Escribí acá tu respuesta…"></textarea>
   </div>
 
   <div id="eval-progreso" class="puntaje" aria-live="polite">Progreso de la evaluación: 0 de 17 requisitos (0%).</div>
@@ -1587,83 +1587,49 @@ function reiniciarQuiz(){
   resultado.className = 'puntaje';
 }
 
-/* ---------- Evaluación: corrección de respuestas escritas ---------- */
-function normalizar(texto){
-  return String(texto || '')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/▭▬■□◻/g, ' rectangulo ')
-    .replace(/◇◆♦/g, ' rombo ')
-    .replace(/⬭⬮○◯/g, ' ovalo ')
-    .replace(/[^a-z0-9\s():,.\-]/g, ' ')
-    .replace(/\s+/g, ' ').trim();
-}
-
-const CORRECCIONES = {
-  eval1: { requisitos:[
-    { d:'Usás rectángulo para la entidad', f:c=>/rectangulo/.test(c) && /entidad/.test(c) },
-    { d:'Usás rombo para la relación', f:c=>/rombo/.test(c) && /relacion/.test(c) },
-    { d:'Usás óvalo para el atributo', f:c=>/ovalo/.test(c) && /atributo/.test(c) },
-    { d:'Explicás el óvalo subrayado como clave / PK', f:c=>/ovalo subrayado/.test(c) && /(clave|primary key|pk)/.test(c) }
-  ]},
-  eval2: { requisitos:[
-    { d:'Identificás la cardinalidad N:M', f:c=>/n\s*:\s*m/.test(c) },
-    { d:'Mencionás la entidad intermedia', f:c=>/entidad intermedia/.test(c) },
-    { d:'Nombrás la tabla pedidos / PEDIDO', f:c=>/pedid/.test(c) },
-    { d:'Mencionás las dos FK', f:c=>/(fk|foreign key|clave foranea)/.test(c) && /(dos|2)/.test(c) },
-    { d:'Mencionás fecha y cantidad como columnas', f:c=>/fecha/.test(c) && /cantidad/.test(c) }
-  ]},
-  eval3: { requisitos:[
-    { d:'Escribís CREATE TABLE clientes', f:c=>/create table clientes/.test(c) },
-    { d:'Definís dni como PRIMARY KEY', f:c=>/dni/.test(c) && /primary key/.test(c) },
-    { d:'Definís nombre VARCHAR(50) NOT NULL', f:c=>/nombre varchar\(50\) not null/.test(c) },
-    { d:'Definís telefono VARCHAR(20)', f:c=>/telefono varchar\(20\)/.test(c) }
-  ]},
-  eval4: { requisitos:[
-    { d:'Hablas de los símbolos del Diagrama DER', f:c=>/simbol/.test(c) && /(rectangulo|rombo|ovalo|der)/.test(c) },
-    { d:'Hablas de las tablas del Modelo MER', f:c=>/tabla/.test(c) && /(mer|modelo)/.test(c) },
-    { d:'Mencionás PK', f:c=>/\bpk\b|primary key/.test(c) },
-    { d:'Mencionás FK', f:c=>/\bfk\b|foreign key/.test(c) }
-  ]}
-};
-
-/* Cada cuadro tiene su propia paleta: el botón siempre inserta en ese cuadro. */
+/* ---------- Evaluación: los botones dibujan el símbolo ---------- */
 const SIMBOLOS = [
-  { etiqueta:'Rectángulo', texto:'rectángulo (entidad)',
-    icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
-  { etiqueta:'Rombo', texto:'rombo (relación)',
-    icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
-  { etiqueta:'Óvalo', texto:'óvalo (atributo)',
-    icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
-  { etiqueta:'Óvalo clave', texto:'óvalo subrayado (clave, PRIMARY KEY)',
-    icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
-  { etiqueta:'Doble óvalo', texto:'doble óvalo (multivaluado)',
-    icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
-  { etiqueta:'Óvalo punteado', texto:'óvalo punteado (derivado)',
-    icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
-  { etiqueta:'1:N', texto:'1:N (uno a muchos)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
-  { etiqueta:'N:M', texto:'N:M (muchos a muchos)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
-  { etiqueta:'PK', texto:'PK (PRIMARY KEY)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
-  { etiqueta:'FK', texto:'FK (FOREIGN KEY)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
+  { etiqueta:'Rectángulo', icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
+  { etiqueta:'Rombo', icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
+  { etiqueta:'Óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
+  { etiqueta:'Óvalo clave', icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
+  { etiqueta:'Doble óvalo', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
+  { etiqueta:'Óvalo punteado', icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
+  { etiqueta:'1:N', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
+  { etiqueta:'N:M', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
+  { etiqueta:'PK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
+  { etiqueta:'FK', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
 ];
 
-function insertarEnCuadro(area, texto){
+/* Inserta el dibujo en el área de respuesta, donde esté el cursor. */
+function insertarDibujo(area, html){
   if(!area) return;
-  const ini = area.selectionStart, fin = area.selectionEnd;
-  const antes = area.value.slice(0, ini), despues = area.value.slice(fin);
-  const sepAntes = (antes && !/[\s(]$/.test(antes)) ? ' ' : '';
-  const sepDespues = (despues && !/^[\s,.;:)\]]/.test(despues)) ? ' ' : '';
-  const insertado = sepAntes + texto + sepDespues;
-  area.value = antes + insertado + despues;
-  const pos = (antes + insertado).length;
   area.focus();
-  area.setSelectionRange(pos, pos);
+  const sel = window.getSelection();
+  let rango;
+  if(sel.rangeCount && area.contains(sel.anchorNode)){
+    rango = sel.getRangeAt(0);
+    rango.deleteContents();
+  } else {
+    rango = document.createRange();
+    rango.selectNodeContents(area);
+    rango.collapse(false);
+  }
+  const plantilla = document.createElement('template');
+  plantilla.innerHTML = html;
+  const nodo = plantilla.content.firstChild;
+  rango.insertNode(nodo);
+  rango.setStartAfter(nodo);
+  rango.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(rango);
   area.dispatchEvent(new Event('input', { bubbles:true }));
 }
 
-document.querySelectorAll('#evaluacion .eval-ej').forEach(function(ej){
-  const area = ej.querySelector('textarea');
-  if(!area || ej.querySelector('.ex-paleta')) return;
+/* Solo los ejercicios 1 y 2 tienen paleta de dibujo. */
+['eval1','eval2'].forEach(function(id){
+  const area = document.getElementById('in-' + id);
+  if(!area) return;
   const wrap = document.createElement('div');
   wrap.className = 'ex-paleta';
   const rotulo = document.createElement('span');
@@ -1675,58 +1641,19 @@ document.querySelectorAll('#evaluacion .eval-ej').forEach(function(ej){
     b.type = 'button';
     b.className = 'ex-sym';
     b.innerHTML = '<svg class="ex-sym-icon" viewBox="0 0 28 20" aria-hidden="true">' +
-      (s.icona || '') + '</svg><span class="ex-sym-name">' + s.etiqueta + '</span>';
-    b.title = 'Insertar «' + s.texto + '» en este cuadro';
-    b.addEventListener('click', function(){ insertarEnCuadro(area, s.texto); });
+      s.icona + '</svg><span class="ex-sym-name">' + s.etiqueta + '</span>';
+    b.title = 'Dibujar ' + s.etiqueta + ' en el área de respuesta';
+    b.addEventListener('click', function(){
+      insertarDibujo(area,
+        '<span class="ins-simbolo"><svg class="ins-simbolo-svg" viewBox="0 0 28 20" aria-hidden="true">' +
+        s.icona + '</svg>&nbsp;</span>');
+    });
     wrap.appendChild(b);
   });
   area.parentNode.insertBefore(wrap, area);
 });
 
-function corregirEval(id){
-  const area = document.getElementById('in-' + id);
-  const salida = document.getElementById('res-' + id);
-  const datos = CORRECCIONES[id];
-  if(!area || !salida || !datos) return;
-  const texto = normalizar(area.value);
-  let bien = 0;
-  const filas = datos.requisitos.map(function(r){
-    const pasa = r.f(texto);
-    if(pasa) bien++;
-    return '<div class="fila ' + (pasa ? 'ok' : 'mal') + '">' + (pasa ? '✔' : '✘') + ' ' + r.d + '</div>';
-  }).join('');
-  const total = datos.requisitos.length;
-  salida.innerHTML = filas + '<div class="puntaje">' + bien + ' de ' + total +
-    ' requisitos (' + Math.round(bien / total * 100) + '%)</div>' +
-    '<p class="nota">El corrector revisa la estructura de la respuesta, no su redacción.</p>';
-  actualizarProgreso();
-}
-
-function limpiarEval(id){
-  const area = document.getElementById('in-' + id);
-  const salida = document.getElementById('res-' + id);
-  if(area) area.value = '';
-  if(salida) salida.innerHTML = '';
-  actualizarProgreso();
-}
-
-function actualizarProgreso(){
-  const salida = document.getElementById('eval-progreso');
-  if(!salida) return;
-  const ids = Object.keys(CORRECCIONES);
-  const total = ids.reduce(function(s, id){ return s + CORRECCIONES[id].requisitos.length; }, 0);
-  const bien = ids.reduce(function(s, id){
-    const c = document.getElementById('res-' + id);
-    if(!c || !c.querySelector('.puntaje')) return s;
-    const m = c.querySelector('.puntaje').textContent.match(/(\d+) de (\d+)/);
-    return s + (m ? Number(m[1]) : 0);
-  }, 0);
-  salida.textContent = 'Progreso de la evaluación: ' + bien + ' de ' + total +
-    ' requisitos (' + Math.round(bien / total * 100) + '%).';
-}
-
 dibujarQuiz();
-actualizarProgreso();
 </script>
 
 <script>
