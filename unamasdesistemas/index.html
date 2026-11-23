@@ -193,6 +193,23 @@ ol.pasos li strong{color:var(--verde)}
 }
 .paleta button:hover{border-color:var(--verde); background:var(--verde-claro)}
 .paleta svg{width:26px; height:18px; flex:none}
+.ex-paleta{display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; margin:0 0 .55rem}
+.ex-paleta-label{
+  font-size:.72rem; font-weight:800; text-transform:uppercase;
+  letter-spacing:.05em; color:var(--verde); margin-right:.15rem;
+}
+.ex-sym{
+  display:inline-flex; align-items:center; gap:.35rem;
+  font:inherit; font-size:.8rem; line-height:1.2;
+  padding:.24rem .6rem .24rem .4rem;
+  border:1px solid #a7f3d0; border-radius:999px; background:#fff;
+  color:var(--texto); cursor:pointer;
+}
+.ex-sym-icon{width:25px; height:20px; flex:0 0 auto}
+.ex-sym-name{white-space:nowrap}
+.ex-sym:hover{background:var(--verde-claro); border-color:#34d399}
+.ex-sym:active{transform:translateY(1px)}
+.ex-sym:focus-visible{outline:2px solid #2563eb; outline-offset:2px}
 .eval-ej{
   border:1px solid var(--borde); border-radius:10px;
   padding:.8rem 1rem; margin:1rem 0; background:#fdfdfd;
@@ -1409,26 +1426,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 <!-- ========================= EVALUACIÓN ======================== -->
 <section id="evaluacion">
   <h1>Parte 7 &middot; Evaluación con corrección</h1>
-  <p>Escribí tus respuestas y presioná <strong>Corregir</strong>. Los botones de símbolos insertan el término en el cuadro que estés usando. El corrector revisa la estructura, no reemplaza la corrección del docente.</p>
-
-  <div class="paleta" aria-label="Paleta de símbolos del Diagrama DER">
-    <button type="button" title="Rectángulo = entidad" onclick="insertarSimbolo('rectángulo (entidad)')">
-      <svg viewBox="0 0 28 20" aria-hidden="true"><rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/></svg>Rectángulo</button>
-    <button type="button" title="Rombo = relación" onclick="insertarSimbolo('rombo (relación)')">
-      <svg viewBox="0 0 28 20" aria-hidden="true"><polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/></svg>Rombo</button>
-    <button type="button" title="Óvalo = atributo" onclick="insertarSimbolo('óvalo (atributo)')">
-      <svg viewBox="0 0 28 20" aria-hidden="true"><ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/></svg>Óvalo</button>
-    <button type="button" title="Óvalo subrayado = clave / PK" onclick="insertarSimbolo('óvalo subrayado (clave, PRIMARY KEY)')">
-      <svg viewBox="0 0 28 20" aria-hidden="true"><ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text></svg>Óvalo clave</button>
-    <button type="button" title="Doble óvalo = atributo multivaluado" onclick="insertarSimbolo('doble óvalo (multivaluado)')">
-      <svg viewBox="0 0 28 20" aria-hidden="true"><ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/></svg>Doble óvalo</button>
-    <button type="button" title="Óvalo punteado = atributo derivado" onclick="insertarSimbolo('óvalo punteado (derivado)')">
-      <svg viewBox="0 0 28 20" aria-hidden="true"><ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/></svg>Óvalo punteado</button>
-    <button type="button" title="Cardinalidad 1:N" onclick="insertarSimbolo('1:N (uno a muchos)')"><svg viewBox="0 0 28 20" aria-hidden="true"><text x="14" y="14" text-anchor="middle" font-size="11">1:N</text></svg>1:N</button>
-    <button type="button" title="Cardinalidad N:M" onclick="insertarSimbolo('N:M (muchos a muchos)')"><svg viewBox="0 0 28 20" aria-hidden="true"><text x="14" y="14" text-anchor="middle" font-size="11">N:M</text></svg>N:M</button>
-    <button type="button" title="Primary Key" onclick="insertarSimbolo('PK (PRIMARY KEY)')"><svg viewBox="0 0 28 20" aria-hidden="true"><text x="14" y="14" text-anchor="middle" font-size="11">PK</text></svg>PK</button>
-    <button type="button" title="Foreign Key" onclick="insertarSimbolo('FK (FOREIGN KEY)')"><svg viewBox="0 0 28 20" aria-hidden="true"><text x="14" y="14" text-anchor="middle" font-size="11">FK</text></svg>FK</button>
-  </div>
+  <p>Escribí tus respuestas y presioná <strong>Corregir</strong>. Debajo de cada cuadro hay botones de símbolos: al tocarlos, el término se inserta en <strong>ese cuadro</strong>. El corrector revisa la estructura, no reemplaza la corrección del docente.</p>
 
   <div class="eval-ej">
     <h2>1. Los símbolos del Diagrama DER</h2>
@@ -1441,13 +1439,29 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
   </div>
 
   <div class="eval-ej">
-    <h2>2. De N:M al Modelo MER</h2>
-    <p>En la pizzería, PIDE es N:M. Explicá cómo se resuelve y qué tablas quedan en el Modelo MER.</p>
+    <h2>2. De la pizzería N:M al Modelo MER</h2>
+    <p><strong>Dato:</strong> un cliente pide <strong>muchas</strong> pizzas y una pizza es pedida por
+    <strong>muchos</strong> clientes. Por eso la relación <code>PIDE</code> es <strong>N:M</strong>.</p>
+    <p>Respondé en el cuadro estas cuatro cosas, una por línea:</p>
+    <ol class="pasos">
+      <li>¿Qué entidad intermedia se agrega para romper el N:M?</li>
+      <li>¿Cómo se llama esa tabla en el Modelo MER?</li>
+      <li>¿Qué tres tablas quedan y qué columnas tiene la intermedia?</li>
+      <li>¿Cuántas FK tiene la intermedia y hacia qué tablas apuntan?</li>
+    </ol>
+    <div class="nota"><strong>Ayuda:</strong> la intermedia guarda la fecha y la cantidad del pedido,
+    y sus dos FK apuntan a las claves de <code>clientes</code> y <code>pizzas</code>.</div>
     <textarea id="in-eval2" rows="5" placeholder="Escribí acá tu respuesta…"></textarea>
     <p><button class="btn btn-primary" type="button" onclick="corregirEval('eval2')">Corregir</button>
        <button class="btn" type="button" onclick="limpiarEval('eval2')">Limpiar</button></p>
     <div id="res-eval2" class="checklist" aria-live="polite"></div>
-    <details><summary>Ver una respuesta posible</summary><p>Una relación N:M se rompe con una <strong>entidad intermedia</strong>, PEDIDO, que pasa a ser la tabla <code>pedidos</code>. Quedan tres tablas: <code>clientes</code>, <code>pizzas</code> y <code>pedidos</code>, con fecha y cantidad como columnas y dos FK hacia las claves de clientes y pizzas.</p></details>
+    <details><summary>Ver una respuesta posible</summary>
+      <p>Como PIDE es <strong>N:M</strong>, se agrega la <strong>entidad intermedia PEDIDO</strong>,
+      que en el Modelo MER se llama <code>pedidos</code>.</p>
+      <p>Quedan tres tablas: <code>clientes</code>, <code>pizzas</code> y <code>pedidos</code>.
+      La tabla <code>pedidos</code> tiene <code>id_pedido</code> como PK, <code>fecha</code> y
+      <code>cantidad</code> como columnas, y <strong>dos FK</strong>: <code>id_cliente</code> apunta
+      a <code>clientes</code> y <code>id_pizza</code> apunta a <code>pizzas</code>.</p></details>
   </div>
 
   <div class="eval-ej">
@@ -1474,7 +1488,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
     <details><summary>Ver una respuesta posible</summary><p>El <strong>Diagrama DER</strong> es el dibujo conceptual: usa símbolos (rectángulo, rombo y óvalos) y cardinalidades. El <strong>Modelo MER</strong> es el paso a las tablas: cada entidad se vuelve una tabla, la clave pasa a ser PK y las relaciones 1:N se representan con FK. Después recién se escribe el SQL de la BD.</p></details>
   </div>
 
-  <div id="eval-progreso" class="puntaje" aria-live="polite">Evaluación sin corregir.</div>
+  <div id="eval-progreso" class="puntaje" aria-live="polite">Progreso de la evaluación: 0 de 17 requisitos (0%).</div>
 </section>
 
 </main>
@@ -1483,7 +1497,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
 
 <script>
 /* Resalta el link activo de la barra al scrollear */
-const secciones = ["der","mer","bd","actividades","autoevaluacion","evaluacion"];
+const secciones = ["der","mer","bd","simuladores","actividades","autoevaluacion","evaluacion"];
 window.addEventListener("scroll", () => {
   let actual = secciones[0];
   secciones.forEach(s => {
@@ -1521,7 +1535,16 @@ const PREGUNTAS = [
     explicacion:'AUTO_INCREMENT genera el valor siguiente para una clave entera.' },
   { texto:'¿Qué cláusula cruza dos tablas en una consulta?',
     opciones:['JOIN','WHERE','INSERT'], correcta:0,
-    explicacion:'JOIN relaciona tablas mediante una condición, por ejemplo ON c.dni = co.cliente_dni.' }
+    explicacion:'JOIN relaciona tablas mediante una condición, por ejemplo ON c.dni = co.cliente_dni.' },
+  { texto:'¿Qué comando se usa para crear una tabla en MySQL?',
+    opciones:['CREATE TABLE','SELECT','INSERT'], correcta:0,
+    explicacion:'CREATE TABLE define la tabla con sus columnas y restricciones.' },
+  { texto:'¿Para qué sirve ORDER BY?',
+    opciones:['Para ordenar los resultados','Para borrar filas','Para crear una base'], correcta:0,
+    explicacion:'ORDER BY ordena las filas: ASC de menor a mayor y DESC de mayor a menor.' },
+  { texto:'¿Qué es un atributo derivado?',
+    opciones:['Se calcula, no se guarda','Tiene varios valores','Es la clave primaria'], correcta:0,
+    explicacion:'El óvalo punteado marca un dato derivado: se obtiene con una cuenta, como la edad.' }
 ];
 
 function dibujarQuiz(){
@@ -1587,7 +1610,8 @@ const CORRECCIONES = {
     { d:'Identificás la cardinalidad N:M', f:c=>/n\s*:\s*m/.test(c) },
     { d:'Mencionás la entidad intermedia', f:c=>/entidad intermedia/.test(c) },
     { d:'Nombrás la tabla pedidos / PEDIDO', f:c=>/pedid/.test(c) },
-    { d:'Mencionás las dos FK', f:c=>/(fk|foreign key|clave foranea)/.test(c) && /(dos|2)/.test(c) }
+    { d:'Mencionás las dos FK', f:c=>/(fk|foreign key|clave foranea)/.test(c) && /(dos|2)/.test(c) },
+    { d:'Mencionás fecha y cantidad como columnas', f:c=>/fecha/.test(c) && /cantidad/.test(c) }
   ]},
   eval3: { requisitos:[
     { d:'Escribís CREATE TABLE clientes', f:c=>/create table clientes/.test(c) },
@@ -1603,20 +1627,61 @@ const CORRECCIONES = {
   ]}
 };
 
-let ultimoTextarea = null;
-document.addEventListener('focusin', function(e){
-  if(e.target && e.target.tagName === 'TEXTAREA') ultimoTextarea = e.target;
-});
+/* Cada cuadro tiene su propia paleta: el botón siempre inserta en ese cuadro. */
+const SIMBOLOS = [
+  { etiqueta:'Rectángulo', texto:'rectángulo (entidad)',
+    icona:'<rect x="2" y="3" width="24" height="14" fill="#d6eaf8" stroke="#000"/>' },
+  { etiqueta:'Rombo', texto:'rombo (relación)',
+    icona:'<polygon points="14,1 26,10 14,19 2,10" fill="#fcf3cf" stroke="#000"/>' },
+  { etiqueta:'Óvalo', texto:'óvalo (atributo)',
+    icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/>' },
+  { etiqueta:'Óvalo clave', texto:'óvalo subrayado (clave, PRIMARY KEY)',
+    icona:'<ellipse cx="14" cy="8" rx="11" ry="6" fill="#f2f2f2" stroke="#000"/><text x="14" y="11" text-anchor="middle" font-size="8" text-decoration="underline">id</text>' },
+  { etiqueta:'Doble óvalo', texto:'doble óvalo (multivaluado)',
+    icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000"/><ellipse cx="14" cy="10" rx="7" ry="4" fill="none" stroke="#000"/>' },
+  { etiqueta:'Óvalo punteado', texto:'óvalo punteado (derivado)',
+    icona:'<ellipse cx="14" cy="10" rx="11" ry="7" fill="#f2f2f2" stroke="#000" stroke-dasharray="3 2"/>' },
+  { etiqueta:'1:N', texto:'1:N (uno a muchos)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">1:N</text>' },
+  { etiqueta:'N:M', texto:'N:M (muchos a muchos)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">N:M</text>' },
+  { etiqueta:'PK', texto:'PK (PRIMARY KEY)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">PK</text>' },
+  { etiqueta:'FK', texto:'FK (FOREIGN KEY)', icona:'<text x="14" y="14" text-anchor="middle" font-size="11">FK</text>' }
+];
 
-function insertarSimbolo(texto){
-  const area = (ultimoTextarea && document.body.contains(ultimoTextarea))
-    ? ultimoTextarea : document.getElementById('in-eval1');
+function insertarEnCuadro(area, texto){
   if(!area) return;
   const ini = area.selectionStart, fin = area.selectionEnd;
-  area.value = area.value.slice(0, ini) + texto + area.value.slice(fin);
+  const antes = area.value.slice(0, ini), despues = area.value.slice(fin);
+  const sepAntes = (antes && !/[\s(]$/.test(antes)) ? ' ' : '';
+  const sepDespues = (despues && !/^[\s,.;:)\]]/.test(despues)) ? ' ' : '';
+  const insertado = sepAntes + texto + sepDespues;
+  area.value = antes + insertado + despues;
+  const pos = (antes + insertado).length;
   area.focus();
-  area.selectionStart = area.selectionEnd = ini + texto.length;
+  area.setSelectionRange(pos, pos);
+  area.dispatchEvent(new Event('input', { bubbles:true }));
 }
+
+document.querySelectorAll('#evaluacion .eval-ej').forEach(function(ej){
+  const area = ej.querySelector('textarea');
+  if(!area || ej.querySelector('.ex-paleta')) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'ex-paleta';
+  const rotulo = document.createElement('span');
+  rotulo.className = 'ex-paleta-label';
+  rotulo.textContent = 'Símbolos';
+  wrap.appendChild(rotulo);
+  SIMBOLOS.forEach(function(s){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ex-sym';
+    b.innerHTML = '<svg class="ex-sym-icon" viewBox="0 0 28 20" aria-hidden="true">' +
+      (s.icona || '') + '</svg><span class="ex-sym-name">' + s.etiqueta + '</span>';
+    b.title = 'Insertar «' + s.texto + '» en este cuadro';
+    b.addEventListener('click', function(){ insertarEnCuadro(area, s.texto); });
+    wrap.appendChild(b);
+  });
+  area.parentNode.insertBefore(wrap, area);
+});
 
 function corregirEval(id){
   const area = document.getElementById('in-' + id);
@@ -1648,20 +1713,20 @@ function limpiarEval(id){
 function actualizarProgreso(){
   const salida = document.getElementById('eval-progreso');
   if(!salida) return;
-  const valores = Object.keys(CORRECCIONES).map(function(id){
+  const ids = Object.keys(CORRECCIONES);
+  const total = ids.reduce(function(s, id){ return s + CORRECCIONES[id].requisitos.length; }, 0);
+  const bien = ids.reduce(function(s, id){
     const c = document.getElementById('res-' + id);
-    if(!c || !c.querySelector('.puntaje')) return null;
+    if(!c || !c.querySelector('.puntaje')) return s;
     const m = c.querySelector('.puntaje').textContent.match(/(\d+) de (\d+)/);
-    return m ? { bien:Number(m[1]), total:Number(m[2]) } : null;
-  }).filter(Boolean);
-  if(!valores.length){ salida.textContent = 'Evaluación sin corregir.'; return; }
-  const bien = valores.reduce(function(s, v){ return s + v.bien; }, 0);
-  const total = valores.reduce(function(s, v){ return s + v.total; }, 0);
+    return s + (m ? Number(m[1]) : 0);
+  }, 0);
   salida.textContent = 'Progreso de la evaluación: ' + bien + ' de ' + total +
-    ' requisitos (' + Math.round(bien / total * 100) + '%)';
+    ' requisitos (' + Math.round(bien / total * 100) + '%).';
 }
 
 dibujarQuiz();
+actualizarProgreso();
 </script>
 
 <script>
