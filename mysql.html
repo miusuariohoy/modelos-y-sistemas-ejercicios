@@ -133,25 +133,6 @@
                 </div>
                 <div class="result" id="res-sql_crear"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <pre style="margin:.4rem 0 0;"><code>CREATE DATABASE tienda;
-USE tienda;
-
-CREATE TABLE clientes (
-    dni       INT PRIMARY KEY,
-    nombre    VARCHAR(50) NOT NULL,
-    apellido  VARCHAR(50) NOT NULL,
-    telefono  VARCHAR(20)
-);
-
-CREATE TABLE productos (
-    codigo  INT PRIMARY KEY AUTO_INCREMENT,
-    nombre  VARCHAR(50) NOT NULL,
-    precio  DECIMAL(10,2) NOT NULL,
-    stock   INT DEFAULT 0
-);</code></pre>
-                </details>
             </div>
         </article>
 
@@ -217,18 +198,6 @@ CREATE TABLE productos (
                 </div>
                 <div class="result" id="res-sql_insertar"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <pre style="margin:.4rem 0 0;"><code>INSERT INTO clientes (dni, nombre, apellido, telefono) VALUES
-(30111222, 'Ana', 'Gómez', '11-5555-1111'),
-(28444555, 'Bruno', 'Pérez', NULL),
-(40999888, 'Carla', 'López', '11-5555-3333');
-
-INSERT INTO productos (nombre, precio, stock) VALUES
-('Muzzarella', 8500.50, 20),
-('Napolitana', 9200.00, 15),
-('Fugazzeta', 9900.75, 8);</code></pre>
-                </details>
             </div>
         </article>
 
@@ -311,16 +280,6 @@ INSERT INTO productos (nombre, precio, stock) VALUES
                 </div>
                 <div class="result" id="res-sql_select"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <pre style="margin:.4rem 0 0;"><code>SELECT * FROM clientes ORDER BY apellido ASC;
-
-SELECT nombre, precio FROM productos WHERE precio &gt; 1000;
-
-SELECT nombre, precio FROM productos ORDER BY precio DESC LIMIT 3;
-
-SELECT COUNT(*) AS cantidad FROM clientes;</code></pre>
-                </details>
             </div>
         </article>
 
@@ -401,20 +360,6 @@ SELECT COUNT(*) AS cantidad FROM clientes;</code></pre>
                 </div>
                 <div class="result" id="res-sql_relaciones"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <pre style="margin:.4rem 0 0;"><code>CREATE TABLE compras (
-    id_compra       INT PRIMARY KEY AUTO_INCREMENT,
-    cliente_dni     INT NOT NULL,
-    producto_codigo INT NOT NULL,
-    fecha           DATE NOT NULL,
-    cantidad        INT NOT NULL,
-    FOREIGN KEY (cliente_dni) REFERENCES clientes(dni)
-        ON DELETE RESTRICT,
-    FOREIGN KEY (producto_codigo) REFERENCES productos(codigo)
-        ON DELETE RESTRICT
-);</code></pre>
-                </details>
             </div>
         </article>
 
@@ -523,29 +468,6 @@ SELECT COUNT(*) AS cantidad FROM clientes;</code></pre>
                 </div>
                 <div class="result" id="res-sql_join"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <pre style="margin:.4rem 0 0;"><code>-- (a)
-SELECT co.id_compra, cl.nombre AS cliente, p.nombre AS producto,
-       co.fecha, co.cantidad
-FROM compras co
-JOIN clientes cl ON co.cliente_dni = cl.dni
-JOIN productos p ON co.producto_codigo = p.codigo;
-
--- (b)
-SELECT cl.nombre, SUM(p.precio * co.cantidad) AS total
-FROM clientes cl
-JOIN compras co ON co.cliente_dni = cl.dni
-JOIN productos p ON co.producto_codigo = p.codigo
-GROUP BY cl.nombre
-ORDER BY total DESC;
-
--- (c)
-SELECT cl.nombre
-FROM clientes cl
-LEFT JOIN compras co ON co.cliente_dni = cl.dni
-WHERE co.id_compra IS NULL;</code></pre>
-                </details>
             </div>
         </article>
 

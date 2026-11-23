@@ -88,14 +88,6 @@
                 </div>
                 <div class="result" id="res-mer_1a"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>Entidades:</strong> CLIENTE y PRODUCTO.</li>
-                        <li><strong>Relación:</strong> COMPRA (o COMPRAR).</li>
-                        <li><strong>Atributo:</strong> nombre (también sirven apellido o teléfono).</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -114,15 +106,6 @@
                 </div>
                 <div class="result" id="res-mer_1b"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>Entidades:</strong> DUEÑO y MASCOTA.</li>
-                        <li><strong>Atributos:</strong> del dueño, nombre y teléfono; de la mascota, nombre y especie.</li>
-                        <li><strong>Relación:</strong> TIENE (un dueño tiene mascotas).</li>
-                        <li><strong>Cardinalidad:</strong> 1:N, porque un dueño tiene muchas mascotas y cada mascota tiene un solo dueño.</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -155,16 +138,6 @@
                 </div>
                 <div class="result" id="res-mer_1c"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                <summary>Ver la solución esperada</summary>
-                <ul class="explain">
-                    <li><strong>Entidades:</strong> CLIENTE y PIZZA.</li>
-                    <li><strong>Atributos:</strong> id_cliente (clave), nombre, apellido, teléfonos; id_pizza (clave), nombre, precio.</li>
-                    <li><strong>Relación:</strong> PIDE, de cardinalidad <strong>N:M</strong>.</li>
-                    <li><strong>Multivaluado:</strong> teléfonos (doble óvalo o tabla aparte).</li>
-                    <li><strong>Entidad intermedia:</strong> PEDIDO, con id_pedido (clave), id_cliente (FK), id_pizza (FK), fecha y cantidad.</li>
-                </ul>
-                </details>
             </div>
         </article>
 
@@ -340,14 +313,6 @@
                 </div>
                 <div class="result" id="res-mer_2a"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>Rectángulo:</strong> entidad (CLIENTE, PRODUCTO).</li>
-                        <li><strong>Rombo:</strong> relación (COMPRA, PIDE).</li>
-                        <li><strong>Óvalo:</strong> atributo (nombre, precio).</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -363,14 +328,6 @@
                 </div>
                 <div class="result" id="res-mer_2b"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>Óvalo subrayado:</strong> atributo clave, el que será PRIMARY KEY.</li>
-                        <li><strong>Doble óvalo:</strong> atributo multivaluado, con varios valores (teléfonos).</li>
-                        <li><strong>Óvalo punteado:</strong> atributo derivado, se calcula y no se guarda (edad).</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -388,16 +345,6 @@
                 </div>
                 <div class="result" id="res-mer_2c"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>DUEÑO:</strong> rectángulo, porque es una entidad.</li>
-                        <li><strong>nombre:</strong> óvalo, porque es un atributo.</li>
-                        <li><strong>TIENE:</strong> rombo, porque es la relación.</li>
-                        <li><strong>teléfono:</strong> doble óvalo, porque es multivaluado.</li>
-                        <li><strong>id_duenio:</strong> óvalo subrayado, porque es la clave.</li>
-                    </ul>
-                </details>
             </div>
         </article>
 
@@ -476,14 +423,6 @@ compras
                 </div>
                 <div class="result" id="res-mer_3a"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>(a) 1:1</strong> — una persona tiene un solo DNI y un DNI es de una sola persona.</li>
-                        <li><strong>(b) 1:N</strong> — un cliente realiza muchas compras; cada compra es de un cliente.</li>
-                        <li><strong>(c) N:M</strong> — muchos clientes compran muchos productos.</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -500,14 +439,6 @@ compras
                 </div>
                 <div class="result" id="res-mer_3b"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>La FK va en compras</strong>, la tabla del lado N.</li>
-                        <li><strong>Se llama cliente_id</strong> (o cliente_dni) y apunta a la PK de clientes.</li>
-                        <li><strong>Un cliente puede tener muchas compras</strong>, y cada compra pertenece a un solo cliente: por eso es 1:N.</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -524,15 +455,6 @@ compras
                 </div>
                 <div class="result" id="res-mer_3c"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>Cardinalidad:</strong> N:M (muchos a muchos).</li>
-                        <li><strong>Hace falta</strong> una entidad o tabla intermedia, por ejemplo COMPRA.</li>
-                        <li><strong>Lleva dos FK</strong>: una hacia clientes y otra hacia productos.</li>
-                        <li><strong>Datos propios:</strong> fecha y cantidad.</li>
-                    </ul>
-                </details>
             </div>
         </article>
 
@@ -624,13 +546,6 @@ compras
                 </div>
                 <div class="result" id="res-mer_4a"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>Entidades:</strong> CLIENTE y PRODUCTO.</li>
-                        <li><strong>Cardinalidad original:</strong> N:M, muchos clientes compran muchos productos.</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -647,15 +562,6 @@ compras
                 </div>
                 <div class="result" id="res-mer_4b"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>COMPRA es la entidad intermedia</strong> que resuelve la N:M.</li>
-                        <li><strong>La relación original era N:M</strong>, por eso no alcanza un rombo.</li>
-                        <li><strong>Atributos:</strong> fecha y cantidad.</li>
-                        <li><strong>FK:</strong> una hacia clientes y otra hacia productos.</li>
-                    </ul>
-                </details>
             </div>
 
             <div class="exercise">
@@ -673,16 +579,6 @@ compras
                 </div>
                 <div class="result" id="res-mer_4c"></div>
 
-                <details class="pista" style="margin-top:.8rem;">
-                    <summary>Ver la solución esperada</summary>
-                    <ul class="explain">
-                        <li><strong>Entidades:</strong> CLIENTE y PRODUCTO.</li>
-                        <li><strong>Relación:</strong> COMPRA, de cardinalidad N:M.</li>
-                        <li><strong>Intermedia:</strong> COMPRA, porque la N:M no se resuelve con una sola FK.</li>
-                        <li><strong>Atributos:</strong> fecha y cantidad, más las dos FK.</li>
-                        <li><strong>Relaciones 1:N:</strong> clientes → compras y productos → compras.</li>
-                    </ul>
-                </details>
             </div>
         </article>
 

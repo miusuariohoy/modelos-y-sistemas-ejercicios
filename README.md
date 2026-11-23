@@ -21,8 +21,8 @@ datos MySQL → programa Dia**.
 ## Ejercicios
 
 - Cada tema trae teoría y ejercitación en pestañas separadas.
-- MER y DER tienen **tres ejercicios por tema** (fácil, medio y difícil), con la
-  solución esperada desplegable.
+- MER y DER tienen **tres ejercicios por tema** (fácil, medio y difícil), con
+  corrección automática y pistas, sin soluciones desplegables.
 - La guía completa cierra con **cuatro scripts SQL completos**: biblioteca,
   veterinaria, escuela y gimnasio. Cada uno tiene su corrector y su solución.
 - En MER y DER hay una **paleta de símbolos** sobre cada campo: inserta la

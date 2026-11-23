@@ -192,14 +192,6 @@ footer{text-align:center; color:#64748b; font-size:.85rem; padding:1.5rem 0}
       <button type="button" class="accion limpiar">Limpiar</button>
     </div>
     <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>Entidad: CLIENTE o PRODUCTO (rectángulo).
-Relación: COMPRA o COMPRAR (rombo).
-id_cliente: óvalo subrayado (clave).
-teléfonos: doble óvalo (multivaluado).
-edad: óvalo punteado (derivado).</pre>
-    </details>
   </article>
 
   <article class="ejercicio" data-id="der2">
@@ -221,12 +213,6 @@ edad: óvalo punteado (derivado).</pre>
       <button type="button" class="accion limpiar">Limpiar</button>
     </div>
     <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>CLIENTE (rectángulo) —— REALIZA (rombo) —— PEDIDO (rectángulo)
-Cardinalidad: 1:N
-Un cliente tiene muchos pedidos; cada pedido tiene un solo cliente.</pre>
-    </details>
   </article>
 
   <article class="ejercicio" data-id="der3">
@@ -250,13 +236,6 @@ Un cliente tiene muchos pedidos; cada pedido tiene un solo cliente.</pre>
       <button type="button" class="accion limpiar">Limpiar</button>
     </div>
     <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>CLIENTE —— COMPRA —— PRODUCTO
-Cardinalidad: N:M
-Entidad intermedia: COMPRA
-Atributos de COMPRA: fecha, cantidad</pre>
-    </details>
   </article>
 </section>
 
@@ -331,15 +310,6 @@ Atributos de COMPRA: fecha, cantidad</pre>
       <button type="button" class="accion limpiar">Limpiar</button>
     </div>
     <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>CREATE TABLE productos (
-  id_producto INT PRIMARY KEY,
-  nombre VARCHAR(50),
-  precio DECIMAL(10,2),
-  stock INT
-);</pre>
-    </details>
   </article>
 
   <article class="ejercicio" data-id="bd2">
@@ -354,32 +324,21 @@ Atributos de COMPRA: fecha, cantidad</pre>
       <button type="button" class="accion limpiar">Limpiar</button>
     </div>
     <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>INSERT INTO productos (nombre, precio, stock)
-VALUES ('Teclado', 8500.00, 10);</pre>
-    </details>
   </article>
 
   <article class="ejercicio" data-id="bd3">
-    <h3>✍️ Ejercicio 3.3: consultar con SELECT <span class="nivel">Difícil</span></h3>
+    <h3>✍️ Ejercicio 3.3: consultar con SELECT <span class="nivel">Fácil</span></h3>
     <p class="consigna">
-      Escribí un <strong>SELECT</strong> que muestre el nombre del cliente y el nombre del
-      producto de cada compra. Usá <strong>FROM compras</strong>, dos <strong>JOIN</strong> y <strong>ON</strong>.
+      Escribí un <strong>SELECT</strong> simple sobre una sola tabla: mostrí el
+      <code>nombre</code> y el <code>precio</code> de todos los productos,
+      ordenados de menor a mayor precio. No hace falta usar relaciones ni JOIN.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="SELECT…"></textarea>
+    <textarea class="respuesta" spellcheck="false" placeholder="SELECT nombre, precio…"></textarea>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
     </div>
     <div class="resultado"></div>
-    <details class="solucion">
-      <summary>Ver solución esperada</summary>
-      <pre>SELECT clientes.nombre, productos.nombre
-FROM compras
-JOIN clientes ON compras.id_cliente = clientes.id_cliente
-JOIN productos ON compras.id_producto = productos.id_producto;</pre>
-    </details>
   </article>
 </section>
 
@@ -457,11 +416,10 @@ const EJERCICIOS = {
   ]},
   bd3: { requisitos: [
     { d:'Usa SELECT', f:c => c.t.includes('select') },
-    { d:'Usa FROM compras', f:c => /from[^\n]*compras/.test(c.t) },
-    { d:'Hace JOIN con clientes', f:c => /join[^\n]*clientes/.test(c.t) },
-    { d:'Hace JOIN con productos', f:c => /join[^\n]*productos/.test(c.t) },
-    { d:'Usa ON en las uniones', f:c => c.n('\\bon\\b') >= 2 },
-    { d:'Muestra el nombre del cliente y del producto', f:c => c.n('nombre') >= 2 }
+    { d:'Consulta solo la tabla productos', f:c => /from\s+productos\b/.test(c.t) },
+    { d:'Muestra nombre y precio', f:c => c.t.includes('nombre') && c.t.includes('precio') },
+    { d:'Ordena por precio', f:c => /order\s+by\s+precio/.test(c.t) },
+    { d:'No usa JOIN ni relaciones', f:c => !/\bjoin\b/.test(c.t) }
   ]}
 };
 
