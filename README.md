@@ -24,8 +24,8 @@ y FK) → Base de datos MySQL**.
   **4 ejercicios de DER, 4 de MER, 4 de BD y 8 de consultas** (`WHERE`,
   `ORDER BY`, `>`, `<`, `LIMIT`, `LIKE`, `COUNT` y `DISTINCT`), más un
   cuestionario de opción múltiple. Las consultas 3 a 5 también piden crear antes
-  la tabla `productos` con `CREATE TABLE`. Cada enunciado explica qué se pide y
-  por qué.
+  la tabla `productos` con `CREATE TABLE IF NOT EXISTS`. Cada enunciado explica
+  qué se pide y por qué.
 - En DER, la paleta inserta los **símbolos** en el cursor (rectángulo, rombo,
   óvalos, cardinalidades). En MER, el menú inserta entidades, atributos, PK, FK
   y líneas con cardinalidad `1 a N` / `N a 1` entre las entidades. La
@@ -41,6 +41,9 @@ y FK) → Base de datos MySQL**.
   internamente y la envían cifrada al repo `inform` mediante `scripts/entrega.js`.
 - La guía de Teoría amplía el MER con tablas de tipos de atributo, la
   conversión DER → MER y la dirección de las relaciones (`1:N`, `1:1`, `N:M`).
+  Su ejemplo de la tienda es coherente en las tres etapas: entidades en singular
+  en el MER y tablas en plural en SQL, `dni` y `codigo` como `VARCHAR(8)` y el
+  teléfono multivaluado en su propia tabla con FK.
 - El corrector revisa la **estructura** de la respuesta (palabras clave,
   tablas, columnas, cláusulas). **No ejecuta SQL** ni se conecta a una base.
 - Cada envío queda bloqueado en el navegador con una clave `localStorage`

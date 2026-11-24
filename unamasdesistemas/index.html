@@ -425,12 +425,14 @@ ol.pasos li strong{color:var(--verde)}
   <p>Una relación también puede tener <strong>atributos propios</strong>. En la compra,
   <code>fecha</code> y <code>cantidad</code> no son del cliente ni del producto por separado:
   son <strong>del hecho de comprar</strong>.</p>
-<pre class="codigo"><span class="cm">-- En el DER: el rombo COMPRA tiene colgando fecha y cantidad.</span>
-<span class="cm">-- En el MER: esos atributos pasan a la tabla intermedia compras.</span>
-compras
-  id_compra    PK
-  cliente_dni  FK  -&gt; clientes
-  producto_cod FK  -&gt; productos
+<pre class="codigo"><span class="cm">-- En el N:M directo el hecho se nombra COMPRA (rombo).</span>
+<span class="cm">-- Al desdoblarlo, COMPRA pasa a entidad intermedia y fecha y cantidad</span>
+<span class="cm">-- cuelgan de esa entidad, ya no del rombo. En el MER se escribe en singular;</span>
+<span class="cm">-- en SQL la tabla se llama compras (plural).</span>
+compra
+  id_compra      PK
+  cliente_dni    FK  -&gt; cliente
+  producto_cod   FK  -&gt; producto
   fecha
   cantidad</pre>
   <div class="okbox"><strong>Regla de oro:</strong> si la relación es <strong>N:M</strong>, se convierte
@@ -514,7 +516,7 @@ compras
   cada uno con cardinalidad 1:N o N:1.</div>
   <div class="nota"><strong>No confundas:</strong> el rombo representa la relación; la entidad intermedia
   representa la <strong>tabla que resuelve</strong> un N:M. Al pasar al MER, COMPRA se convierte
-  en la tabla <code>compras</code>.</div>
+  en la entidad <code>compra</code> (singular); reci&eacute;n en SQL se escribe <code>compras</code> (plural).</div>
 
   <div class="ejercicio" data-ej="prac_mer">
     <h2>Practica guiada: arm&aacute; tu primer Diagrama DER</h2>
@@ -585,14 +587,14 @@ compras
       <tr><td><strong>Simple</strong> n&uacute;mero entero</td><td><code>INT</code> para cantidades, stocks, edades.</td><td><code>stock INT</code>, <code>cantidad INT</code></td></tr>
       <tr><td><strong>Simple</strong> n&uacute;mero decimal</td><td><code>DECIMAL(10,2)</code>: 10 d&iacute;gitos en total, 2 despu&eacute;s de la coma. Nunca <code>FLOAT</code> para dinero.</td><td><code>precio DECIMAL(10,2)</code></td></tr>
       <tr><td><strong>Simple</strong> fecha</td><td><code>DATE</code> (o <code>DATETIME</code> si adem&aacute;s guard&aacute;s la hora).</td><td><code>fecha DATE</code></td></tr>
-      <tr><td><strong>Multivaluado</strong> (doble &oacute;valo)</td><td>Una <strong>tabla aparte</strong> con una FK hacia la entidad original. Un valor por fila.</td><td><code>telefonos</code> &rarr; tabla <code>telefonos</code> con <code>id_cliente FK</code> y <code>numero</code></td></tr>
+      <tr><td><strong>Multivaluado</strong> (doble &oacute;valo)</td><td>Una <strong>tabla aparte</strong> con una FK hacia la entidad original. Un valor por fila.</td><td><code>telefono</code> &rarr; en SQL <code>telefonos</code>, con <code>cliente_dni FK</code> y <code>numero</code></td></tr>
       <tr><td><strong>Derivado</strong> (punteado)</td><td>No se crea columna: se calcula con <code>SELECT</code> cuando se necesita.</td><td><code>total = precio * cantidad</code></td></tr>
       <tr><td><strong>Compuesto</strong></td><td>Se desarma en columnas simples: <code>direccion</code> &rarr; calle, n&uacute;mero, localidad.</td><td><code>calle VARCHAR(60)</code>, <code>numero INT</code></td></tr>
       <tr><td><strong>Atributo de N:M</strong></td><td>Columna de la <strong>tabla intermedia</strong>, al lado de las dos FK.</td><td><code>fecha</code> y <code>cantidad</code> en <code>compras</code></td></tr>
     </tbody>
   </table>
   <div class="okbox"><strong>Regla pr&aacute;ctica:</strong> si el dato puede repetirse dentro de una
-  misma fila (varios tel&e9;fonos), no va en esa tabla: va en otra con una FK. Si el dato se obtiene
+  misma fila (varios tel&eacute;fonos), no va en esa tabla: va en otra con una FK. Si el dato se obtiene
   multiplicando o sumando otros (un total), no se guarda: se calcula.</div>
 
   <h2 class="sub">3. C&oacute;mo se convierte cada s&iacute;mbolo del DER</h2>
@@ -613,50 +615,58 @@ compras
   <ol class="pasos">
     <li><strong>1:N &rarr; la FK va en el lado N (la tabla «muchos»).</strong>
     Un cliente tiene muchos pedidos, pero cada pedido es de un solo cliente. Entonces
-    <code>pedidos</code> guarda <code>id_cliente FK</code> apuntando a <code>clientes.id_cliente</code>.
-    Si la pusi&eacute;ramos en <code>clientes</code>, un cliente tendr&iacute;a que repetir una lista
+    <code>pedido</code> guarda <code>cliente_dni FK</code> apuntando a <code>cliente.dni</code>.
+    Si la pusi&eacute;ramos en <code>cliente</code>, un cliente tendr&iacute;a que repetir una lista
     de pedidos en una sola celda, lo cual no es permitido.</li>
     <li><strong>1:1 &rarr; la FK va en la tabla que depende de la otra, con <code>UNIQUE</code>.</strong>
     Un alumno tiene una sola libreta y una libreta pertenece a un solo alumno. La libreta
     guarda <code>id_alumno FK UNIQUE</code>: con <code>UNIQUE</code> evitamos que un alumno
     tenga dos libretas.</li>
-    <li><strong>N:M &rarr; no hay una sola FK: se crea la tabla intermedia.</strong>
-    Muchos clientes compran muchos productos. Ninguna de las dos tablas puede guardar la
-    relaci&oacute;n completa en una columna. Por eso nace <code>compras</code> con
-    <code>id_cliente FK</code> y <code>id_producto FK</code>: cada fila es una compra y apunta
+    <li><strong>N:M &rarr; no hay una sola FK: se crea la entidad intermedia.</strong>
+    Muchos clientes compran muchos productos. Ninguna de las dos entidades puede guardar la
+    relaci&oacute;n completa en una columna. Por eso nace <code>compra</code> con
+    <code>cliente_dni FK</code> y <code>producto_codigo FK</code>: cada fila es una compra y apunta
     a las dos PK. Los atributos del hecho (<code>fecha</code>, <code>cantidad</code>) van ah&iacute;.</li>
   </ol>
   <div class="nota"><strong>C&oacute;mo leer una l&iacute;nea del MER:</strong> en
   <code>1──N cliente_dni</code> se lee «un cliente aparece en muchas compras y cada compra
-  recuerda a su cliente con <code>cliente_dni</code>». La flecha conceptual va del lado N
+  recuerda a su cliente con <code>cliente_dni</code>». La relaci&oacute;n se lee desde el lado N
   hacia el lado 1, porque es la FK la que apunta a la PK. En este curso escribimos la
   cardinalidad como <code>1──N</code> o <code>N──1</code> al lado del trazo; no hace falta
-  dibujar flecha.</div>
+  dibujar flecha. Los nombres de entidad van en singular aqu&iacute; y en plural en el SQL.</div>
 
-  <p>Ac&aacute; est&aacute; el ejemplo completo. Fijate en la direcci&oacute;n de las dos FK:</p>
+  <p>Ac&aacute; est&aacute; el ejemplo completo. Fijate en la direcci&oacute;n de las FK y en que los
+  nombres de entidad van en <strong>singular</strong> (en SQL se escribir&aacute;n en plural):</p>
   <div class="der-wrap">
     <div class="tblbox">
-      <h4>clientes</h4>
-      <div><span class="pk">id_cliente</span> PK INT</div>
+      <h4>cliente</h4>
+      <div><span class="pk">dni</span> PK VARCHAR(8)</div>
       <div>nombre VARCHAR(50)</div>
       <div>apellido VARCHAR(50)</div>
-      <div>telefono VARCHAR(20)</div>
     </div>
     <div class="conector">1&#9472;&#9472;N
-id_cliente FK en compras</div>
+cliente_dni FK en telefono</div>
     <div class="tblbox">
-      <h4>compras (intermedia)</h4>
+      <h4>telefono</h4>
+      <div><span class="pk">id_telefono</span> PK AI INT</div>
+      <div><span class="fk">cliente_dni</span> FK VARCHAR(8) &rarr; cliente</div>
+      <div>numero VARCHAR(20)</div>
+    </div>
+    <div class="conector">1&#9472;&#9472;N
+cliente_dni FK en compra</div>
+    <div class="tblbox">
+      <h4>compra (intermedia)</h4>
       <div><span class="pk">id_compra</span> PK AI INT</div>
-      <div><span class="fk">id_cliente</span> FK INT &rarr; clientes</div>
-      <div><span class="fk">id_producto</span> FK INT &rarr; productos</div>
+      <div><span class="fk">cliente_dni</span> FK VARCHAR(8) &rarr; cliente</div>
+      <div><span class="fk">producto_codigo</span> FK VARCHAR(8) &rarr; producto</div>
       <div>fecha DATE</div>
       <div>cantidad INT</div>
     </div>
     <div class="conector">N&#9472;&#9472;1
-id_producto FK en compras</div>
+producto_codigo FK en compra</div>
     <div class="tblbox">
-      <h4>productos</h4>
-      <div><span class="pk">id_producto</span> PK AI INT</div>
+      <h4>producto</h4>
+      <div><span class="pk">codigo</span> PK VARCHAR(8)</div>
       <div>nombre VARCHAR(50)</div>
       <div>precio DECIMAL(10,2)</div>
       <div>stock INT</div>
@@ -668,26 +678,29 @@ id_producto FK en compras</div>
     <li><strong>FK = FOREIGN KEY:</strong> apunta a la PK de otra tabla y une los datos. Eso se llama
     <strong>integridad referencial</strong>: no pod&eacute;s cargar una compra con un cliente que no existe.</li>
     <li><strong>AI = AUTO_INCREMENT:</strong> MySQL numera solo las claves enteras.</li>
+    <li><strong>Multivaluado:</strong> el tel&eacute;fono no va en <code>cliente</code>: va en
+    <code>telefono</code>, con un n&uacute;mero por fila y su FK hacia el cliente.</li>
     <li>Lectura de las l&iacute;neas: un cliente (1) aparece en N compras; un producto (1) aparece en N
-    compras. Las dos FK est&aacute;n en <code>compras</code>, que es el lado N de ambas relaciones.</li>
+    compras. Las dos FK est&aacute;n en <code>compra</code>, que es el lado N de ambas relaciones.</li>
   </ul>
 
   <p>Ese MER ya se puede escribir como SQL. El puente entre el dibujo y la base es
-  <code>CREATE TABLE</code>:</p>
+  <code>CREATE TABLE</code> (ac&aacute; los nombres pasan a plural):</p>
 <pre class="codigo"><span class="kw">CREATE TABLE</span> compras (
-  id_compra    <span class="kw">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
-  id_cliente   <span class="kw">INT</span> <span class="kw">NOT NULL</span>,
-  id_producto  <span class="kw">INT</span> <span class="kw">NOT NULL</span>,
-  fecha        <span class="kw">DATE</span>,
-  cantidad     <span class="kw">INT</span>,
-  <span class="kw">FOREIGN KEY</span> (id_cliente)  <span class="kw">REFERENCES</span> clientes(id_cliente),
-  <span class="kw">FOREIGN KEY</span> (id_producto) <span class="kw">REFERENCES</span> productos(id_producto)
+  id_compra        <span class="kw">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  cliente_dni      <span class="kw">VARCHAR</span>(8) <span class="kw">NOT NULL</span>,
+  producto_codigo  <span class="kw">VARCHAR</span>(8) <span class="kw">NOT NULL</span>,
+  fecha            <span class="kw">DATE</span>,
+  cantidad         <span class="kw">INT</span>,
+  <span class="kw">FOREIGN KEY</span> (cliente_dni)     <span class="kw">REFERENCES</span> clientes(dni),
+  <span class="kw">FOREIGN KEY</span> (producto_codigo) <span class="kw">REFERENCES</span> productos(codigo)
 );</pre>
   <div class="nota"><strong>&iquest;Con qu&eacute; s&iacute;mbolo se dibuja la entidad intermedia?</strong>
   En el MER se dibuja con el <strong>mismo s&iacute;mbolo que cualquier tabla</strong>. No tiene
   s&iacute;mbolo nuevo: la distinguen sus dos <strong>FOREIGN KEY</strong> (una hacia cada entidad
   que un&iacute;a la N:M original) y sus atributos convertidos en columnas. Suele heredar el nombre
-  que tra&iacute;a del DER: la entidad COMPRA pasa a ser la tabla <code>compras</code>.</div>
+  que tra&iacute;a del DER: la entidad COMPRA pasa a ser <code>compra</code> en el MER y
+  <code>compras</code> en SQL.</div>
 
   <h2 class="sub">5. Pr&aacute;ctica guiada: pas&aacute; la pizzer&iacute;a al MER</h2>
   <div class="ejercicio" data-ej="prac_mer">
@@ -737,14 +750,22 @@ id_producto FK en compras</div>
   escriben las columnas con <strong>nombre, tipo y restricciones</strong>,
   separadas por comas (la última sin coma):</p>
 <pre class="codigo"><span class="kw">CREATE TABLE</span> clientes (
-    dni       INT PRIMARY KEY,
+    dni       VARCHAR(8) PRIMARY KEY,
     nombre    VARCHAR(50) NOT NULL,
-    apellido  VARCHAR(50) NOT NULL,
-    telefono  VARCHAR(20)
+    apellido  VARCHAR(50) NOT NULL
 );
 
+<span class="cm">-- El teléfono es multivaluado: un número por fila, con su FK</span>
+<span class="kw">CREATE TABLE</span> telefonos (
+    id_telefono   INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_dni   VARCHAR(8) NOT NULL,
+    numero        VARCHAR(20) NOT NULL,
+    <span class="kw">FOREIGN KEY</span> (cliente_dni) <span class="kw">REFERENCES</span> clientes(dni)
+);
+
+<span class="cm">-- código es texto: así admite valores como 'AB001'</span>
 <span class="kw">CREATE TABLE</span> productos (
-    codigo    INT AUTO_INCREMENT PRIMARY KEY,
+    codigo    VARCHAR(8) PRIMARY KEY,
     nombre    VARCHAR(50) NOT NULL,
     categoria VARCHAR(30),
     precio    DECIMAL(10,2) NOT NULL,
@@ -754,8 +775,8 @@ id_producto FK en compras</div>
 <span class="cm">-- Tabla intermedia: resuelve la relación N:M cliente-producto</span>
 <span class="kw">CREATE TABLE</span> compras (
     id_compra        INT AUTO_INCREMENT PRIMARY KEY,
-    cliente_dni      INT NOT NULL,
-    producto_codigo  INT NOT NULL,
+    cliente_dni      VARCHAR(8) NOT NULL,
+    producto_codigo  VARCHAR(8) NOT NULL,
     fecha            DATE NOT NULL,
     cantidad         INT NOT NULL,
     <span class="kw">FOREIGN KEY</span> (cliente_dni)     <span class="kw">REFERENCES</span> clientes(dni),
@@ -764,14 +785,14 @@ id_producto FK en compras</div>
 
   <table class="datos">
     <tr><th>Tipo o restricción</th><th>Para qué sirve</th><th>Ejemplo</th></tr>
-    <tr><td>INT</td><td>Números enteros</td><td>dni, stock, cantidad</td></tr>
-    <tr><td>VARCHAR(n)</td><td>Texto corto variable</td><td>nombre, apellido, teléfono</td></tr>
+    <tr><td>INT</td><td>Números enteros</td><td>stock, cantidad, id_compra</td></tr>
+    <tr><td>VARCHAR(n)</td><td>Texto corto variable</td><td>dni, codigo, nombre, numero</td></tr>
     <tr><td>DECIMAL(10,2)</td><td>Decimales exactos con 2 decimales</td><td>precio</td></tr>
     <tr><td>DATE</td><td>Fecha AAAA-MM-DD</td><td>fecha</td></tr>
     <tr><td>PRIMARY KEY</td><td>Identifica cada fila sin repetirse</td><td>dni, codigo, id_compra</td></tr>
     <tr><td>NOT NULL</td><td>Obliga a cargar ese dato</td><td>nombre, precio</td></tr>
     <tr><td>DEFAULT</td><td>Valor si no se indica nada</td><td>stock DEFAULT 0</td></tr>
-    <tr><td>AUTO_INCREMENT</td><td>MySQL numera automáticamente</td><td>codigo, id_compra</td></tr>
+    <tr><td>AUTO_INCREMENT</td><td>MySQL numera automáticamente</td><td>id_telefono, id_compra</td></tr>
     <tr><td>FOREIGN KEY ... REFERENCES</td><td>Conecta con la PK de otra tabla</td><td>cliente_dni → clientes.dni</td></tr>
   </table>
 
@@ -780,32 +801,38 @@ id_producto FK en compras</div>
   paréntesis los nombres de las columnas: así el orden de los valores queda
   claro y las columnas <code>AUTO_INCREMENT</code> se omiten. Los textos van
   entre comillas simples y las fechas como <code>'AAAA-MM-DD'</code>:</p>
-<pre class="codigo"><span class="kw">INSERT INTO</span> clientes (dni, nombre, apellido, telefono) <span class="kw">VALUES</span>
-    (30111222, 'Ana',  'Gomez', '2664-111111'),
-    (28333444, 'Luis', 'Perez', '2664-222222');
+<pre class="codigo"><span class="kw">INSERT INTO</span> clientes (dni, nombre, apellido) <span class="kw">VALUES</span>
+    ('30111222', 'Ana',  'Gomez'),
+    ('28333444', 'Luis', 'Perez');
 
-<span class="kw">INSERT INTO</span> productos (nombre, categoria, precio, stock) <span class="kw">VALUES</span>
-    ('Teclado', 'Tecnologia', 8500.00, 10),
-    ('Mouse',   'Tecnologia', 4200.50, 15),
-    ('Silla',   'Muebles',   12000.00,  4);
+<span class="cm">-- Un teléfono por fila: Ana tiene dos números</span>
+<span class="kw">INSERT INTO</span> telefonos (cliente_dni, numero) <span class="kw">VALUES</span>
+    ('30111222', '2664-111111'),
+    ('30111222', '2664-333333'),
+    ('28333444', '2664-222222');
+
+<span class="kw">INSERT INTO</span> productos (codigo, nombre, categoria, precio, stock) <span class="kw">VALUES</span>
+    ('AB001', 'Teclado', 'Tecnologia', 8500.00, 10),
+    ('AB002', 'Mouse',   'Tecnologia', 4200.50, 15),
+    ('AB003', 'Silla',   'Muebles',   12000.00,  4);
 
 <span class="kw">INSERT INTO</span> compras (cliente_dni, producto_codigo, fecha, cantidad) <span class="kw">VALUES</span>
-    (30111222, 1, '2026-08-20', 2),
-    (30111222, 2, '2026-08-21', 1),
-    (28333444, 1, '2026-08-21', 3);</pre>
+    ('30111222', 'AB001', '2026-08-20', 2),
+    ('30111222', 'AB002', '2026-08-21', 1),
+    ('28333444', 'AB001', '2026-08-21', 3);</pre>
 
   <h2>4. Modificar datos (UPDATE)</h2>
   <p><code>UPDATE ... SET ... WHERE ...</code> cambia valores de filas que ya
   existen. <strong>Usá siempre <code>WHERE</code></strong>: sin esa condición se
   modificarían todas las filas de la tabla.</p>
-<pre class="codigo"><span class="kw">UPDATE</span> clientes
-<span class="kw">SET</span> telefono = '2664-999999'
-<span class="kw">WHERE</span> dni = 30111222;
+<pre class="codigo"><span class="kw">UPDATE</span> telefonos
+<span class="kw">SET</span> numero = '2664-999999'
+<span class="kw">WHERE</span> id_telefono = 1;
 
 <span class="cm">-- También se puede calcular sobre el valor actual</span>
 <span class="kw">UPDATE</span> productos
 <span class="kw">SET</span> stock = stock + 5
-<span class="kw">WHERE</span> codigo = 1;</pre>
+<span class="kw">WHERE</span> codigo = 'AB001';</pre>
 
   <h2>5. Borrar datos (DELETE)</h2>
   <p><code>DELETE FROM ... WHERE ...</code> elimina filas. Sin <code>WHERE</code>
@@ -821,7 +848,7 @@ id_producto FK en compras</div>
   <p>Agregar datos es <code>INSERT</code> (tema 3). Para agregar, cambiar o quitar
   <em>columnas</em> de una tabla ya creada se usa <code>ALTER TABLE</code>:</p>
 <pre class="codigo"><span class="kw">ALTER TABLE</span> clientes <span class="kw">ADD COLUMN</span> email VARCHAR(80);
-<span class="kw">ALTER TABLE</span> clientes <span class="kw">MODIFY COLUMN</span> telefono VARCHAR(30);
+<span class="kw">ALTER TABLE</span> telefonos <span class="kw">MODIFY COLUMN</span> numero VARCHAR(30);
 <span class="kw">ALTER TABLE</span> clientes <span class="kw">DROP COLUMN</span> email;
 
 <span class="cm">-- Borrar la tabla completa</span>
@@ -837,7 +864,7 @@ id_producto FK en compras</div>
   <ul>
     <li><strong>Traer todo:</strong> <code>SELECT * FROM clientes;</code> devuelve todas las columnas y filas.</li>
     <li><strong>Elegir columnas:</strong> <code>SELECT nombre, email FROM clientes;</code> trae solo lo pedido.</li>
-    <li><strong>Quitar duplicados:</strong> <code>SELECT DISTINCT ciudad FROM clientes;</code> muestra cada valor una vez.</li>
+    <li><strong>Quitar duplicados:</strong> <code>SELECT DISTINCT categoria FROM productos;</code> muestra cada valor una vez.</li>
     <li><strong>Renombrar con alias:</strong> <code>SELECT nombre AS cliente FROM clientes;</code> cambia el nombre de la columna en el resultado.</li>
   </ul>
 <pre class="codigo"><span class="kw">SELECT</span> DISTINCT categoria <span class="kw">AS</span> rubro
@@ -897,7 +924,7 @@ id_producto FK en compras</div>
 
   <h2>10. Paginación y límites (LIMIT y OFFSET)</h2>
   <ul>
-    <li><strong>Primeros N:</strong> <code>SELECT * FROM usuarios LIMIT 5;</code></li>
+    <li><strong>Primeros N:</strong> <code>SELECT * FROM productos LIMIT 5;</code></li>
     <li><strong>Saltar filas:</strong> <code>LIMIT 10 OFFSET 20</code> salta 20 y muestra 10; sirve para páginas web.</li>
     <li>Conviene acompañar siempre con <code>ORDER BY</code> para que la paginación sea estable.</li>
   </ul>
@@ -917,6 +944,7 @@ id_producto FK en compras</div>
 <pre class="codigo"><span class="kw">SELECT</span> * <span class="kw">FROM</span> clientes <span class="kw">WHERE</span> nombre <span class="kw">LIKE</span> '%garcia%';
 <span class="kw">SELECT</span> * <span class="kw">FROM</span> clientes <span class="kw">WHERE</span> nombre <span class="kw">LIKE</span> '_ana';
 
+<span class="cm">-- codigo es VARCHAR(8), así que puede compararse con un patrón de texto</span>
 <span class="kw">SELECT</span> * <span class="kw">FROM</span> productos
 <span class="kw">WHERE</span> codigo <span class="kw">REGEXP</span> '^[A-Z]{2}[0-9]+$';
 
@@ -956,11 +984,14 @@ id_producto FK en compras</div>
             <span class="kw">ELSE</span> 'Compra chica' <span class="kw">END</span> <span class="kw">AS</span> tipo
 <span class="kw">FROM</span> compras;
 
-<span class="kw">SELECT</span> nombre, <span class="kw">IFNULL</span>(telefono, 'Sin teléfono') <span class="kw">AS</span> tel
-<span class="kw">FROM</span> clientes;
+<span class="cm">-- El LEFT JOIN permite ver también clientes sin teléfono cargado</span>
+<span class="kw">SELECT</span> c.nombre, <span class="kw">IFNULL</span>(t.numero, 'Sin teléfono') <span class="kw">AS</span> tel
+<span class="kw">FROM</span> clientes c
+<span class="kw">LEFT JOIN</span> telefonos t <span class="kw">ON</span> t.cliente_dni = c.dni;
 
-<span class="kw">SELECT</span> nombre, <span class="kw">COALESCE</span>(telefono, 'Sin teléfono') <span class="kw">AS</span> tel
-<span class="kw">FROM</span> clientes;</pre>
+<span class="kw">SELECT</span> c.nombre, <span class="kw">COALESCE</span>(t.numero, 'Sin teléfono') <span class="kw">AS</span> tel
+<span class="kw">FROM</span> clientes c
+<span class="kw">LEFT JOIN</span> telefonos t <span class="kw">ON</span> t.cliente_dni = c.dni;</pre>
 
   <h2>14. Concatenación y funciones de texto</h2>
   <ul>
@@ -970,8 +1001,9 @@ id_producto FK en compras</div>
 <pre class="codigo"><span class="kw">SELECT</span> <span class="kw">CONCAT</span>(nombre, ' ', apellido) <span class="kw">AS</span> nombre_completo
 <span class="kw">FROM</span> clientes;
 
-<span class="kw">SELECT</span> <span class="kw">CONCAT_WS</span>(' - ', nombre, apellido, telefono) <span class="kw">AS</span> ficha
-<span class="kw">FROM</span> clientes;
+<span class="kw">SELECT</span> <span class="kw">CONCAT_WS</span>(' - ', c.nombre, c.apellido, t.numero) <span class="kw">AS</span> ficha
+<span class="kw">FROM</span> clientes c
+<span class="kw">JOIN</span> telefonos t <span class="kw">ON</span> t.cliente_dni = c.dni;
 
 <span class="kw">SELECT</span> cliente_dni,
        <span class="kw">GROUP_CONCAT</span>(producto_codigo <span class="kw">ORDER BY</span> producto_codigo <span class="kw">SEPARATOR</span> ', ') <span class="kw">AS</span> productos
@@ -1102,13 +1134,14 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
       <button type="button" data-card="N:M">N : M</button>
     </div>
     <div class="sim-panel" id="card-out"></div>
-    <div class="sim-msg" id="card-msg"></div>
+    <div class="sim-msg" id="card-msg" role="status" aria-live="polite"></div>
   </div>
 
   <div class="card sim">
     <h3>🧾 Simulador: la boleta con JOIN</h3>
     <p>Los datos viven en tres tablas. Elegí un cliente y un producto: el simulador cruza las
-    tablas como lo haría el <code>JOIN</code> y calcula el total.</p>
+    tablas como lo haría el <code>JOIN</code> y calcula el total. Ac&aacute; se muestran los nombres
+    en plural porque es la <strong>vista SQL</strong>; en el MER las entidades se escriben en singular.</p>
     <div class="sim-row">
       <label for="join-cliente" style="font-size:.88rem;font-weight:600;">Cliente:</label>
       <select id="join-cliente">
@@ -1127,7 +1160,7 @@ productos.codigo (PK) <span class="cm">←</span>  compras.producto_codigo (FK)<
       <table class="tabla-resultados" id="join-tabla"></table>
     </div>
     <pre class="codigo" id="join-sql"></pre>
-    <div class="sim-msg ok" id="join-msg"></div>
+    <div class="sim-msg ok" id="join-msg" role="status" aria-live="polite"></div>
   </div>
 </section>
 
@@ -1365,12 +1398,12 @@ const EVAL_PREGUNTAS = [
     correcta:0, pista:'La entidad intermedia rompe el N:M y guarda fecha y cantidad.' },
 
   { n:3, titulo:'SQL de la tabla clientes', grupo:'C',
-    texto:'¿Cuál es la sentencia correcta para crear la tabla <code>clientes</code> con <code>dni</code> como clave, <code>nombre</code> y <code>telefono</code>?',
-    opciones:[ {t:'CREATE DATABASE clientes (dni INT, nombre VARCHAR(50), telefono VARCHAR(20));', code:true},
-               {t:'CREATE TABLE clientes (dni INT PRIMARY KEY, nombre VARCHAR(50), telefono VARCHAR(20));', code:true},
-               {t:'CREATE TABLE clientes (dni INT, nombre VARCHAR(50), telefono VARCHAR(20));', code:true},
-               {t:'INSERT INTO clientes (dni, nombre, telefono) VALUES (1, "Ana", "2664-111111");', code:true} ],
-    correcta:1, pista:'CREATE TABLE define la tabla y dni debe declararse PRIMARY KEY.' },
+    texto:'¿Cuál es la sentencia correcta para crear la tabla <code>clientes</code> con <code>dni VARCHAR(8)</code> como clave, <code>nombre</code> y <code>apellido</code> (los teléfonos van en otra tabla)?',
+    opciones:[ {t:'CREATE DATABASE clientes (dni VARCHAR(8), nombre VARCHAR(50), apellido VARCHAR(50));', code:true},
+               {t:'CREATE TABLE clientes (dni VARCHAR(8) PRIMARY KEY, nombre VARCHAR(50), apellido VARCHAR(50));', code:true},
+               {t:'CREATE TABLE clientes (dni VARCHAR(8), nombre VARCHAR(50), apellido VARCHAR(50));', code:true},
+               {t:'INSERT INTO clientes (dni, nombre, apellido) VALUES ("30111222", "Ana", "Gomez");', code:true} ],
+    correcta:1, pista:'CREATE TABLE define la tabla; dni va como VARCHAR(8) PRIMARY KEY y los teléfonos se guardan en otra tabla con FK.' },
 
   { n:4, titulo:'Diferencia entre Diagrama DER y Modelo MER', grupo:'A',
     texto:'¿Cuál es la diferencia principal entre el Diagrama DER y el Modelo MER?',
@@ -1612,24 +1645,24 @@ dibujarEval();
 
     var casos = {
         '1:1': {
-            html: tabla('personas', ['<span class="pk">id_persona</span> PK INT', 'nombre VARCHAR(50)']) +
+            html: tabla('persona', ['<span class="pk">id_persona</span> PK INT', 'nombre VARCHAR(50)']) +
                 '<div class="conector">1──1</div>' +
-                tabla('dnis', ['<span class="pk">id_dni</span> PK INT', '<span class="fk">id_persona</span> FK INT UNIQUE', 'numero VARCHAR(10)']),
-            texto: 'Relación 1:1: una persona tiene un solo DNI y un DNI pertenece a una sola persona. Una de las dos tablas lleva la FK con UNIQUE; no hace falta tabla intermedia.'
+                tabla('dni', ['<span class="pk">id_dni</span> PK INT', '<span class="fk">id_persona</span> FK INT UNIQUE', 'numero VARCHAR(10)']),
+            texto: 'Relación 1:1: una persona tiene un solo DNI y un DNI pertenece a una sola persona. Una de las dos entidades lleva la FK con UNIQUE; no hace falta intermedia.'
         },
         '1:N': {
-            html: tabla('clientes', ['<span class="pk">dni</span> PK INT', 'nombre VARCHAR(50)']) +
+            html: tabla('cliente', ['<span class="pk">dni</span> PK VARCHAR(8)', 'nombre VARCHAR(50)']) +
                 '<div class="conector">1──N</div>' +
-                tabla('compras', ['<span class="pk">id_compra</span> PK AI INT', '<span class="fk">cliente_dni</span> FK INT', 'fecha DATE', 'cantidad INT']),
-            texto: 'Relación 1:N: un cliente tiene muchas compras y cada compra es de un cliente. La FK va en la tabla del lado N (compras) y apunta a la PK de clientes.'
+                tabla('compra', ['<span class="pk">id_compra</span> PK AI INT', '<span class="fk">cliente_dni</span> FK VARCHAR(8)', 'fecha DATE', 'cantidad INT']),
+            texto: 'Relación 1:N: un cliente tiene muchas compras y cada compra es de un cliente. La FK va en la entidad del lado N (compra) y apunta a la PK de cliente.'
         },
         'N:M': {
-            html: tabla('clientes', ['<span class="pk">dni</span> PK INT', 'nombre VARCHAR(50)']) +
+            html: tabla('cliente', ['<span class="pk">dni</span> PK VARCHAR(8)', 'nombre VARCHAR(50)']) +
                 '<div class="conector">1──N</div>' +
-                tabla('compras (intermedia)', ['<span class="pk">id_compra</span> PK AI INT', '<span class="fk">cliente_dni</span> FK INT', '<span class="fk">producto_codigo</span> FK INT', 'fecha DATE', 'cantidad INT']) +
+                tabla('compra (intermedia)', ['<span class="pk">id_compra</span> PK AI INT', '<span class="fk">cliente_dni</span> FK VARCHAR(8)', '<span class="fk">producto_codigo</span> FK VARCHAR(8)', 'fecha DATE', 'cantidad INT']) +
                 '<div class="conector">N──1</div>' +
-                tabla('productos', ['<span class="pk">codigo</span> PK AI INT', 'nombre VARCHAR(50)', 'precio DECIMAL(10,2)']),
-            texto: 'Relación N:M: muchos clientes compran muchos productos. Se resuelve con una tabla intermedia (compras) que tiene dos FK, una hacia cada entidad.'
+                tabla('producto', ['<span class="pk">codigo</span> PK VARCHAR(8)', 'nombre VARCHAR(50)', 'precio DECIMAL(10,2)']),
+            texto: 'Relación N:M: muchos clientes compran muchos productos. Se resuelve con la entidad intermedia compra, que tiene dos FK, una hacia cada entidad. En SQL se escribe compras.'
         }
     };
 
