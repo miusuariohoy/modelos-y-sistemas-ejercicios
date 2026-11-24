@@ -28,8 +28,12 @@ y FK) → Base de datos MySQL**.
   qué se pide y por qué.
 - En DER, la paleta inserta los **símbolos** en el cursor (rectángulo, rombo,
   óvalos, cardinalidades). En MER, el menú inserta entidades, atributos, PK, FK
-  y líneas con cardinalidad `1 a N` / `N a 1` entre las entidades. La
-  convención es **DER = símbolos; MER = tipos de atributo y FK**.
+  y líneas con cardinalidad `1 a N` / `N a 1` entre las entidades. Los cuatro
+  ejercicios siguen esta progresión: **una sola entidad** (`producto`), **dos
+  relacionadas** (`cliente`–`pedido`, 1:N), **tres relacionadas**
+  (`cliente`–`pedido`–`vendedor`, con dos FK) y, por último, **la entidad
+  intermedia** (`compra`) que resuelve un N:M. La convención es **DER =
+  símbolos; MER = tipos de atributo y FK**.
 - Después de la ejercitación hay dos **evaluaciones sin corrección visible**:
   `modelos-sistemas-general` (2 DER con paleta de símbolos, 2 MER con el menú
   de tablas/campos/PK/FK/líneas, 2 BD y 6 opción múltiple) y

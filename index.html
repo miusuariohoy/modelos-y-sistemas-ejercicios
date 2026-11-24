@@ -360,23 +360,21 @@ footer p{margin:.2rem 0}
 <!-- ============================== MER ============================== -->
 <section id="mer">
   <h2 class="seccion">2 · MER</h2>
+  <p class="pista">Cuatro pasos: <strong>una sola entidad</strong>, <strong>dos relacionadas</strong>,
+  <strong>tres relacionadas</strong> y, al final, <strong>la entidad intermedia</strong> de un N:M.
+  Usá el mismo menú en los cuatro; las líneas no se agregan solas: primero hacé clic en la entidad
+  o línea que quieras dejar atrás y después apretá <strong>Línea de relación</strong>,
+  <strong>1 a N</strong> o <strong>N a 1</strong>.</p>
 
   <article class="ejercicio" data-id="mer1">
-    <h3>✍️ Ejercicio 2.1: de N:M a las FK <span class="nivel">Medio</span></h3>
+    <h3>✍️ Ejercicio 2.1: una sola entidad <span class="nivel">Fácil</span></h3>
     <p class="consigna">
-      Un <strong>cliente</strong> compra muchos <strong>productos</strong> y un <strong>producto</strong>
-      puede ser comprado por muchos clientes. Escribí las entidades en singular —<code>cliente</code>,
-      <code>producto</code> y la intermedia <code>compra</code>— con el
-      <strong>tipo de cada columna</strong> (<code>INT</code>, <code>VARCHAR</code>, <code>DECIMAL</code>, <code>DATE</code>),
-      la <strong>PK</strong> de cada entidad y las <strong>dos FK</strong> en <code>compra</code>
-      que apuntan a <code>cliente</code> y <code>producto</code>. <code>fecha</code> va como
-      <code>DATE</code> y <code>cantidad</code> como <code>INT</code>. En SQL esas tablas se escriben
-      en plural: <code>clientes</code>, <code>productos</code> y <code>compras</code>.
-      Usá el menú para insertar las entidades, los atributos, las marcas PK/FK y las líneas. Las
-      líneas no se agregan solas. Primero hacé clic en la entidad o línea que quieras dejar atrás y
-      después apretá <strong>Línea de relación</strong>, <strong>1 a N</strong> o <strong>N a 1</strong>:
-      la línea aparece justo ahí, entre las entidades, con la cardinalidad elegida (o vacía para
-      escribirla vos).
+      Un <strong>producto</strong> se identifica con <code>id_producto</code>, una clave entera que
+      MySQL numera solo (<code>AUTO_INCREMENT</code>). Tiene <code>nombre VARCHAR(50)</code>,
+      <code>precio DECIMAL(10,2)</code> y <code>stock INT</code>. Armá <strong>una sola entidad</strong>
+      <code>producto</code> en singular con su PK y sus atributos, usando el menú. Todav&iacute;a no
+      hay relaciones: <strong>no escribas FK ni insertes l&iacute;neas</strong>. En SQL esta entidad
+      se escribir&aacute; <code>productos</code> (plural), pero ac&aacute; va en singular.
     </p>
     <div class="paleta-titulo">Menú para armar el MER</div>
     <div class="menu-mer">
@@ -399,17 +397,29 @@ footer p{margin:.2rem 0}
   </article>
 
   <article class="ejercicio" data-id="mer2">
-    <h3>✍️ Ejercicio 2.2: una relación 1:N en tablas <span class="nivel">Medio</span></h3>
+    <h3>✍️ Ejercicio 2.2: dos entidades relacionadas (1:N) <span class="nivel">Medio</span></h3>
     <p class="consigna">
       Un <strong>cliente</strong> hace muchos <strong>pedidos</strong> y cada pedido pertenece a un solo
-      cliente. Escribí las dos entidades del MER en singular, con el tipo de cada columna:
+      cliente. Armá las dos entidades en singular con el men&uacute;:
       <code>cliente(id_cliente PK INT, nombre VARCHAR(50))</code> y
       <code>pedido(id_pedido PK AI INT, fecha DATE, id_cliente FK INT)</code>.
       La FK <code>id_cliente</code> va en <code>pedido</code> porque es el lado N: es quien tiene que
-      recordar a su cliente. Escribí también la cardinalidad <code>1──N</code> entre las dos entidades.
-      No hace falta crear tablas todavía: esto es el MER.
+      recordar a su cliente. Insert&aacute; la l&iacute;nea con cardinalidad <code>1──N</code> entre
+      las dos entidades. No hace falta crear tablas SQL todav&iacute;a: esto es el MER.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="cliente(...)\n1──N\npedido(...)"></textarea>
+    <div class="paleta-titulo">Menú para armar el MER</div>
+    <div class="menu-mer">
+      <button type="button" data-mer="tabla">Tabla</button>
+      <button type="button" data-mer="atributo">Atributo</button>
+      <button type="button" data-mer="pk">PK</button>
+      <button type="button" data-mer="fk">FK</button>
+      <button type="button" data-mer="linea">Línea de relación</button>
+      <button type="button" data-mer="card1n">1 a N</button>
+      <button type="button" data-mer="cardn1">N a 1</button>
+    </div>
+    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las entidades y sus relaciones…">
+      <div class="mer-diagrama"></div>
+    </div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -418,17 +428,32 @@ footer p{margin:.2rem 0}
   </article>
 
   <article class="ejercicio" data-id="mer3">
-    <h3>✍️ Ejercicio 2.3: multivaluado y derivado <span class="nivel">Difícil</span></h3>
+    <h3>✍️ Ejercicio 2.3: tres entidades relacionadas <span class="nivel">Medio</span></h3>
     <p class="consigna">
-      Un <strong>cliente</strong> tiene <strong>varios teléfonos</strong> y queremos mostrar su
-      <strong>total de compras</strong>, que se calcula sumando los importes. Explicá y escribí cómo
-      queda el MER: el cliente con <code>id_cliente PK INT</code> y <code>nombre VARCHAR(50)</code>;
-      una tabla <code>telefono</code> con <code>id_telefono PK INT</code>, <code>numero VARCHAR(20)</code>
-      y <code>id_cliente FK INT</code> (un teléfono por fila); y una aclaración de que el total
-      <strong>no se guarda</strong> porque es un atributo derivado que se calculará con
-      <code>SELECT</code>. Escribí la cardinalidad <code>1──N</code> entre cliente y teléfono.
+      Un <strong>cliente</strong> hace muchos <strong>pedidos</strong> y cada pedido es de un solo
+      cliente. Un <strong>vendedor</strong> atiende muchos pedidos y cada pedido tiene un solo
+      vendedor. Armá tres entidades en singular:
+      <code>cliente(id_cliente PK INT, nombre VARCHAR(50))</code>,
+      <code>vendedor(id_vendedor PK INT, nombre VARCHAR(50))</code> y
+      <code>pedido(id_pedido PK AI INT, fecha DATE, id_cliente FK INT, id_vendedor FK INT)</code>.
+      Insert&aacute; las dos l&iacute;neas: <code>1──N</code> entre cliente y pedido, y
+      <code>N──1</code> entre pedido y vendedor. Fijate que las dos FK viven en <code>pedido</code>,
+      que es el lado N de ambas relaciones. Todav&iacute;a no hay N:M: por eso no hace falta
+      intermedia.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="cliente(...)\n1──N\ntelefono(...)\ntotal: derivado..."></textarea>
+    <div class="paleta-titulo">Menú para armar el MER</div>
+    <div class="menu-mer">
+      <button type="button" data-mer="tabla">Tabla</button>
+      <button type="button" data-mer="atributo">Atributo</button>
+      <button type="button" data-mer="pk">PK</button>
+      <button type="button" data-mer="fk">FK</button>
+      <button type="button" data-mer="linea">Línea de relación</button>
+      <button type="button" data-mer="card1n">1 a N</button>
+      <button type="button" data-mer="cardn1">N a 1</button>
+    </div>
+    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las entidades y sus relaciones…">
+      <div class="mer-diagrama"></div>
+    </div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -437,17 +462,30 @@ footer p{margin:.2rem 0}
   </article>
 
   <article class="ejercicio" data-id="mer4">
-    <h3>✍️ Ejercicio 2.4: relación 1:1 con UNIQUE <span class="nivel">Difícil</span></h3>
+    <h3>✍️ Ejercicio 2.4: entidad intermedia para un N:M <span class="nivel">Difícil</span></h3>
     <p class="consigna">
-      Un <strong>alumno</strong> tiene una sola <strong>libreta</strong> y cada libreta pertenece a un
-      solo alumno. En el MER, la FK va en la tabla que depende de la otra y lleva <code>UNIQUE</code>
-      para que un alumno no pueda tener dos libretas. Escribí:
-      <code>alumno(id_alumno PK INT, nombre VARCHAR(50))</code> y
-      <code>libreta(id_libreta PK INT, id_alumno FK INT UNIQUE, fecha DATE)</code>, más la
-      cardinalidad <code>1──1</code>. Explicá con tus palabras por qué la FK está en
-      <code>libreta</code> y no en <code>alumno</code>.
+      Un <strong>cliente</strong> compra muchos <strong>productos</strong> y un <strong>producto</strong>
+      puede ser comprado por muchos clientes. Un N:M no se resuelve con una sola FK: armá la entidad
+      intermedia <code>compra</code> junto con <code>cliente</code> y <code>producto</code>, todas en
+      singular. Us&aacute; los tipos <code>INT</code>, <code>VARCHAR</code>, <code>DECIMAL</code> y
+      <code>DATE</code>; pon&eacute; la PK de cada entidad y las dos FK en <code>compra</code>, con
+      <code>fecha DATE</code> y <code>cantidad INT</code>. Insert&aacute; las dos l&iacute;neas con
+      <code>1──N</code> y <code>N──1</code>. En SQL estas entidades se escribir&aacute;n en plural:
+      <code>clientes</code>, <code>productos</code> y <code>compras</code>.
     </p>
-    <textarea class="respuesta" spellcheck="false" placeholder="alumno(...)\n1──1\nlibreta(...)\nPorque..."></textarea>
+    <div class="paleta-titulo">Menú para armar el MER</div>
+    <div class="menu-mer">
+      <button type="button" data-mer="tabla">Tabla</button>
+      <button type="button" data-mer="atributo">Atributo</button>
+      <button type="button" data-mer="pk">PK</button>
+      <button type="button" data-mer="fk">FK</button>
+      <button type="button" data-mer="linea">Línea de relación</button>
+      <button type="button" data-mer="card1n">1 a N</button>
+      <button type="button" data-mer="cardn1">N a 1</button>
+    </div>
+    <div class="respuesta tablas-mer" contenteditable="true" data-placeholder="Armá acá las entidades y sus relaciones…">
+      <div class="mer-diagrama"></div>
+    </div>
     <div class="acciones">
       <button type="button" class="accion corregir">✅ Corregir</button>
       <button type="button" class="accion limpiar">Limpiar</button>
@@ -1184,6 +1222,42 @@ function titulosMer(c){
   }).filter(Boolean);
 }
 
+function tablasMer(c){
+  return c.caja ? Array.from(c.caja.querySelectorAll('.mer-tabla')) : [];
+}
+
+function camposDeTabla(c, nombre){
+  const indice = titulosMer(c).indexOf(nombre);
+  return indice < 0 ? [] : camposTabla(c, indice).map(normalizar);
+}
+
+function campoEnTabla(c, nombre, patron){
+  return camposDeTabla(c, nombre).some(function(texto){ return patron.test(texto); });
+}
+
+function pkEnTabla(c, nombre, clave){
+  return campoEnTabla(c, nombre, new RegExp(clave + '[^;]*\\b(pk|primary key)\\b|\\b(pk|primary key)\\b[^;]*' + clave));
+}
+
+function fkEnTabla(c, nombre, clave){
+  return campoEnTabla(c, nombre, new RegExp(clave + '[^;]*\\b(fk|foreign key)\\b|\\b(fk|foreign key)\\b[^;]*' + clave));
+}
+
+function lineasMer(c){
+  return c.caja ? Array.from(c.caja.querySelectorAll('.mer-linea')) : [];
+}
+
+function cardEnLineas(c, tipo){
+  const re = tipo === '1n' ? /1\s*(──|[:\-]{1,2})\s*n/i
+           : tipo === 'n1' ? /n\s*(──|[:\-]{1,2})\s*1/i
+           : null;
+  if (!re) return false;
+  return lineasMer(c).some(function(linea){
+    const card = linea.querySelector('.mer-card');
+    return !!card && re.test(normalizar(card.innerText || ''));
+  });
+}
+
 const hayCard1n = c => /1\s*(──|[:\-]{1,2})\s*n/i.test(c.t) || c.formas.includes('1:N');
 const hayCardN1 = c => /n\s*(──|[:\-]{1,2})\s*1/i.test(c.t) || c.formas.includes('N:1');
 const hayCardNM = c => /n\s*[:\-]\s*m/i.test(c.t) || c.formas.includes('N:M');
@@ -1225,48 +1299,68 @@ const EJERCICIOS = {
     { d:'Marca edad como atributo derivado', f:c => c.formas.includes('punteado') && c.t.includes('edad') }
   ]},
   mer1: { requisitos: [
-    { d:'Arma tres entidades con el menú', f:c => !!c.caja && c.caja.querySelectorAll('.mer-tabla').length >= 3 },
-    { d:'Une las entidades con dos líneas', f:c => !!c.caja && c.caja.querySelectorAll('.mer-linea').length >= 2 },
-    { d:'Escribe 1──N o N──1 en las dos líneas', f:c => {
-        const lineas = c.caja ? c.caja.querySelectorAll('.mer-linea') : [];
-        return lineas.length >= 2 && Array.from(lineas).every(x => {
-          const card = x.querySelector('.mer-card');
-          return !!card && /1.*n|n.*1/i.test(normalizar(card.innerText || ''));
-        });
-      } },
-    { d:'Nombra cliente, producto y compra en singular', f:c => {
-        const titulos = titulosMer(c);
-        return ['cliente','producto','compra'].every(n => titulos.includes(n));
-      } },
-    { d:'Completa al menos dos atributos por entidad', f:c => [0,1,2].every(i => camposTabla(c, i).length >= 2) },
-    { d:'Indica una PK', f:c => /primary key|\bpk\b/.test(c.t) },
-    { d:'Indica dos FK', f:c => (c.t.match(/\bfk\b|foreign key/g) || []).length >= 2 },
-    { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) },
-    { d:'Pone fecha y cantidad en compra', f:c => c.t.includes('fecha') && c.t.includes('cantidad') }
+    { d:'Arma una sola entidad llamada producto', f:c => tablasMer(c).length === 1 && titulosMer(c)[0] === 'producto' },
+    { d:'Marca id_producto como PK con AUTO_INCREMENT', f:c =>
+        pkEnTabla(c, 'producto', 'id_producto') &&
+        campoEnTabla(c, 'producto', /id_producto[^;]*(ai|auto_increment)/i) },
+    { d:'Incluye nombre VARCHAR(50)', f:c => campoEnTabla(c, 'producto', /nombre[^;]*varchar\s*\(?\s*50/i) },
+    { d:'Incluye precio DECIMAL(10,2)', f:c => campoEnTabla(c, 'producto', /precio[^;]*decimal\s*\(\s*10\s*,\s*2/i) },
+    { d:'Incluye stock INT', f:c => campoEnTabla(c, 'producto', /stock[^;]*\bint\b/i) },
+    { d:'No agrega FK ni líneas de relación', f:c => !/\b(fk|foreign key)\b/i.test(c.t) && lineasMer(c).length === 0 }
   ]},
   mer2: { requisitos: [
-    { d:'Nombra cliente y pedido en singular', f:c => c.t.includes('cliente') && c.t.includes('pedido') },
-    { d:'Marca las PK de id_cliente e id_pedido', f:c => hayPK(c, 'id_cliente') && hayPK(c, 'id_pedido') },
-    { d:'Pone id_cliente como FK en pedido', f:c => hayFK(c, 'id_cliente') },
-    { d:'Escribe la cardinalidad 1──N', f:c => hayCard1n(c) },
-    { d:'Usa los tipos INT, VARCHAR y DATE', f:c => /\bint\b/.test(c.t) && c.t.includes('varchar') && /\bdate\b/.test(c.t) },
-    { d:'Usa AUTO_INCREMENT en id_pedido', f:c => /id_pedido[^\n;]*ai\b|auto_increment/.test(c.t) }
+    { d:'Arma dos entidades: cliente y pedido', f:c =>
+        tablasMer(c).length === 2 && ['cliente','pedido'].every(n => titulosMer(c).includes(n)) },
+    { d:'Marca id_cliente como PK en cliente', f:c => pkEnTabla(c, 'cliente', 'id_cliente') },
+    { d:'Marca id_pedido como PK con AUTO_INCREMENT', f:c =>
+        pkEnTabla(c, 'pedido', 'id_pedido') &&
+        campoEnTabla(c, 'pedido', /id_pedido[^;]*(ai|auto_increment)/i) },
+    { d:'Pone id_cliente como FK en pedido', f:c => fkEnTabla(c, 'pedido', 'id_cliente') },
+    { d:'No pone FK en cliente', f:c => !/\b(fk|foreign key)\b/i.test(camposDeTabla(c, 'cliente').join(' ')) },
+    { d:'Incluye fecha DATE y nombre VARCHAR', f:c =>
+        campoEnTabla(c, 'pedido', /fecha[^;]*\bdate\b/i) &&
+        campoEnTabla(c, 'cliente', /nombre[^;]*varchar/i) },
+    { d:'Inserta una línea con cardinalidad 1──N', f:c => lineasMer(c).length === 1 && cardEnLineas(c, '1n') }
   ]},
   mer3: { requisitos: [
-    { d:'Mantiene cliente con su PK', f:c => c.t.includes('cliente') && hayPK(c, 'id_cliente') },
-    { d:'Crea la tabla telefono con su PK', f:c => c.t.includes('telefono') && hayPK(c, 'id_telefono') },
-    { d:'Pone id_cliente como FK en telefono', f:c => hayFK(c, 'id_cliente') },
-    { d:'Usa VARCHAR para el número de teléfono', f:c => c.t.includes('numero') && c.t.includes('varchar') },
-    { d:'Explica que el total no se guarda por derivado', f:c => c.t.includes('total') && c.t.includes('derivado') && /no se guarda|no guarda|no se almacena|no se guarde/.test(c.t) },
-    { d:'Escribe la cardinalidad 1──N', f:c => hayCard1n(c) }
+    { d:'Arma tres entidades: cliente, vendedor y pedido', f:c =>
+        tablasMer(c).length === 3 && ['cliente','vendedor','pedido'].every(n => titulosMer(c).includes(n)) },
+    { d:'Marca las PK id_cliente, id_vendedor e id_pedido', f:c =>
+        pkEnTabla(c, 'cliente', 'id_cliente') &&
+        pkEnTabla(c, 'vendedor', 'id_vendedor') &&
+        pkEnTabla(c, 'pedido', 'id_pedido') },
+    { d:'Pone id_cliente e id_vendedor como FK en pedido', f:c =>
+        fkEnTabla(c, 'pedido', 'id_cliente') && fkEnTabla(c, 'pedido', 'id_vendedor') },
+    { d:'No pone FK en cliente ni en vendedor', f:c =>
+        !/\b(fk|foreign key)\b/i.test(camposDeTabla(c, 'cliente').join(' ') + ' ' + camposDeTabla(c, 'vendedor').join(' ')) },
+    { d:'Incluye fecha DATE y nombre VARCHAR en las tres entidades', f:c =>
+        campoEnTabla(c, 'pedido', /fecha[^;]*\bdate\b/i) &&
+        campoEnTabla(c, 'cliente', /nombre[^;]*varchar/i) &&
+        campoEnTabla(c, 'vendedor', /nombre[^;]*varchar/i) },
+    { d:'Usa AUTO_INCREMENT en id_pedido', f:c => campoEnTabla(c, 'pedido', /id_pedido[^;]*(ai|auto_increment)/i) },
+    { d:'Inserta dos líneas: 1──N y N──1', f:c =>
+        lineasMer(c).length === 2 && cardEnLineas(c, '1n') && cardEnLineas(c, 'n1') }
   ]},
   mer4: { requisitos: [
-    { d:'Nombra alumno y libreta', f:c => c.t.includes('alumno') && c.t.includes('libreta') },
-    { d:'Marca la PK de id_alumno', f:c => hayPK(c, 'id_alumno') },
-    { d:'Marca la PK de id_libreta', f:c => hayPK(c, 'id_libreta') },
-    { d:'Pone id_alumno como FK UNIQUE en libreta', f:c => hayFK(c, 'id_alumno') && /unique/.test(c.t) },
-    { d:'Escribe la cardinalidad 1──1', f:c => /1\s*(──|[:\-]{1,2})\s*1/.test(c.t) },
-    { d:'Explica por qué la FK va en libreta', f:c => /porque|ya que|debido|puesto que/.test(c.t) && c.t.includes('libreta') }
+    { d:'Arma tres entidades: cliente, producto y compra', f:c =>
+        tablasMer(c).length === 3 && ['cliente','producto','compra'].every(n => titulosMer(c).includes(n)) },
+    { d:'Marca las PK id_cliente, id_producto e id_compra', f:c =>
+        pkEnTabla(c, 'cliente', 'id_cliente') &&
+        pkEnTabla(c, 'producto', 'id_producto') &&
+        pkEnTabla(c, 'compra', 'id_compra') },
+    { d:'Pone id_cliente e id_producto como FK en compra', f:c =>
+        fkEnTabla(c, 'compra', 'id_cliente') && fkEnTabla(c, 'compra', 'id_producto') },
+    { d:'No pone FK en cliente ni en producto', f:c =>
+        !/\b(fk|foreign key)\b/i.test(camposDeTabla(c, 'cliente').join(' ') + ' ' + camposDeTabla(c, 'producto').join(' ')) },
+    { d:'Incluye fecha DATE y cantidad INT en compra', f:c =>
+        campoEnTabla(c, 'compra', /fecha[^;]*\bdate\b/i) &&
+        campoEnTabla(c, 'compra', /cantidad[^;]*\bint\b/i) },
+    { d:'Usa VARCHAR y DECIMAL en cliente y producto', f:c =>
+        campoEnTabla(c, 'cliente', /nombre[^;]*varchar/i) &&
+        campoEnTabla(c, 'producto', /nombre[^;]*varchar/i) &&
+        campoEnTabla(c, 'producto', /precio[^;]*decimal/i) },
+    { d:'Inserta dos líneas: 1──N y N──1', f:c =>
+        lineasMer(c).length === 2 && cardEnLineas(c, '1n') && cardEnLineas(c, 'n1') }
   ]},
   bd1: { requisitos: [
     { d:'Usa CREATE TABLE', f:c => /create\s+table/.test(c.t) },
@@ -1692,11 +1786,6 @@ function prepararMenuMer(){
 
 prepararMenuMer();
 
-const PLANTILLA_MER1 = (function(){
-  const caja = document.querySelector('.ejercicio[data-id="mer1"] .respuesta');
-  return caja ? caja.innerHTML : '';
-})();
-
 function resultadosArticulo(articulo){
   const c = contexto(articulo);
   const datos = EJERCICIOS[articulo.dataset.id];
@@ -1732,7 +1821,8 @@ document.querySelectorAll('.limpiar').forEach(function(boton){
   boton.addEventListener('click', function(){
     const articulo = boton.closest('.ejercicio');
     const caja = articulo.querySelector('.respuesta');
-    if (articulo.dataset.id === 'mer1' && caja) caja.innerHTML = PLANTILLA_MER1;
+    const diagrama = caja && caja.querySelector('.mer-diagrama');
+    if (diagrama) diagrama.innerHTML = '';
     else if (caja && typeof caja.value === 'string') caja.value = '';
     else if (caja) caja.innerHTML = '';
     articulo.querySelector('.resultado').innerHTML = '';
